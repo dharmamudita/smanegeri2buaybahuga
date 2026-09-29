@@ -1,6 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
 import { 
-  GraduationCap, 
   MapPin, 
   Phone, 
   Mail, 
@@ -19,8 +19,14 @@ export default function Footer() {
           {/* Column 1: School Identity */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-sky-500 flex items-center justify-center text-white shadow-md shadow-sky-500/20">
-                <GraduationCap className="w-6 h-6" />
+              <div className="relative w-10 h-10 shrink-0">
+                <Image
+                  src="/logo_smanda.png"
+                  alt="Logo SMAN 2 Buay Bahuga"
+                  width={40}
+                  height={40}
+                  className="object-contain w-full h-full drop-shadow-sm"
+                />
               </div>
               <span className="font-extrabold text-white text-lg tracking-tight">
                 SMAN 2 BUAY BAHUGA

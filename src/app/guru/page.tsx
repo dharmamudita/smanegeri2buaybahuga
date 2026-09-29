@@ -1,7 +1,8 @@
 import { Metadata } from "next";
-import { Users, GraduationCap, Award, BookOpen, Search } from "lucide-react";
+import { Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Teacher } from "@/types/database";
+import TeacherDirectory from "@/components/guru/TeacherDirectory";
 
 export const metadata: Metadata = {
   title: "Direktori Dewan Guru & Staf",
@@ -170,46 +171,8 @@ export default async function GuruPage() {
           </p>
         </div>
 
-        {/* Teachers Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {teachers.map((teacher) => (
-            <div
-              key={teacher.id}
-              className="rounded-3xl bg-white border border-slate-200/80 shadow-xs hover:shadow-lg hover:border-sky-300 transition-all duration-300 overflow-hidden group flex flex-col justify-between"
-            >
-              <div className="p-6 space-y-4 text-center">
-                {/* Avatar Placeholder / Photo */}
-                <div className="relative w-24 h-24 mx-auto rounded-full bg-gradient-to-tr from-sky-600 via-sky-500 to-sky-400 p-1 shadow-md group-hover:scale-105 transition-transform duration-300">
-                  <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center overflow-hidden">
-                    <GraduationCap className="w-10 h-10 text-sky-600" />
-                  </div>
-                </div>
-
-                {/* Name & Title */}
-                <div className="space-y-1">
-                  <h3 className="font-extrabold text-slate-900 text-base leading-snug group-hover:text-sky-600 transition-colors">
-                    {teacher.full_name}
-                  </h3>
-                  <div className="text-xs font-semibold text-sky-700">
-                    {teacher.role_title}
-                  </div>
-                  {teacher.nip && (
-                    <div className="text-[11px] text-slate-400 font-mono">
-                      NIP. {teacher.nip}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Subject Tag Footer */}
-              <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 text-center">
-                <span className="text-xs text-slate-600 font-medium">
-                  {teacher.subject || "Tenaga Kependidikan"}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Teachers Directory Explorer */}
+        <TeacherDirectory initialTeachers={teachers} />
 
       </div>
     </div>

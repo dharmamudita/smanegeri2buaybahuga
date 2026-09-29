@@ -27,12 +27,29 @@ export const metadata: Metadata = {
     "Sekolah Menengah Atas Buay Bahuga",
   ],
   authors: [{ name: "SMA Negeri 2 Buay Bahuga" }],
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/logo_smanda.png", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/logo_smanda.png",
+  },
   openGraph: {
     title: "SMA Negeri 2 Buay Bahuga | Portal Resmi & PPDB Online",
     description:
       "Penerimaan Peserta Didik Baru (PPDB) Online dan Informasi Akademik SMA Negeri 2 Buay Bahuga, Way Kanan, Lampung.",
     type: "website",
     locale: "id_ID",
+    siteName: "SMA Negeri 2 Buay Bahuga",
+    images: [
+      {
+        url: "/logo_smanda.png",
+        width: 500,
+        height: 500,
+        alt: "Logo SMA Negeri 2 Buay Bahuga",
+      },
+    ],
   },
 };
 

@@ -78,6 +78,29 @@ const NAV_ITEMS: NavItem[] = [
   },
 ];
 
+/* ──────────────────── route active helper ──────────────────── */
+
+function isRouteActive(href: string, pathname: string): boolean {
+  // Hash anchor on the homepage, e.g. "/#kontak", does not make dropdown active on homepage
+  if (href.startsWith("/#")) {
+    return false;
+  }
+
+  // Exact path match
+  if (pathname === href) return true;
+
+  // Extract base pathname without anchor hash
+  const basePath = href.split("#")[0];
+
+  // Root "/" is exclusively handled by direct link match (Beranda)
+  if (basePath === "/" || basePath === "") {
+    return false;
+  }
+
+  // Active if current pathname matches basePath exactly, or is a subroute
+  return pathname === basePath || pathname.startsWith(basePath + "/");
+}
+
 /* ──────────────────── Desktop Dropdown component ──────────────────── */
 
 function DesktopDropdown({
@@ -100,9 +123,7 @@ function DesktopDropdown({
   };
 
   // does any child match the current path?
-  const isChildActive = item.children?.some(
-    (c) => pathname === c.href || (c.href !== "/" && pathname.startsWith(c.href.split("#")[0]))
-  );
+  const isChildActive = item.children?.some((c) => isRouteActive(c.href, pathname));
 
   return (
     <div
@@ -133,9 +154,7 @@ function DesktopDropdown({
           <div className="rounded-2xl bg-white border border-slate-200/80 shadow-xl shadow-slate-200/60 overflow-hidden p-1.5 ring-1 ring-black/5">
             {item.children!.map((child) => {
               const Icon = child.icon;
-              const isActive =
-                pathname === child.href ||
-                (child.href !== "/" && pathname.startsWith(child.href.split("#")[0]));
+              const isActive = isRouteActive(child.href, pathname);
 
               return (
                 <Link
@@ -171,7 +190,7 @@ function DesktopDropdown({
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [expandedMobileGroup, setExpandedMobileGroup] = useState<string | null>("Pendaftaran");
+  const [expandedMobileGroup, setExpandedMobileGroup] = useState<string | null>(null);
   const pathname = usePathname();
 
   // hide public navbar on admin pages
@@ -307,17 +326,23 @@ export default function Navbar() {
             }
 
             // collapsible group
+            const isGroupActive = item.children.some((c) => isRouteActive(c.href, pathname));
             const isExpanded = expandedMobileGroup === item.label;
+
             return (
               <div key={item.label} className="rounded-xl overflow-hidden">
                 <button
                   onClick={() => toggleMobileGroup(item.label)}
-                  className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition ${
+                    isGroupActive
+                      ? "text-sky-600 bg-sky-50"
+                      : "text-slate-700 hover:bg-slate-50"
+                  }`}
                 >
                   <span>{item.label}</span>
                   <ChevronDown
-                    className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
-                      isExpanded ? "rotate-180" : ""
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      isExpanded ? "rotate-180 text-sky-600" : "text-slate-400"
                     }`}
                   />
                 </button>
@@ -326,9 +351,7 @@ export default function Navbar() {
                   <div className="ml-4 mt-0.5 mb-1 space-y-0.5 border-l-2 border-sky-100 pl-3">
                     {item.children.map((child) => {
                       const Icon = child.icon;
-                      const isActive =
-                        pathname === child.href ||
-                        (child.href !== "/" && pathname.startsWith(child.href.split("#")[0]));
+                      const isActive = isRouteActive(child.href, pathname);
 
                       return (
                         <Link

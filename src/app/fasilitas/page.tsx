@@ -10,8 +10,10 @@ import {
   ShieldCheck, 
   Compass, 
   Users, 
-  Sparkles 
+  Sparkles,
+  ArrowRight
 } from "lucide-react";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Fasilitas & Ekstrakurikuler",
@@ -113,7 +115,7 @@ export default function FasilitasPage() {
         </div>
 
         {/* Section 1: Fasilitas Sarana Prasarana */}
-        <div className="space-y-6">
+        <div id="fasilitas" className="space-y-6 scroll-mt-24">
           <div className="border-b border-slate-200 pb-4 flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-extrabold text-slate-900">
@@ -155,7 +157,7 @@ export default function FasilitasPage() {
         </div>
 
         {/* Section 2: Ekstrakurikuler */}
-        <div className="space-y-6">
+        <div id="ekstrakurikuler" className="space-y-6 scroll-mt-24">
           <div className="border-b border-slate-200 pb-4 flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-extrabold text-slate-900">
@@ -187,6 +189,23 @@ export default function FasilitasPage() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* CTA to PPDB */}
+        <div className="rounded-3xl bg-slate-900 text-white p-8 sm:p-12 text-center space-y-4">
+          <h3 className="text-2xl font-extrabold">Ingin Menyalurkan Bakat & Prestasimu di Sini?</h3>
+          <p className="text-sm text-slate-400 max-w-xl mx-auto">
+            SMAN 2 Buay Bahuga siap mendukung potensi akademis dan non-akademismu hingga tingkat nasional.
+          </p>
+          <div className="pt-2">
+            <Link
+              href="/ppdb"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-sm transition"
+            >
+              <span>Daftar Siswa Baru Sekarang</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
 

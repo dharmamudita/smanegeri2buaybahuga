@@ -75,7 +75,7 @@ export interface Announcement {
   title: string;
   slug: string;
   content: string;
-  category: 'pengumuman' | 'berita' | 'prestasi';
+  category: 'pengumuman' | 'berita' | 'prestasi' | 'agenda';
   thumbnail_url?: string | null;
   is_published: boolean;
   published_at: string;

@@ -6,7 +6,7 @@ import {
   BookOpen, 
   Trophy, 
   Music, 
-  Dribbble, 
+  CircleDot, 
   ShieldCheck, 
   Compass, 
   Users, 
@@ -47,7 +47,7 @@ const FACILITIES = [
   {
     title: "Lapangan Olahraga Multifungsi",
     desc: "Area lapangan terpadu untuk kegiatan upacara bendera, pertandingan futsal, bola voli, basket, dan bulu tangkis.",
-    icon: Dribbble,
+    icon: CircleDot,
     category: "Olahraga",
   },
   {

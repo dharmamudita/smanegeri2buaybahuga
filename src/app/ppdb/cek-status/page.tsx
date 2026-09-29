@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { 
   Search, 
   Calendar, 
@@ -176,8 +177,14 @@ function CekStatusContent() {
               {/* Card Official School Header */}
               <div className="border-b-2 border-slate-900 pb-6 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-sky-600 text-white flex items-center justify-center shrink-0">
-                    <GraduationCap className="w-8 h-8" />
+                  <div className="relative w-14 h-14 shrink-0">
+                    <Image
+                      src="/logo_smanda.png"
+                      alt="Logo SMAN 2 Buay Bahuga"
+                      width={56}
+                      height={56}
+                      className="object-contain w-full h-full"
+                    />
                   </div>
                   <div>
                     <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">

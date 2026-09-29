@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { 
   LayoutDashboard, 
@@ -29,8 +30,14 @@ export default function AdminSidebar() {
         
         {/* School Admin Identity */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center text-white shadow-md shadow-sky-600/30">
-            <GraduationCap className="w-6 h-6" />
+          <div className="relative w-10 h-10 shrink-0">
+            <Image
+              src="/logo_smanda.png"
+              alt="Logo SMAN 2 Buay Bahuga"
+              width={40}
+              height={40}
+              className="object-contain w-full h-full drop-shadow-sm"
+            />
           </div>
           <div>
             <div className="font-extrabold text-white text-sm tracking-tight leading-tight">

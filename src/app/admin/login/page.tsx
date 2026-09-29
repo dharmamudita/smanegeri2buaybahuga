@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { 
-  GraduationCap, 
   Lock, 
   Mail, 
   ArrowLeft, 
@@ -64,8 +64,15 @@ export default function AdminLoginPage() {
 
         {/* Card Header */}
         <div className="text-center space-y-3">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-sky-600 to-sky-400 flex items-center justify-center text-white mx-auto shadow-lg shadow-sky-500/20">
-            <GraduationCap className="w-9 h-9" />
+          <div className="relative w-16 h-16 mx-auto drop-shadow-lg">
+            <Image
+              src="/logo_smanda.png"
+              alt="Logo SMAN 2 Buay Bahuga"
+              width={64}
+              height={64}
+              className="object-contain w-full h-full"
+              priority
+            />
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
             Portal Administrator

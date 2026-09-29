@@ -86,7 +86,7 @@ export default async function PPDBPage() {
 
         {/* Active Period Alert & Information Bar */}
         {activePeriod && activePeriod.is_active && (
-          <div className="rounded-3xl bg-gradient-to-r from-sky-600 to-sky-800 text-white p-6 sm:p-8 shadow-xl shadow-sky-600/15">
+          <div id="jadwal" className="rounded-3xl bg-gradient-to-r from-sky-600 to-sky-800 text-white p-6 sm:p-8 shadow-xl shadow-sky-600/15 scroll-mt-24">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               
               <div className="space-y-2">
@@ -128,7 +128,7 @@ export default async function PPDBPage() {
         )}
 
         {/* Requirements & Checklist Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div id="syarat" className="grid grid-cols-1 md:grid-cols-3 gap-6 scroll-mt-24">
           <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs space-y-3">
             <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
               <FileCheck2 className="w-5 h-5" />

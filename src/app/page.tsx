@@ -15,7 +15,11 @@ import {
   Award,
   ChevronRight,
   Compass,
-  Laptop
+  Laptop,
+  MapPin,
+  Phone,
+  Mail,
+  Clock
 } from "lucide-react";
 
 export default function HomePage() {
@@ -381,6 +385,128 @@ export default function HomePage() {
             >
               Jelajahi Profil Sekolah
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. KONTAK & LOKASI SEKOLAH */}
+      <section id="kontak" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">
+        <div className="rounded-3xl bg-white border border-slate-200/80 shadow-sm overflow-hidden p-8 sm:p-12 space-y-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-100 pb-8">
+            <div className="space-y-3">
+              <span className="text-xs font-bold text-sky-600 uppercase tracking-widest bg-sky-50 px-3 py-1 rounded-full border border-sky-100">
+                Layanan Informasi & Lokasi
+              </span>
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                Hubungi & Kunjungi Kami
+              </h2>
+              <p className="text-sm sm:text-base text-slate-600 max-w-xl">
+                Kami siap memberikan panduan pendaftaran PPDB dan menjawab pertanyaan seputar program pendidikan di SMAN 2 Buay Bahuga.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <a
+                href="https://wa.me/6282178901234"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md shadow-emerald-600/20 transition active:scale-95"
+              >
+                <Phone className="w-4 h-4" />
+                <span>Chat WhatsApp Panitia</span>
+              </a>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Info Cards */}
+            <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 flex items-start gap-4">
+                <div className="p-2.5 rounded-xl bg-sky-100 text-sky-700 shrink-0 mt-0.5">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="font-bold text-slate-900 text-sm">Alamat Kampus Sekolah</div>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+                    Kecamatan Buay Bahuga, Kabupaten Way Kanan, Provinsi Lampung 34764
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 flex items-start gap-4">
+                <div className="p-2.5 rounded-xl bg-sky-100 text-sky-700 shrink-0 mt-0.5">
+                  <Phone className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="font-bold text-slate-900 text-sm">Telepon & WhatsApp Helpdesk</div>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                    0821-7890-1234 (Panitia PPDB)
+                  </p>
+                  <span className="text-[11px] text-emerald-600 font-semibold block mt-0.5">Aktif selama masa PPDB</span>
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 flex items-start gap-4">
+                <div className="p-2.5 rounded-xl bg-sky-100 text-sky-700 shrink-0 mt-0.5">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="font-bold text-slate-900 text-sm">Surat Elektronik Resmi</div>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                    info@sman2buaybahuga.sch.id
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 flex items-start gap-4">
+                <div className="p-2.5 rounded-xl bg-sky-100 text-sky-700 shrink-0 mt-0.5">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="font-bold text-slate-900 text-sm">Jam Pelayanan Pelajar</div>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                    Senin - Jumat: 07.30 - 15.30 WIB
+                  </p>
+                  <span className="text-[11px] text-slate-500 block mt-0.5">Sabtu, Minggu & Hari Libur Nasional tutup</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Map Preview / Location Banner */}
+            <div className="lg:col-span-7 rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 min-h-[340px] flex flex-col justify-between relative shadow-inner">
+              <div className="p-6 bg-slate-900/90 text-white z-10 backdrop-blur-sm">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-bold text-base">Peta Lokasi SMAN 2 Buay Bahuga</h3>
+                    <p className="text-xs text-slate-300">Kec. Buay Bahuga, Kab. Way Kanan, Lampung</p>
+                  </div>
+                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-sky-600 text-white">
+                    Navigasi GPS
+                  </span>
+                </div>
+              </div>
+
+              {/* Map embed / representation */}
+              <iframe
+                title="Peta Lokasi SMAN 2 Buay Bahuga"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127170.83594042857!2d104.498877!3d-4.321855!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e3895e63836d557%3A0x6338b8163f920f26!2sBuay%20Bahuga%2C%20Way%20Kanan%20Regency%2C%20Lampung!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid"
+                className="w-full h-72 border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+
+              <div className="p-4 bg-white border-t border-slate-200 flex items-center justify-between text-xs text-slate-600">
+                <span>Titik Koordinat: Way Kanan, Lampung</span>
+                <a
+                  href="https://maps.google.com/?q=Buay+Bahuga+Way+Kanan"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold text-sky-600 hover:text-sky-700 underline"
+                >
+                  Buka di Google Maps
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { 
   Sparkles, 
   ArrowRight, 
@@ -90,11 +91,23 @@ export default function HomePage() {
                   
                   {/* Top Header Card */}
                   <div className="flex items-center justify-between border-b border-slate-100 pb-5">
-                    <div>
-                      <span className="text-xs font-bold uppercase tracking-wider text-sky-600">Profil Singkat</span>
-                      <h2 className="text-lg font-extrabold text-slate-900">SMAN 2 Buay Bahuga</h2>
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-12 h-12 shrink-0">
+                        <Image
+                          src="/logo_smanda.png"
+                          alt="Logo SMAN 2 Buay Bahuga"
+                          width={48}
+                          height={48}
+                          className="object-contain w-full h-full drop-shadow-sm"
+                          priority
+                        />
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold uppercase tracking-wider text-sky-600">Profil Singkat</span>
+                        <h2 className="text-lg font-extrabold text-slate-900">SMAN 2 Buay Bahuga</h2>
+                      </div>
                     </div>
-                    <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
+                    <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold shrink-0">
                       Aktif Beroperasi
                     </span>
                   </div>

@@ -10,7 +10,11 @@ import {
   ShieldCheck, 
   GraduationCap, 
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  BookOpen,
+  Layers,
+  Lightbulb,
+  CheckCircle2
 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -62,7 +66,7 @@ export default function TentangPage() {
         </div>
 
         {/* Visi & Misi Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div id="visi-misi" className="grid grid-cols-1 lg:grid-cols-12 gap-8 scroll-mt-24">
           
           {/* Visi */}
           <div className="lg:col-span-5 rounded-3xl bg-gradient-to-br from-sky-600 to-sky-800 text-white p-8 sm:p-10 shadow-lg space-y-6 flex flex-col justify-between">
@@ -139,6 +143,60 @@ export default function TentangPage() {
                 <div className="text-[11px] text-slate-500">{item.desc}</div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Kurikulum Merdeka */}
+        <div id="kurikulum" className="rounded-3xl bg-white border border-slate-200/80 shadow-sm p-8 sm:p-12 space-y-8 scroll-mt-24">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-sky-50 text-sky-700 text-xs font-bold uppercase tracking-wider">
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>Struktur Akademik</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                Penerapan Kurikulum Merdeka
+              </h2>
+            </div>
+            <span className="px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold w-fit">
+              Tahun Ajaran 2026/2027 Aktif
+            </span>
+          </div>
+
+          <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-4xl">
+            SMA Negeri 2 Buay Bahuga menerapkan <strong>Kurikulum Merdeka</strong> secara menyeluruh dengan pendekatan pembelajaran berpusat pada siswa (*student-centered learning*). Kurikulum ini memberikan kebebasan eksploratif bagi peserta didik untuk memilih kelompok mata pelajaran peminatan sesuai dengan bakat, potensi, serta cita-cita profesi masa depan.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-black">
+                <Layers className="w-5 h-5" />
+              </div>
+              <h3 className="font-extrabold text-slate-900 text-base">Fase E (Kelas X)</h3>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Fase penguatan fondasi mata pelajaran umum, pemetaan minat dan bakat psikologis, serta orientasi pengenalan mata pelajaran pilihan untuk jenjang berikutnya.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-black">
+                <Target className="w-5 h-5" />
+              </div>
+              <h3 className="font-extrabold text-slate-900 text-base">Fase F (Kelas XI & XII)</h3>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Pemilihan rumpun peminatan mandiri: Rumpun MIPA Terapan, Rumpun Sosial-Humaniora, dan Bahasa-Komunikasi terpadu yang dipersiapkan langsung menuju seleksi SNBP/SNBT PTN.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-black">
+                <Lightbulb className="w-5 h-5" />
+              </div>
+              <h3 className="font-extrabold text-slate-900 text-base">Kokurikuler P5</h3>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Projek Penguatan Profil Pelajar Pancasila meliputi tema Kewirausahaan Mandiri, Gaya Hidup Berkelanjutan di Lingkungan Way Kanan, dan Rekayasa Teknologi Terapan.
+              </p>
+            </div>
           </div>
         </div>
 

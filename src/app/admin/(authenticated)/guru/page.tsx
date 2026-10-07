@@ -57,6 +57,27 @@ export default function AdminGuruPage() {
 
   useEffect(() => {
     fetchTeachers();
+
+    // Supabase Realtime Subscription for teacher changes
+    const supabase = createClient();
+    const channel = supabase
+      .channel("realtime-teachers")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "teachers",
+        },
+        () => {
+          fetchTeachers();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const resetForm = () => {

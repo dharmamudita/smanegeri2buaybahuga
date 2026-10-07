@@ -22,6 +22,8 @@ export const metadata: Metadata = {
     "Formulir Pendaftaran Siswa Baru (PPDB) Online SMA Negeri 2 Buay Bahuga. Pendaftaran praktis, transparan, dan terintegrasi.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function PPDBPage() {
   let activePeriod: PPDBPeriod | null = null;
 
@@ -37,21 +39,9 @@ export default async function PPDBPage() {
 
     if (data) {
       activePeriod = data as PPDBPeriod;
-    } else {
-      // Default fallback mock if database not yet migrated
-      activePeriod = {
-        id: "mock-period-1",
-        title: "PPDB 2027/2028 - Gelombang 1",
-        academic_year: "2027/2028",
-        quota: 180,
-        start_date: new Date().toISOString(),
-        end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        is_active: true,
-        description: "Pendaftaran Siswa Baru SMA Negeri 2 Buay Bahuga Jalur Zonasi, Afirmasi, Prestasi, dan Reguler.",
-      };
     }
   } catch (err) {
-    console.error("Error fetching active period:", err);
+    console.error("Error fetching active period from database:", err);
   }
 
   return (

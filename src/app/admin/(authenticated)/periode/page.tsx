@@ -58,6 +58,27 @@ export default function AdminPeriodePage() {
 
   useEffect(() => {
     fetchPeriods();
+
+    // Supabase Realtime Subscription for wave switches & new waves
+    const supabase = createClient();
+    const channel = supabase
+      .channel("realtime-periods")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "ppdb_periods",
+        },
+        () => {
+          fetchPeriods();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   // Toggle active/inactive

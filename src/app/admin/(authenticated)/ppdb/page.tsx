@@ -62,6 +62,27 @@ export default function AdminPPDBPage() {
 
   useEffect(() => {
     fetchRegistrations();
+
+    // Supabase Realtime Subscription for live updates
+    const supabase = createClient();
+    const channel = supabase
+      .channel("realtime-registrations")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "registrations",
+        },
+        () => {
+          fetchRegistrations();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   // Filtered List

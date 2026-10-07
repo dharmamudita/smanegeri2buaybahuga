@@ -109,19 +109,28 @@ ALTER TABLE teachers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE school_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE announcements ENABLE ROW LEVEL SECURITY;
 
--- Public can read active periods, teachers, profiles, published announcements
+-- Public policies with safe DROP IF EXISTS
+DROP POLICY IF EXISTS "Public read active periods" ON ppdb_periods;
+DROP POLICY IF EXISTS "Public read active teachers" ON teachers;
+DROP POLICY IF EXISTS "Public read school profiles" ON school_profiles;
+DROP POLICY IF EXISTS "Public read published announcements" ON announcements;
+DROP POLICY IF EXISTS "Public can submit registration" ON registrations;
+DROP POLICY IF EXISTS "Public can check registration status" ON registrations;
+
 CREATE POLICY "Public read active periods" ON ppdb_periods FOR SELECT USING (true);
 CREATE POLICY "Public read active teachers" ON teachers FOR SELECT USING (is_active = true);
 CREATE POLICY "Public read school profiles" ON school_profiles FOR SELECT USING (true);
 CREATE POLICY "Public read published announcements" ON announcements FOR SELECT USING (is_published = true);
-
--- Public can insert registrations
 CREATE POLICY "Public can submit registration" ON registrations FOR INSERT WITH CHECK (true);
-
--- Public can check own registration with reg_number or nisn
 CREATE POLICY "Public can check registration status" ON registrations FOR SELECT USING (true);
 
--- Authenticated admin full access policies
+-- Authenticated admin policies with safe DROP IF EXISTS
+DROP POLICY IF EXISTS "Admin full access ppdb_periods" ON ppdb_periods;
+DROP POLICY IF EXISTS "Admin full access registrations" ON registrations;
+DROP POLICY IF EXISTS "Admin full access teachers" ON teachers;
+DROP POLICY IF EXISTS "Admin full access school_profiles" ON school_profiles;
+DROP POLICY IF EXISTS "Admin full access announcements" ON announcements;
+
 CREATE POLICY "Admin full access ppdb_periods" ON ppdb_periods FOR ALL TO authenticated USING (true);
 CREATE POLICY "Admin full access registrations" ON registrations FOR ALL TO authenticated USING (true);
 CREATE POLICY "Admin full access teachers" ON teachers FOR ALL TO authenticated USING (true);

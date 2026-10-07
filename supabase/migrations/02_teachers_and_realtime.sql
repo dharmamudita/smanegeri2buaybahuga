@@ -74,3 +74,43 @@ CREATE POLICY "Public can view photos" ON storage.objects FOR SELECT USING (buck
 CREATE POLICY "Public can upload photos" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'photos');
 CREATE POLICY "Public can update photos" ON storage.objects FOR UPDATE USING (bucket_id = 'photos');
 CREATE POLICY "Public can delete photos" ON storage.objects FOR DELETE USING (bucket_id = 'photos');
+
+-- 5. AKUN ADMINISTRATOR RESMI (EMAIL TERKONFIRMASI LANGSUNG SIAP LOGIN)
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = 'admin@sman2buaybahuga.sch.id') THEN
+    INSERT INTO auth.users (
+      id,
+      instance_id,
+      aud,
+      role,
+      email,
+      encrypted_password,
+      email_confirmed_at,
+      raw_app_meta_data,
+      raw_user_meta_data,
+      created_at,
+      updated_at
+    ) VALUES (
+      gen_random_uuid(),
+      '00000000-0000-0000-0000-000000000000',
+      'authenticated',
+      'authenticated',
+      'admin@sman2buaybahuga.sch.id',
+      crypt('AdminSmanda2027!', gen_salt('bf')),
+      now(),
+      '{"provider":"email","providers":["email"]}',
+      '{"full_name":"Administrator SMAN 2 Buay Bahuga"}',
+      now(),
+      now()
+    );
+  ELSE
+    UPDATE auth.users 
+    SET encrypted_password = crypt('AdminSmanda2027!', gen_salt('bf')),
+        email_confirmed_at = now()
+    WHERE email = 'admin@sman2buaybahuga.sch.id';
+  END IF;
+END $$;
+

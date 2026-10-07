@@ -99,7 +99,28 @@ INSERT INTO teachers (full_name, nip, role_title, subject, photo_url, order_inde
 ('Rina Kusuma Dewi, S.Pd.', '19910520 201902 2 008', 'Guru Mata Pelajaran', 'Bahasa Inggris', '/guru/guru_wanita.jpg', 9, true),
 ('Agus Pratama, S.Pd.', '19870830 201101 1 007', 'Guru Mata Pelajaran', 'Pendidikan Jasmani & Kesehatan (PJOK)', '/guru/guru_pria.jpg', 10, true),
 ('Wahyudi, S.E.', '19850612 201001 1 015', 'Kepala Tata Usaha (KTU)', 'Administrasi & Kepegawaian', '/guru/guru_pria.jpg', 11, true),
-('Sri Mulyani, A.Md.', '19900815 201602 2 011', 'Staf Tata Usaha', 'Operator Dapodik & Kesiswaan', '/guru/guru_wanita.jpg', 12, true);`;
+('Sri Mulyani, A.Md.', '19900815 201602 2 011', 'Staf Tata Usaha', 'Operator Dapodik & Kesiswaan', '/guru/guru_wanita.jpg', 12, true);
+
+-- AKUN ADMIN SUPABASE AUTH
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = 'admin@sman2buaybahuga.sch.id') THEN
+    INSERT INTO auth.users (
+      id, instance_id, aud, role, email, encrypted_password, email_confirmed_at,
+      raw_app_meta_data, raw_user_meta_data, created_at, updated_at
+    ) VALUES (
+      gen_random_uuid(), '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
+      'admin@sman2buaybahuga.sch.id', crypt('AdminSmanda2027!', gen_salt('bf')), now(),
+      '{"provider":"email","providers":["email"]}', '{"full_name":"Administrator SMAN 2 Buay Bahuga"}',
+      now(), now()
+    );
+  ELSE
+    UPDATE auth.users 
+    SET encrypted_password = crypt('AdminSmanda2027!', gen_salt('bf')), email_confirmed_at = now()
+    WHERE email = 'admin@sman2buaybahuga.sch.id';
+  END IF;
+END $$;`;
 
 export default function AdminGuruPage() {
   const [teachers, setTeachers] = useState<Teacher[]>([]);

@@ -58,6 +58,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/profil/struktur" className="hover:text-sky-400 transition-colors">
+                  Struktur Organisasi
+                </Link>
+              </li>
+              <li>
                 <Link href="/profil/guru" className="hover:text-sky-400 transition-colors">
                   Direktori Guru & Staf
                 </Link>

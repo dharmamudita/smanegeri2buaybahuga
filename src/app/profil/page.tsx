@@ -8,13 +8,14 @@ import {
   ArrowRight, 
   ShieldCheck, 
   Award,
-  Sparkles
+  Sparkles,
+  Network
 } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Profil Sekolah | SMA Negeri 2 Buay Bahuga",
   description:
-    "Profil lengkap, visi misi, jajaran dewan guru, serta sarana dan prasarana SMA Negeri 2 Buay Bahuga, Way Kanan, Lampung.",
+    "Profil lengkap, visi misi, struktur organisasi, jajaran dewan guru, serta sarana dan prasarana SMA Negeri 2 Buay Bahuga, Way Kanan, Lampung.",
 };
 
 const PROFIL_SECTIONS = [
@@ -31,6 +32,13 @@ const PROFIL_SECTIONS = [
     href: "/profil/visi-misi",
     icon: Target,
     badge: "Landasan Nilai",
+  },
+  {
+    title: "Struktur Organisasi",
+    desc: "Bagan tata kelola kepemimpinan sekolah: Kepala Sekolah, Komite, Kepala Tata Usaha, dan 4 Wakil Kepala Sekolah.",
+    href: "/profil/struktur",
+    icon: Network,
+    badge: "Bagan Kepemimpinan",
   },
   {
     title: "Guru & Tenaga Pendidik",

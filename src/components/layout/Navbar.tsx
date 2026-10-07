@@ -21,6 +21,7 @@ import {
   Phone,
   CalendarDays,
   Target,
+  Network,
 } from "lucide-react";
 
 /* ─────────────────────── navigation structure ─────────────────────── */
@@ -48,6 +49,7 @@ const NAV_ITEMS: NavItem[] = [
     children: [
       { href: "/profil/tentang", label: "Tentang Sekolah", icon: School, desc: "Sejarah dan profil institusi" },
       { href: "/profil/visi-misi", label: "Visi & Misi", icon: Target, desc: "Arah dan tujuan pendidikan" },
+      { href: "/profil/struktur", label: "Struktur Organisasi", icon: Network, desc: "Bagan kepemimpinan sekolah" },
       { href: "/profil/guru", label: "Guru & Tenaga Pendidik", icon: Users, desc: "Dewan guru dan staf pengajar" },
       { href: "/profil/fasilitas", label: "Fasilitas & Sarana", icon: Building2, desc: "Ruang kelas, lab, dan sarana" },
     ],

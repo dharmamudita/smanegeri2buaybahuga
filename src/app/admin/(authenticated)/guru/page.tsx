@@ -19,7 +19,9 @@ import {
   ExternalLink,
   Camera,
   Radio,
-  BookOpen
+  BookOpen,
+  Upload,
+  CloudUpload
 } from "lucide-react";
 import { Teacher } from "@/types/database";
 import { createClient } from "@/lib/supabase/client";
@@ -65,6 +67,10 @@ const PHOTO_PRESETS = [
 
 const SQL_MIGRATION_SNIPPET = `-- Salin dan jalankan di Supabase Dashboard -> SQL Editor:
 ALTER PUBLICATION supabase_realtime ADD TABLE teachers;
+ALTER PUBLICATION supabase_realtime ADD TABLE ppdb_periods;
+ALTER PUBLICATION supabase_realtime ADD TABLE registrations;
+ALTER PUBLICATION supabase_realtime ADD TABLE announcements;
+
 DROP POLICY IF EXISTS "Public read active teachers" ON teachers;
 DROP POLICY IF EXISTS "Admin full access teachers" ON teachers;
 DROP POLICY IF EXISTS "Allow public read teachers" ON teachers;
@@ -72,6 +78,13 @@ DROP POLICY IF EXISTS "Allow admin crud teachers" ON teachers;
 
 CREATE POLICY "Allow public read teachers" ON teachers FOR SELECT USING (true);
 CREATE POLICY "Allow admin crud teachers" ON teachers FOR ALL USING (true) WITH CHECK (true);
+
+-- BUCKET CLOUD STORAGE SUPABASE UNTUK FOTO GURU
+INSERT INTO storage.buckets (id, name, public) VALUES ('photos', 'photos', true) ON CONFLICT (id) DO NOTHING;
+DROP POLICY IF EXISTS "Public can view photos" ON storage.objects;
+DROP POLICY IF EXISTS "Public can upload photos" ON storage.objects;
+CREATE POLICY "Public can view photos" ON storage.objects FOR SELECT USING (bucket_id = 'photos');
+CREATE POLICY "Public can upload photos" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'photos');
 
 DELETE FROM teachers;
 INSERT INTO teachers (full_name, nip, role_title, subject, photo_url, order_index, is_active) VALUES
@@ -95,6 +108,8 @@ export default function AdminGuruPage() {
   const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null);
   const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [uploadSuccessNote, setUploadSuccessNote] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [showSqlModal, setShowSqlModal] = useState(false);
@@ -167,6 +182,7 @@ export default function AdminGuruPage() {
     });
     setEditingTeacher(null);
     setErrorMsg("");
+    setUploadSuccessNote("");
   };
 
   const openEditForm = (teacher: Teacher) => {
@@ -182,6 +198,53 @@ export default function AdminGuruPage() {
     });
     setShowForm(true);
     setErrorMsg("");
+    setUploadSuccessNote("");
+  };
+
+  // Upload handler dari perangkat ke Cloud Storage
+  const handleFileUpload = async (file: File) => {
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Ukuran berkas melebihi batas maksimum 5MB. Silakan pilih foto lain.");
+      return;
+    }
+
+    // Buat pratinjau lokal instan
+    const localPreview = URL.createObjectURL(file);
+    setFormData((prev) => ({ ...prev, photo_url: localPreview }));
+    setUploadingPhoto(true);
+    setUploadSuccessNote("");
+
+    try {
+      const uploadForm = new FormData();
+      uploadForm.append("file", file);
+      uploadForm.append("folder", "guru");
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: uploadForm,
+      });
+
+      const data = await res.json();
+      if (data.success && data.url) {
+        setFormData((prev) => ({ ...prev, photo_url: data.url }));
+        const providerText =
+          data.provider === "supabase_storage"
+            ? "✓ Foto berhasil diunggah ke Supabase Cloud Storage"
+            : data.provider === "cloudinary"
+            ? "✓ Foto berhasil diunggah ke Cloudinary Cloud"
+            : "✓ Foto berhasil disimpan ke Server Storage";
+        setUploadSuccessNote(providerText);
+        setTimeout(() => setUploadSuccessNote(""), 6000);
+      } else {
+        alert("Gagal mengunggah foto: " + (data.message || "Kesalahan server."));
+      }
+    } catch (err: any) {
+      alert("Gagal mengunggah foto: " + err.message);
+    } finally {
+      setUploadingPhoto(false);
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -210,7 +273,6 @@ export default function AdminGuruPage() {
       const res = await saveTeacherAction(payload);
 
       if (!res.success) {
-        // Jika ada masalah RLS, berikan saran
         if (res.message?.includes("policy") || res.message?.includes("42501")) {
           setErrorMsg(res.message + " — Silakan aktifkan izin RLS melalui menu SQL.");
           setShowSqlModal(true);
@@ -447,14 +509,14 @@ export default function AdminGuruPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            {/* Left Column: Photo Preview & Presets */}
+            {/* Left Column: Photo Preview, Upload dari Perangkat & Presets */}
             <div className="md:col-span-1 space-y-4 p-5 rounded-2xl bg-slate-50 border border-slate-200/80">
               <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wider">
                 Pas Foto Guru *
               </label>
 
               {/* Photo Preview Avatar */}
-              <div className="flex flex-col items-center justify-center p-3 text-center">
+              <div className="flex flex-col items-center justify-center p-2 text-center">
                 <div className="relative w-28 h-28 rounded-full ring-4 ring-white shadow-md overflow-hidden bg-slate-200 group">
                   {formData.photo_url ? (
                     <Image
@@ -469,16 +531,72 @@ export default function AdminGuruPage() {
                       <GraduationCap className="w-10 h-10" />
                     </div>
                   )}
+                  {uploadingPhoto && (
+                    <div className="absolute inset-0 bg-blue-900/60 backdrop-blur-2xs flex flex-col items-center justify-center text-white">
+                      <Loader2 className="w-6 h-6 animate-spin mb-1" />
+                      <span className="text-[10px] font-bold">Mengunggah...</span>
+                    </div>
+                  )}
                 </div>
                 <span className="text-[11px] font-semibold text-slate-500 mt-2">
                   Pratinjau Foto Profil
                 </span>
               </div>
 
-              {/* Preset Buttons */}
+              {/* UPLOAD LANGSUNG DARI PERANGKAT (KOMPUTER / HP) */}
               <div className="space-y-1.5">
+                <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider block">
+                  Unggah dari Perangkat (Cloud):
+                </span>
+                <label
+                  className={`w-full p-3.5 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center text-center cursor-pointer transition ${
+                    uploadingPhoto
+                      ? "bg-blue-50/70 border-blue-400"
+                      : "bg-white border-slate-300 hover:border-blue-500 hover:bg-blue-50/30 shadow-2xs"
+                  }`}
+                >
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/jpg"
+                    className="hidden"
+                    disabled={uploadingPhoto}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleFileUpload(file);
+                    }}
+                  />
+                  {uploadingPhoto ? (
+                    <div className="flex items-center gap-2 text-blue-700 py-1">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span className="text-xs font-bold">Menyimpan ke Cloud Storage...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="p-2 rounded-xl bg-blue-50 text-blue-700 mb-1">
+                        <CloudUpload className="w-4 h-4" />
+                      </div>
+                      <span className="text-xs font-bold text-slate-800">
+                        Pilih Berkas Foto
+                      </span>
+                      <span className="text-[10px] text-slate-400 mt-0.5">
+                        JPG, PNG, atau WebP (Maks. 5MB)
+                      </span>
+                    </>
+                  )}
+                </label>
+
+                {uploadSuccessNote && (
+                  <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-semibold flex items-center gap-2 animate-in fade-in">
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>{uploadSuccessNote}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Preset Buttons */}
+              <div className="space-y-1.5 pt-2 border-t border-slate-200/60">
                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
-                  Pilih Foto Preset Resmi:
+                  Atau Gunakan Foto Preset Resmi:
                 </span>
                 <div className="grid grid-cols-2 gap-1.5">
                   {PHOTO_PRESETS.map((preset) => {
@@ -487,7 +605,10 @@ export default function AdminGuruPage() {
                       <button
                         key={preset.url}
                         type="button"
-                        onClick={() => setFormData({ ...formData, photo_url: preset.url })}
+                        onClick={() => {
+                          setFormData({ ...formData, photo_url: preset.url });
+                          setUploadSuccessNote("");
+                        }}
                         className={`p-1.5 rounded-xl border text-left flex items-center gap-2 transition ${
                           isSelected
                             ? "bg-blue-50 border-blue-600 ring-2 ring-blue-100"
@@ -520,7 +641,7 @@ export default function AdminGuruPage() {
               {/* Custom Photo URL Input */}
               <div className="space-y-1 pt-2 border-t border-slate-200/60">
                 <label className="block text-[10px] font-bold text-slate-600">
-                  Atau URL Foto Kustom (Cloudinary/Web):
+                  URL Tautan Foto (Supabase/Cloudinary/Web):
                 </label>
                 <input
                   type="text"
@@ -646,7 +767,7 @@ export default function AdminGuruPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={saving}
+                  disabled={saving || uploadingPhoto}
                   className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold transition shadow-xs disabled:opacity-50"
                 >
                   {saving ? (
@@ -674,7 +795,7 @@ export default function AdminGuruPage() {
             Daftar Dewan Guru Terdaftar di Supabase
           </div>
           <div className="text-xs text-slate-500 font-medium">
-            Diperbarui secara realtime • Klik foto atau nama untuk pratinjau
+            Diperbarui secara realtime • Klik edit untuk mengganti foto atau identitas guru
           </div>
         </div>
 
@@ -799,7 +920,7 @@ export default function AdminGuruPage() {
                           <button
                             onClick={() => openEditForm(teacher)}
                             className="p-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition"
-                            title="Edit Data Guru"
+                            title="Edit Data Guru & Ganti Foto"
                           >
                             <Pencil className="w-3.5 h-3.5" />
                           </button>

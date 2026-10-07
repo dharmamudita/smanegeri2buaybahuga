@@ -1,5 +1,5 @@
 -- ==============================================================
--- MIGRATION 02: SYNC TEACHERS WITH REAL PHOTOS & ENABLE SUPABASE REALTIME
+-- MIGRATION 02: SYNC TEACHERS WITH REAL PHOTOS, STORAGE BUCKET & REALTIME
 -- Jalankan query ini di Supabase Dashboard -> SQL Editor
 -- ==============================================================
 
@@ -59,3 +59,18 @@ INSERT INTO teachers (full_name, nip, role_title, subject, photo_url, order_inde
 ('Agus Pratama, S.Pd.', '19870830 201101 1 007', 'Guru Mata Pelajaran', 'Pendidikan Jasmani & Kesehatan (PJOK)', '/guru/guru_pria.jpg', 10, true),
 ('Wahyudi, S.E.', '19850612 201001 1 015', 'Kepala Tata Usaha (KTU)', 'Administrasi & Kepegawaian', '/guru/guru_pria.jpg', 11, true),
 ('Sri Mulyani, A.Md.', '19900815 201602 2 011', 'Staf Tata Usaha', 'Operator Dapodik & Kesiswaan', '/guru/guru_wanita.jpg', 12, true);
+
+-- 4. BUCKET STORAGE SUPABASE UNTUK UNGGAH FOTO GURU (CLOUD STORAGE)
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('photos', 'photos', true)
+ON CONFLICT (id) DO NOTHING;
+
+DROP POLICY IF EXISTS "Public can view photos" ON storage.objects;
+DROP POLICY IF EXISTS "Public can upload photos" ON storage.objects;
+DROP POLICY IF EXISTS "Public can update photos" ON storage.objects;
+DROP POLICY IF EXISTS "Public can delete photos" ON storage.objects;
+
+CREATE POLICY "Public can view photos" ON storage.objects FOR SELECT USING (bucket_id = 'photos');
+CREATE POLICY "Public can upload photos" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'photos');
+CREATE POLICY "Public can update photos" ON storage.objects FOR UPDATE USING (bucket_id = 'photos');
+CREATE POLICY "Public can delete photos" ON storage.objects FOR DELETE USING (bucket_id = 'photos');

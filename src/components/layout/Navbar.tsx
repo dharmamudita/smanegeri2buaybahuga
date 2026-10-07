@@ -46,25 +46,25 @@ const NAV_ITEMS: NavItem[] = [
   {
     label: "Profil",
     children: [
-      { href: "/tentang", label: "Tentang Sekolah", icon: School, desc: "Sejarah dan profil institusi" },
-      { href: "/tentang#visi-misi", label: "Visi & Misi", icon: Target, desc: "Arah dan tujuan pendidikan" },
-      { href: "/guru", label: "Guru & Tenaga Pendidik", icon: Users, desc: "Dewan guru dan staf pengajar" },
-      { href: "/fasilitas", label: "Fasilitas & Sarana", icon: Building2, desc: "Ruang kelas, lab, dan sarana" },
+      { href: "/profil/tentang", label: "Tentang Sekolah", icon: School, desc: "Sejarah dan profil institusi" },
+      { href: "/profil/visi-misi", label: "Visi & Misi", icon: Target, desc: "Arah dan tujuan pendidikan" },
+      { href: "/profil/guru", label: "Guru & Tenaga Pendidik", icon: Users, desc: "Dewan guru dan staf pengajar" },
+      { href: "/profil/fasilitas", label: "Fasilitas & Sarana", icon: Building2, desc: "Ruang kelas, lab, dan sarana" },
     ],
   },
   {
     label: "Akademik",
     children: [
-      { href: "/tentang#kurikulum", label: "Kurikulum Merdeka", icon: BookOpen, desc: "Program pembelajaran aktif" },
-      { href: "/fasilitas#ekstrakurikuler", label: "Ekstrakurikuler", icon: Compass, desc: "Pengembangan minat & bakat" },
-      { href: "/pengumuman", label: "Prestasi & Agenda", icon: Trophy, desc: "Pencapaian siswa dan agenda" },
+      { href: "/akademik/kurikulum", label: "Kurikulum Merdeka", icon: BookOpen, desc: "Program pembelajaran aktif" },
+      { href: "/akademik/ekstrakurikuler", label: "Ekstrakurikuler", icon: Compass, desc: "Pengembangan minat & bakat" },
+      { href: "/akademik/prestasi", label: "Prestasi Siswa", icon: Trophy, desc: "Pencapaian dan kejuaraan siswa" },
     ],
   },
   {
     label: "Informasi",
     children: [
-      { href: "/pengumuman", label: "Pengumuman & Berita", icon: FileText, desc: "Warta dan publikasi resmi" },
-      { href: "/#kontak", label: "Kontak & Lokasi", icon: Phone, desc: "Alamat dan kontak helpdesk" },
+      { href: "/informasi/pengumuman", label: "Pengumuman & Berita", icon: FileText, desc: "Warta dan publikasi resmi" },
+      { href: "/informasi/kontak", label: "Kontak & Lokasi", icon: Phone, desc: "Alamat dan kontak helpdesk" },
     ],
   },
   {
@@ -72,8 +72,8 @@ const NAV_ITEMS: NavItem[] = [
     children: [
       { href: "/ppdb", label: "Formulir PPDB Online", icon: Sparkles, desc: "Pendaftaran calon siswa baru" },
       { href: "/ppdb/cek-status", label: "Cek Status Berkas", icon: Search, desc: "Pantau verifikasi pendaftaran" },
-      { href: "/ppdb#syarat", label: "Syarat & Dokumen", icon: FileText, desc: "Persyaratan berkas PPDB" },
-      { href: "/ppdb#jadwal", label: "Jadwal Gelombang", icon: CalendarDays, desc: "Waktu dan kuota seleksi" },
+      { href: "/ppdb/syarat", label: "Syarat & Dokumen", icon: FileText, desc: "Persyaratan berkas PPDB" },
+      { href: "/ppdb/jadwal", label: "Jadwal Gelombang", icon: CalendarDays, desc: "Waktu dan kuota seleksi" },
     ],
   },
 ];

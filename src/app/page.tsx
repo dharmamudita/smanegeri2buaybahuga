@@ -314,18 +314,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. KEUNGGULAN SEKOLAH */}
+      {/* 5. STANDAR MUTU & LINGKUNGAN PENDIDIKAN */}
       <section className="bg-slate-100/70 py-20 border-y border-slate-200/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-3 mb-14">
             <span className="text-xs font-bold text-sky-600 uppercase tracking-widest bg-sky-100 px-3 py-1 rounded-full">
-              Fasilitas & Program Unggulan
+              Pilar Keunggulan Institusional
             </span>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900">
-              Mengapa Memilih SMAN 2 Buay Bahuga?
+              Standar Mutu & Lingkungan Pendidikan
             </h2>
             <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto">
-              Didukung sarana prasarana representatif dan tenaga pengajar profesional untuk kenyamanan belajar siswa.
+              Komitmen SMA Negeri 2 Buay Bahuga dalam menghadirkan ekosistem pembelajaran yang kondusif, berorientasi riset, dan adaptif terhadap transformasi digital.
             </p>
           </div>
 
@@ -336,7 +336,7 @@ export default function HomePage() {
               </div>
               <h3 className="text-lg font-bold text-slate-900">Laboratorium Komputer & CBT</h3>
               <p className="text-sm text-slate-600 leading-relaxed">
-                Dilengkapi puluhan perangkat PC modern dengan koneksi internet cepat untuk asesmen berbasis komputer dan literasi digital.
+                Infrastruktur jaringan terpadu dengan puluhan workstation modern guna mendukung Asesmen Nasional Berbasis Komputer (ANBK) serta literasi teknologi informasi.
               </p>
             </div>
 
@@ -344,9 +344,9 @@ export default function HomePage() {
               <div className="w-12 h-12 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center">
                 <BookOpen className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">Perpustakaan & Pojok Baca</h3>
+              <h3 className="text-lg font-bold text-slate-900">Perpustakaan & Pusat Sumber Belajar</h3>
               <p className="text-sm text-slate-600 leading-relaxed">
-                Koleksi ribuan buku pelajaran, referensi ilmiah, serta buku fiksi penunjang minat baca siswa dalam suasana tenang dan nyaman.
+                Pusat referensi ilmiah terintegrasi yang menghimpun ribuan literatur akademik, jurnal, serta media pengayaan guna membudayakan literasi riset peserta didik.
               </p>
             </div>
 
@@ -354,36 +354,36 @@ export default function HomePage() {
               <div className="w-12 h-12 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center">
                 <Award className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">Bimbingan Karir & PTN</h3>
+              <h3 className="text-lg font-bold text-slate-900">Bimbingan Studi Lanjut & PTN</h3>
               <p className="text-sm text-slate-600 leading-relaxed">
-                Pendampingan intensif bagi siswa kelas XII untuk menembus Perguruan Tinggi Negeri (PTN) dan kedinasan melalui jalur prestasi.
+                Program pembinaan intensif dan konsultasi karir terstruktur untuk mempersiapkan lulusan menembus Perguruan Tinggi Negeri (PTN) dan kedinasan nasional.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 6. CALL TO ACTION BANNER */}
+      {/* 6. CALL TO ACTION: LAYANAN PPDB RESMI */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="rounded-3xl bg-gradient-to-r from-sky-600 via-sky-500 to-cyan-500 p-8 sm:p-14 text-white shadow-xl shadow-sky-500/20 text-center space-y-6">
           <h2 className="text-2xl sm:text-4xl font-extrabold max-w-2xl mx-auto leading-tight">
-            Siap Menjadi Bagian Dari Keluarga Besar SMAN 2 Buay Bahuga?
+            Layanan Penerimaan Peserta Didik Baru (PPDB) Daring
           </h2>
-          <p className="text-sm sm:text-base text-sky-100 max-w-xl mx-auto leading-relaxed">
-            Daftarkan diri Anda sekarang pada periode PPDB yang sedang dibuka. Kuota penerimaan terbatas untuk tiap gelombang.
+          <p className="text-sm sm:text-base text-sky-100 max-w-2xl mx-auto leading-relaxed">
+            Portal resmi pendaftaran calon peserta didik baru SMA Negeri 2 Buay Bahuga tahun ajaran 2027/2028 dilaksanakan secara transparan, akuntabel, dan bebas biaya registrasi.
           </p>
           <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/ppdb"
               className="px-8 py-4 rounded-2xl bg-white text-sky-700 font-extrabold text-base shadow-md hover:bg-sky-50 active:scale-95 transition"
             >
-              Isi Formulir Pendaftaran
+              Akses Formulir PPDB Online
             </Link>
             <Link
-              href="/tentang"
+              href="/ppdb/syarat"
               className="px-6 py-4 rounded-2xl bg-sky-700/60 hover:bg-sky-700 text-white font-bold text-base transition border border-sky-400/40"
             >
-              Jelajahi Profil Sekolah
+              Petunjuk & Syarat Pendaftaran
             </Link>
           </div>
         </div>

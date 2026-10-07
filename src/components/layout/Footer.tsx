@@ -53,22 +53,22 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/tentang" className="hover:text-sky-400 transition-colors">
+                <Link href="/profil/tentang" className="hover:text-sky-400 transition-colors">
                   Profil & Visi Misi
                 </Link>
               </li>
               <li>
-                <Link href="/guru" className="hover:text-sky-400 transition-colors">
+                <Link href="/profil/guru" className="hover:text-sky-400 transition-colors">
                   Direktori Guru & Staf
                 </Link>
               </li>
               <li>
-                <Link href="/fasilitas" className="hover:text-sky-400 transition-colors">
-                  Fasilitas & Ekstrakurikuler
+                <Link href="/profil/fasilitas" className="hover:text-sky-400 transition-colors">
+                  Fasilitas & Sarana
                 </Link>
               </li>
               <li>
-                <Link href="/pengumuman" className="hover:text-sky-400 transition-colors">
+                <Link href="/informasi/pengumuman" className="hover:text-sky-400 transition-colors">
                   Pengumuman & Agenda
                 </Link>
               </li>
@@ -93,12 +93,12 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/ppdb#jadwal" className="hover:text-sky-400 transition-colors">
+                <Link href="/ppdb/jadwal" className="hover:text-sky-400 transition-colors">
                   Jadwal & Kuota Gelombang
                 </Link>
               </li>
               <li>
-                <Link href="/ppdb#syarat" className="hover:text-sky-400 transition-colors">
+                <Link href="/ppdb/syarat" className="hover:text-sky-400 transition-colors">
                   Syarat Dokumen Pendaftaran
                 </Link>
               </li>

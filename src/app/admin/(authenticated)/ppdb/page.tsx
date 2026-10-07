@@ -127,6 +127,69 @@ export default function AdminPPDBPage() {
     }
   };
 
+  // Handle CSV Export
+  const handleExportCSV = () => {
+    if (filteredList.length === 0) {
+      alert("Tidak ada data calon siswa untuk diekspor.");
+      return;
+    }
+
+    const headers = [
+      "No. Registrasi",
+      "Jalur Pendaftaran",
+      "Nama Lengkap Siswa",
+      "NISN",
+      "NIK",
+      "Jenis Kelamin",
+      "Tempat Lahir",
+      "Tanggal Lahir",
+      "Agama",
+      "Asal Sekolah",
+      "No. WhatsApp Siswa",
+      "Nama Orang Tua/Wali",
+      "No. WhatsApp Orang Tua",
+      "Alamat Lengkap",
+      "Status Verifikasi",
+      "URL Pas Foto",
+      "URL Kartu Keluarga",
+      "URL SKL Ijazah",
+      "Waktu Mendaftar",
+    ];
+
+    const rows = filteredList.map((r) => [
+      `"${r.reg_number}"`,
+      `"${getTrackLabel(r.registration_track)}"`,
+      `"${r.full_name.replace(/"/g, '""')}"`,
+      `'${r.nisn}`,
+      `'${r.nik}`,
+      `"${r.gender}"`,
+      `"${r.birth_place || ""}"`,
+      `"${r.birth_date || ""}"`,
+      `"${r.religion || ""}"`,
+      `"${(r.school_origin || "").replace(/"/g, '""')}"`,
+      `'${r.phone_number || ""}`,
+      `"${(r.parent_name || "").replace(/"/g, '""')}"`,
+      `'${r.parent_phone || ""}`,
+      `"${(r.address || "").replace(/"/g, '""')}"`,
+      `"${getStatusBadge(r.status).label}"`,
+      `"${r.document_urls?.photo || ""}"`,
+      `"${r.document_urls?.kk || ""}"`,
+      `"${r.document_urls?.skl || ""}"`,
+      `"${formatDateTime(r.created_at)}"`,
+    ]);
+
+    const csvContent = "\uFEFF" + [headers.join(";"), ...rows.map((row) => row.join(";"))].join("\r\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `Rekap_PPDB_SMAN2_BuayBahuga_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="p-6 sm:p-10 space-y-6 max-w-7xl mx-auto">
       
@@ -141,13 +204,23 @@ export default function AdminPPDBPage() {
           </p>
         </div>
 
-        <button
-          onClick={fetchRegistrations}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition border border-slate-200 shadow-2xs self-start sm:self-auto"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin text-blue-600" : "text-slate-500"}`} />
-          <span>Muat Ulang Data</span>
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <button
+            onClick={fetchRegistrations}
+            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition border border-slate-200 shadow-2xs"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin text-blue-600" : "text-slate-500"}`} />
+            <span>Muat Ulang</span>
+          </button>
+          
+          <button
+            onClick={handleExportCSV}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs"
+          >
+            <Download className="w-4 h-4" />
+            <span>Ekspor ke Excel / CSV</span>
+          </button>
+        </div>
       </div>
 
       {/* Filter and Search Bar */}

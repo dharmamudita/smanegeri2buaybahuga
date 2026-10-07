@@ -148,7 +148,154 @@ export default function AdminPPDBPage() {
     }
   };
 
-  // Handle CSV Export
+  // 1. Ekspor ke Excel (.xls) dengan kop sekolah resmi, styling tabel rapi, dan proteksi format teks NISN/NIK
+  const handleExportExcel = () => {
+    if (filteredList.length === 0) {
+      alert("Tidak ada data calon siswa untuk diekspor.");
+      return;
+    }
+
+    const dateStr = new Date().toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    const timeStr = new Date().toLocaleTimeString("id-ID", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    const rowsHtml = filteredList
+      .map((r, idx) => {
+        const statusBadge = getStatusBadge(r.status);
+        const statusBg =
+          r.status === "verified"
+            ? "#dcfce7"
+            : r.status === "rejected"
+            ? "#ffe4e6"
+            : "#fef9c3";
+        const statusTextColor =
+          r.status === "verified"
+            ? "#15803d"
+            : r.status === "rejected"
+            ? "#be123c"
+            : "#a16207";
+
+        const photoLink = r.document_urls?.photo
+          ? `<a href="${r.document_urls.photo}" target="_blank" style="color:#00407d; font-weight:bold;">Lihat Foto</a>`
+          : "-";
+        const kkLink = r.document_urls?.kk
+          ? `<a href="${r.document_urls.kk}" target="_blank" style="color:#00407d; font-weight:bold;">Lihat KK</a>`
+          : "-";
+        const sklLink = r.document_urls?.skl
+          ? `<a href="${r.document_urls.skl}" target="_blank" style="color:#00407d; font-weight:bold;">Lihat SKL</a>`
+          : "-";
+
+        return `
+          <tr>
+            <td style="text-align:center; padding:8px; border:1px solid #cbd5e1;">${idx + 1}</td>
+            <td style="text-align:center; padding:8px; border:1px solid #cbd5e1; font-weight:bold; color:#00407d;">${r.reg_number}</td>
+            <td style="padding:8px; border:1px solid #cbd5e1; font-weight:bold;">${r.full_name}</td>
+            <td style="text-align:center; padding:8px; border:1px solid #cbd5e1; mso-number-format:'\\@';">${r.nisn}</td>
+            <td style="text-align:center; padding:8px; border:1px solid #cbd5e1; mso-number-format:'\\@';">${r.nik}</td>
+            <td style="text-align:center; padding:8px; border:1px solid #cbd5e1;">${r.gender}</td>
+            <td style="padding:8px; border:1px solid #cbd5e1;">${getTrackLabel(r.registration_track)}</td>
+            <td style="padding:8px; border:1px solid #cbd5e1;">${r.school_origin || "-"}</td>
+            <td style="padding:8px; border:1px solid #cbd5e1;">${r.birth_place || "-"}, ${r.birth_date ? formatDate(r.birth_date) : "-"}</td>
+            <td style="text-align:center; padding:8px; border:1px solid #cbd5e1;">${r.religion || "-"}</td>
+            <td style="text-align:center; padding:8px; border:1px solid #cbd5e1; mso-number-format:'\\@';">${r.phone_number || "-"}</td>
+            <td style="padding:8px; border:1px solid #cbd5e1;">${r.parent_name || "-"}</td>
+            <td style="text-align:center; padding:8px; border:1px solid #cbd5e1; mso-number-format:'\\@';">${r.parent_phone || "-"}</td>
+            <td style="padding:8px; border:1px solid #cbd5e1;">${r.address || "-"}</td>
+            <td style="text-align:center; padding:8px; border:1px solid #cbd5e1; background-color:${statusBg}; color:${statusTextColor}; font-weight:bold;">
+              ${statusBadge.label}
+            </td>
+            <td style="text-align:center; padding:8px; border:1px solid #cbd5e1;">${photoLink}</td>
+            <td style="text-align:center; padding:8px; border:1px solid #cbd5e1;">${kkLink}</td>
+            <td style="text-align:center; padding:8px; border:1px solid #cbd5e1;">${sklLink}</td>
+            <td style="text-align:center; padding:8px; border:1px solid #cbd5e1; font-size:11px;">${formatDateTime(r.created_at)}</td>
+          </tr>
+        `;
+      })
+      .join("");
+
+    const excelHtml = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+      <head>
+        <!--[if gte mso 9]>
+        <xml>
+          <x:ExcelWorkbook>
+            <x:ExcelWorksheets>
+              <x:ExcelWorksheet>
+                <x:Name>Rekap PPDB SMANDA</x:Name>
+                <x:WorksheetOptions>
+                  <x:DisplayGridlines/>
+                </x:WorksheetOptions>
+              </x:ExcelWorksheet>
+            </x:ExcelWorksheets>
+          </x:ExcelWorkbook>
+        </xml>
+        <![endif]-->
+        <meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8"/>
+        <style>
+          body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; font-size: 12px; }
+          table { border-collapse: collapse; width: 100%; }
+          th { background-color: #00407d; color: #ffffff; padding: 10px 8px; font-weight: bold; text-align: center; border: 1px solid #002d59; }
+          td { vertical-align: middle; }
+        </style>
+      </head>
+      <body>
+        <div style="text-align:center; margin-bottom: 16px;">
+          <h2 style="margin:0; font-size:15px; color:#00407d;">PEMERINTAH PROVINSI LAMPUNG - DINAS PENDIDIKAN DAN KEBUDAYAAN</h2>
+          <h1 style="margin:4px 0; font-size:18px; color:#00407d;">SMA NEGERI 2 BUAY BAHUGA</h1>
+          <h3 style="margin:0; font-size:13px; font-weight:bold; color:#334155;">LAPORAN REKAPITULASI PENDAFTARAN PESERTA DIDIK BARU (PPDB)</h3>
+          <p style="margin:4px 0 16px 0; font-size:11px; color:#64748b;">Tanggal Unduh: ${dateStr} pukul ${timeStr} WIB • Total: ${filteredList.length} Calon Siswa</p>
+        </div>
+
+        <table border="1">
+          <thead>
+            <tr>
+              <th style="width:40px;">No</th>
+              <th style="width:130px;">No. Registrasi</th>
+              <th style="width:200px;">Nama Lengkap Siswa</th>
+              <th style="width:120px;">NISN</th>
+              <th style="width:160px;">NIK</th>
+              <th style="width:90px;">L/P</th>
+              <th style="width:120px;">Jalur</th>
+              <th style="width:180px;">Asal Sekolah</th>
+              <th style="width:180px;">Tempat, Tanggal Lahir</th>
+              <th style="width:90px;">Agama</th>
+              <th style="width:130px;">No. WA Siswa</th>
+              <th style="width:160px;">Nama Orang Tua</th>
+              <th style="width:130px;">No. WA Orang Tua</th>
+              <th style="width:250px;">Alamat Lengkap</th>
+              <th style="width:130px;">Status Verifikasi</th>
+              <th style="width:100px;">Pas Foto</th>
+              <th style="width:100px;">Kartu Keluarga</th>
+              <th style="width:100px;">SKL / Ijazah</th>
+              <th style="width:140px;">Waktu Mendaftar</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob([excelHtml], { type: "application/vnd.ms-excel;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `Rekap_PPDB_SMAN2_BuayBahuga_${new Date().toISOString().slice(0, 10)}.xls`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  // 2. Ekspor ke CSV (.csv) Standar UTF-8 dengan pemisah rapi
   const handleExportCSV = () => {
     if (filteredList.length === 0) {
       alert("Tidak ada data calon siswa untuk diekspor.");
@@ -156,6 +303,7 @@ export default function AdminPPDBPage() {
     }
 
     const headers = [
+      "No",
       "No. Registrasi",
       "Jalur Pendaftaran",
       "Nama Lengkap Siswa",
@@ -177,20 +325,21 @@ export default function AdminPPDBPage() {
       "Waktu Mendaftar",
     ];
 
-    const rows = filteredList.map((r) => [
+    const rows = filteredList.map((r, idx) => [
+      idx + 1,
       `"${r.reg_number}"`,
       `"${getTrackLabel(r.registration_track)}"`,
       `"${r.full_name.replace(/"/g, '""')}"`,
-      `'${r.nisn}`,
-      `'${r.nik}`,
+      `="${r.nisn}"`,
+      `="${r.nik}"`,
       `"${r.gender}"`,
       `"${r.birth_place || ""}"`,
       `"${r.birth_date || ""}"`,
       `"${r.religion || ""}"`,
       `"${(r.school_origin || "").replace(/"/g, '""')}"`,
-      `'${r.phone_number || ""}`,
+      `="${r.phone_number || ""}"`,
       `"${(r.parent_name || "").replace(/"/g, '""')}"`,
-      `'${r.parent_phone || ""}`,
+      `="${r.parent_phone || ""}"`,
       `"${(r.address || "").replace(/"/g, '""')}"`,
       `"${getStatusBadge(r.status).label}"`,
       `"${r.document_urls?.photo || ""}"`,
@@ -199,7 +348,8 @@ export default function AdminPPDBPage() {
       `"${formatDateTime(r.created_at)}"`,
     ]);
 
-    const csvContent = "\uFEFF" + [headers.join(";"), ...rows.map((row) => row.join(";"))].join("\r\n");
+    // Format UTF-8 BOM + sep=; untuk kompatibilitas otomatis di Excel & Google Sheets
+    const csvContent = "\uFEFFsep=;\r\n" + [headers.join(";"), ...rows.map((row) => row.join(";"))].join("\r\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -225,21 +375,32 @@ export default function AdminPPDBPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-auto">
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
           <button
             onClick={fetchRegistrations}
             className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition border border-slate-200 shadow-2xs"
+            title="Muat ulang data live"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin text-blue-600" : "text-slate-500"}`} />
             <span>Muat Ulang</span>
           </button>
           
           <button
-            onClick={handleExportCSV}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs"
+            onClick={handleExportExcel}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition shadow-xs"
+            title="Unduh format spreadsheet Excel resmi dengan kop dan styling rapi"
           >
-            <Download className="w-4 h-4" />
-            <span>Ekspor ke Excel / CSV</span>
+            <FileSpreadsheet className="w-4 h-4" />
+            <span>Ekspor Excel (.xls)</span>
+          </button>
+
+          <button
+            onClick={handleExportCSV}
+            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold transition shadow-2xs"
+            title="Unduh format data mentah CSV untuk integrasi/Google Sheets"
+          >
+            <Download className="w-4 h-4 text-slate-500" />
+            <span>CSV</span>
           </button>
         </div>
       </div>

@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { appendRegistrationToSheet } from "@/lib/google-sheets";
 import { PPDBStatus, Registration, Teacher } from "@/types/database";
 
@@ -53,7 +53,7 @@ export async function logoutAdmin() {
 
 export async function togglePeriodActive(periodId: string, currentStatus: boolean) {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     // If activating this period, deactivate all others first to ensure single active wave
     if (!currentStatus) {
@@ -87,7 +87,7 @@ export async function updateRegistrationStatus(
   adminNotes?: string
 ) {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     const { error } = await supabase
       .from("registrations")
@@ -112,7 +112,7 @@ export async function updateRegistrationStatus(
 
 export async function forceSyncToGoogleSheets(registrationId: string) {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     const { data: reg, error } = await supabase
       .from("registrations")
@@ -164,7 +164,7 @@ export async function saveTeacherAction(data: {
   is_active: boolean;
 }) {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     const record = {
       full_name: data.full_name.trim(),
@@ -207,7 +207,7 @@ export async function saveTeacherAction(data: {
 
 export async function deleteTeacherAction(teacherId: string) {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
     const { error } = await supabase
       .from("teachers")
       .delete()
@@ -227,7 +227,7 @@ export async function deleteTeacherAction(teacherId: string) {
 
 export async function toggleTeacherActiveAction(teacherId: string, newStatus: boolean) {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
     const { error } = await supabase
       .from("teachers")
       .update({ is_active: newStatus })
@@ -247,7 +247,7 @@ export async function toggleTeacherActiveAction(teacherId: string, newStatus: bo
 
 export async function seedTeachersToSupabaseAction() {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     const officialTeachers = [
       {

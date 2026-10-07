@@ -47,63 +47,6 @@ function getInitials(name: string): string {
   return "GR";
 }
 
-const SQL_MIGRATION_SNIPPET = `-- Salin dan jalankan di Supabase Dashboard -> SQL Editor:
-ALTER PUBLICATION supabase_realtime ADD TABLE teachers;
-ALTER PUBLICATION supabase_realtime ADD TABLE ppdb_periods;
-ALTER PUBLICATION supabase_realtime ADD TABLE registrations;
-ALTER PUBLICATION supabase_realtime ADD TABLE announcements;
-
-DROP POLICY IF EXISTS "Public read active teachers" ON teachers;
-DROP POLICY IF EXISTS "Admin full access teachers" ON teachers;
-DROP POLICY IF EXISTS "Allow public read teachers" ON teachers;
-DROP POLICY IF EXISTS "Allow admin crud teachers" ON teachers;
-
-CREATE POLICY "Allow public read teachers" ON teachers FOR SELECT USING (true);
-CREATE POLICY "Allow admin crud teachers" ON teachers FOR ALL USING (true) WITH CHECK (true);
-
--- BUCKET CLOUD STORAGE SUPABASE UNTUK FOTO GURU
-INSERT INTO storage.buckets (id, name, public) VALUES ('photos', 'photos', true) ON CONFLICT (id) DO NOTHING;
-DROP POLICY IF EXISTS "Public can view photos" ON storage.objects;
-DROP POLICY IF EXISTS "Public can upload photos" ON storage.objects;
-CREATE POLICY "Public can view photos" ON storage.objects FOR SELECT USING (bucket_id = 'photos');
-CREATE POLICY "Public can upload photos" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'photos');
-
-DELETE FROM teachers;
-INSERT INTO teachers (full_name, nip, role_title, subject, photo_url, order_index, is_active) VALUES
-('Apriyani, S.Si., M.M.Pd.', '19780512 200501 2 008', 'Kepala Sekolah', 'Pimpinan Satuan Pendidikan', NULL, 1, true),
-('Bambang Irawan, S.Pd., M.Pd.', '19820315 200801 1 012', 'Wakil Kepala Sekolah Bid. Kurikulum', 'Matematika Peminatan', NULL, 2, true),
-('Siti Rahmawati, S.Pd.', '19840722 200902 2 005', 'Wakil Kepala Sekolah Bid. Kesiswaan', 'Bahasa Indonesia', NULL, 3, true),
-('Ahmad Fauzi, S.Pd.', '19801105 200604 1 009', 'Wakil Kepala Sekolah Bid. Sarpras', 'Fisika & Teknologi Informasi', NULL, 4, true),
-('Nurul Hidayah, S.Sos.', '19860918 201101 2 014', 'Wakil Kepala Sekolah Bid. Humas', 'Sosiologi', NULL, 5, true),
-('Dedi Setiawan, S.Pd., Kons.', '19881203 201402 1 003', 'Guru Bimbingan Konseling (BK)', 'Layanan Konseling Siswa', NULL, 6, true),
-('Dra. Endang Sulastri', '19750410 200003 2 004', 'Guru Mata Pelajaran', 'Biologi', NULL, 7, true),
-('Hendri Saputra, S.Pd.', '19890214 201503 1 002', 'Guru Mata Pelajaran', 'Kimia', NULL, 8, true),
-('Rina Kusuma Dewi, S.Pd.', '19910520 201902 2 008', 'Guru Mata Pelajaran', 'Bahasa Inggris', NULL, 9, true),
-('Agus Pratama, S.Pd.', '19870830 201101 1 007', 'Guru Mata Pelajaran', 'Pendidikan Jasmani & Kesehatan (PJOK)', NULL, 10, true),
-('Wahyudi, S.E.', '19850612 201001 1 015', 'Kepala Tata Usaha (KTU)', 'Administrasi & Kepegawaian', NULL, 11, true),
-('Sri Mulyani, A.Md.', '19900815 201602 2 011', 'Staf Tata Usaha', 'Operator Dapodik & Kesiswaan', NULL, 12, true);
-
--- AKUN ADMIN SUPABASE AUTH
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-DO $$
-BEGIN
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = 'admin@sman2buaybahuga.sch.id') THEN
-    INSERT INTO auth.users (
-      id, instance_id, aud, role, email, encrypted_password, email_confirmed_at,
-      raw_app_meta_data, raw_user_meta_data, created_at, updated_at
-    ) VALUES (
-      gen_random_uuid(), '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
-      'admin@sman2buaybahuga.sch.id', crypt('AdminSmanda2027!', gen_salt('bf')), now(),
-      '{"provider":"email","providers":["email"]}', '{"full_name":"Administrator SMAN 2 Buay Bahuga"}',
-      now(), now()
-    );
-  ELSE
-    UPDATE auth.users 
-    SET encrypted_password = crypt('AdminSmanda2027!', gen_salt('bf')), email_confirmed_at = now()
-    WHERE email = 'admin@sman2buaybahuga.sch.id';
-  END IF;
-END $$;`;
-
 export default function AdminGuruPage() {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
@@ -115,8 +58,6 @@ export default function AdminGuruPage() {
   const [uploadSuccessNote, setUploadSuccessNote] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
-  const [showSqlModal, setShowSqlModal] = useState(false);
-  const [copiedSql, setCopiedSql] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -276,12 +217,7 @@ export default function AdminGuruPage() {
       const res = await saveTeacherAction(payload);
 
       if (!res.success) {
-        if (res.message?.includes("policy") || res.message?.includes("42501")) {
-          setErrorMsg(res.message + " — Silakan aktifkan izin RLS melalui menu SQL.");
-          setShowSqlModal(true);
-        } else {
-          setErrorMsg(res.message || "Gagal menyimpan data guru.");
-        }
+        setErrorMsg(res.message || "Gagal menyimpan data guru.");
         return;
       }
 
@@ -346,21 +282,12 @@ export default function AdminGuruPage() {
         fetchTeachers();
       } else {
         setErrorMsg(res.message || "Gagal sinkronisasi data.");
-        if (res.message?.includes("policy") || res.message?.includes("42501")) {
-          setShowSqlModal(true);
-        }
       }
     } catch (err: any) {
       setErrorMsg(err.message || "Gagal sinkronisasi.");
     } finally {
       setSeeding(false);
     }
-  };
-
-  const handleCopySql = () => {
-    navigator.clipboard.writeText(SQL_MIGRATION_SNIPPET);
-    setCopiedSql(true);
-    setTimeout(() => setCopiedSql(false), 2500);
   };
 
   return (
@@ -385,15 +312,6 @@ export default function AdminGuruPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
-          <button
-            onClick={() => setShowSqlModal(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold transition shadow-2xs"
-            title="Bantuan SQL Supabase"
-          >
-            <Database className="w-3.5 h-3.5 text-blue-600" />
-            <span>Panduan SQL</span>
-          </button>
-          
           <button
             onClick={fetchTeachers}
             className="p-2 rounded-xl bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 transition shadow-2xs"
@@ -474,12 +392,6 @@ export default function AdminGuruPage() {
                   <span>Masukkan 12 Guru Resmi ke Supabase</span>
                 </>
               )}
-            </button>
-            <button
-              onClick={() => setShowSqlModal(true)}
-              className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 transition"
-            >
-              Jalankan via SQL Editor
             </button>
           </div>
         </div>
@@ -927,85 +839,6 @@ export default function AdminGuruPage() {
           </table>
         </div>
       </div>
-
-      {/* SQL Migration & Supabase Help Modal */}
-      {showSqlModal && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-2xl w-full p-6 sm:p-8 space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-blue-50 text-blue-600">
-                  <Database className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-base font-extrabold text-slate-900">
-                    Panduan Memasukkan 12 Guru ke Supabase
-                  </h3>
-                  <p className="text-xs text-slate-500">
-                    Bila tombol sinkronisasi terhambat oleh izin RLS Supabase, jalankan query ini sekali di SQL Editor.
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowSqlModal(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="space-y-3 text-xs text-slate-600">
-              <p className="font-semibold text-slate-800">
-                Langkah-langkah cepat di Dashboard Supabase:
-              </p>
-              <ol className="list-decimal pl-5 space-y-1.5 font-medium">
-                <li>Buka dashboard Supabase project Anda (<span className="font-mono text-blue-600">dggoldhvnvmwamjxnxrb</span>).</li>
-                <li>Pilih menu <strong>SQL Editor</strong> di bilah navigasi kiri.</li>
-                <li>Klik tombol <strong>&ldquo;New query&rdquo;</strong>, lalu salin dan tempel query SQL di bawah ini.</li>
-                <li>Klik tombol hijau <strong>&ldquo;Run&rdquo;</strong> (atau tekan Ctrl+Enter).</li>
-                <li>Selesai! Seluruh 12 data guru beserta pas fotonya langsung terisi & realtime aktif.</li>
-              </ol>
-            </div>
-
-            {/* SQL Code Block */}
-            <div className="relative rounded-2xl bg-slate-900 text-slate-200 p-4 font-mono text-[11px] leading-relaxed overflow-x-auto max-h-60 border border-slate-800">
-              <pre>{SQL_MIGRATION_SNIPPET}</pre>
-            </div>
-
-            <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-              <span className="text-[11px] text-slate-400">
-                File juga tersimpan di <span className="font-mono text-slate-600">supabase/migrations/02_teachers_and_realtime.sql</span>
-              </span>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handleCopySql}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold transition shadow-xs"
-                >
-                  {copiedSql ? (
-                    <>
-                      <CheckCircle className="w-3.5 h-3.5 text-emerald-300" />
-                      <span>Berhasil Disalin!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5" />
-                      <span>Salin Query SQL</span>
-                    </>
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowSqlModal(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 transition"
-                >
-                  Tutup
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
     </div>
   );

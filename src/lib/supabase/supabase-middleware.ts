@@ -26,23 +26,26 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  // Check auth user
+  // Check auth user & session cookie
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  const adminSessionCookie = request.cookies.get("smanda_admin_session")?.value;
+  const isAuthenticated = !!user || adminSessionCookie === "authenticated";
 
   // Protect /admin routes (except /admin/login)
   const isAuthRoute = request.nextUrl.pathname === "/admin/login";
   const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
 
-  if (isAdminRoute && !isAuthRoute && !user) {
+  if (isAdminRoute && !isAuthRoute && !isAuthenticated) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";
     url.searchParams.set("redirectTo", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
 
-  if (isAuthRoute && user) {
+  if (isAuthRoute && isAuthenticated) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/dashboard";
     return NextResponse.redirect(url);

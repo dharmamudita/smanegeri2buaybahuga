@@ -77,13 +77,9 @@ export default function Footer() {
                   Pengumuman & Agenda
                 </Link>
               </li>
-              <li className="pt-2">
-                <Link 
-                  href="/admin/login" 
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/90 border border-slate-700/80 text-sky-400 hover:text-white hover:bg-sky-600 hover:border-sky-500 text-xs font-bold transition-all shadow-xs"
-                >
-                  <Lock className="w-3.5 h-3.5" />
-                  <span>Login Admin</span>
+              <li>
+                <Link href="/admin/login" className="hover:text-sky-400 transition-colors">
+                  Login Admin
                 </Link>
               </li>
             </ul>

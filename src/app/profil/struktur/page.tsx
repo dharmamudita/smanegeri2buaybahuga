@@ -25,12 +25,26 @@ export const metadata: Metadata = {
     "Bagan susunan kepemimpinan, jajaran wakil kepala sekolah, kepala tata usaha, dan unit penunjang SMA Negeri 2 Buay Bahuga, Kabupaten Way Kanan.",
 };
 
+function getInitials(name: string): string {
+  const clean = name.replace(/^(drs\.|dra\.|dr\.|h\.|hj\.)\s*/i, "");
+  const parts = clean
+    .split(/[ ,.]+/)
+    .filter((p) => p.length > 1 && !/^(s\.pd|m\.pd|s\.si|m\.mpd|s\.e|s\.sos|s\.kom|a\.md|kons|sh)$/i.test(p));
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  if (parts.length === 1) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+  return "GR";
+}
+
 const LEADERSHIP_TEAM = [
   {
     role: "Kepala Sekolah",
     name: "Apriyani, S.Si., M.M.Pd.",
     nip: "19780512 200501 2 008",
-    photo: "/guru/kepala_sekolah.jpg",
+    photo: null,
     level: "Pimpinan Utama",
     desc: "Penanggung jawab umum seluruh kebijakan, tata kelola manajerial, mutu akademik, dan akuntabilitas kelembagaan sekolah.",
     badge: "Pimpinan Sekolah",
@@ -50,7 +64,7 @@ const LEADERSHIP_TEAM = [
     role: "Kepala Tata Usaha (KTU)",
     name: "Wahyudi, S.E.",
     nip: "19850612 201001 1 015",
-    photo: "/guru/guru_pria.jpg",
+    photo: null,
     level: "Unsur Tata Usaha",
     desc: "Memimpin pengelolaan ketatausahaan, administrasi kepegawaian, surat-menyurat, pengelolaan anggaran rutin, dan sarana umum.",
     badge: "Administrasi",
@@ -63,7 +77,7 @@ const WAKA_TEAM = [
     title: "Waka Bidang Kurikulum",
     name: "Bambang Irawan, S.Pd., M.Pd.",
     nip: "19820315 200801 1 012",
-    photo: "/guru/bambang_irawan.jpg",
+    photo: null,
     icon: BookOpen,
     desc: "Mengkoordinasikan implementasi Kurikulum Merdeka, pembagian jam mengajar, kalender akademik, ANBK/asesmen, dan evaluasi belajar peserta didik.",
     tupoksi: [
@@ -76,7 +90,7 @@ const WAKA_TEAM = [
     title: "Waka Bidang Kesiswaan",
     name: "Siti Rahmawati, S.Pd.",
     nip: "19840722 200902 2 005",
-    photo: "/guru/siti_rahmawati.jpg",
+    photo: null,
     icon: Users,
     desc: "Membina kedisiplinan siswa, memfasilitasi program OSIS/MPK, mengelola seleksi lomba kesiswaan, dan pembinaan karakter.",
     tupoksi: [
@@ -89,7 +103,7 @@ const WAKA_TEAM = [
     title: "Waka Bidang Sarana & Prasarana",
     name: "Ahmad Fauzi, S.Pd.",
     nip: "19801105 200604 1 009",
-    photo: "/guru/ahmad_fauzi.jpg",
+    photo: null,
     icon: Building2,
     desc: "Mengelola pemeliharaan aset fisik sekolah, laboratorium komputer CBT, laboratorium sains IPA, dan keamanan lingkungan kampus.",
     tupoksi: [
@@ -102,7 +116,7 @@ const WAKA_TEAM = [
     title: "Waka Bidang Hubungan Masyarakat (Humas)",
     name: "Nurul Hidayah, S.Sos.",
     nip: "19860918 201101 2 014",
-    photo: "/guru/guru_wanita.jpg",
+    photo: null,
     icon: PhoneCall,
     desc: "Membangun kemitraan eksternal dengan perguruan tinggi negeri, instansi kedinasan, dunia usaha, media publikasi, dan orang tua siswa.",
     tupoksi: [
@@ -188,14 +202,20 @@ export default function ProfilStrukturPage() {
                   <span className="px-3 py-1 rounded-full bg-white/20 text-sky-100 text-xs font-bold uppercase tracking-wider">
                     Pimpinan Utama
                   </span>
-                  <div className="relative w-14 h-14 rounded-full ring-2 ring-white/60 overflow-hidden shadow-md shrink-0">
-                    <Image
-                      src="/guru/kepala_sekolah.jpg"
-                      alt="Apriyani, S.Si., M.M.Pd."
-                      width={56}
-                      height={56}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="relative w-14 h-14 rounded-full ring-2 ring-white/60 overflow-hidden shadow-md shrink-0 flex items-center justify-center bg-white/20">
+                    {LEADERSHIP_TEAM[0].photo ? (
+                      <Image
+                        src={LEADERSHIP_TEAM[0].photo}
+                        alt="Apriyani, S.Si., M.M.Pd."
+                        width={56}
+                        height={56}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-white font-black text-base tracking-wider">
+                        {getInitials(LEADERSHIP_TEAM[0].name)}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -254,14 +274,20 @@ export default function ProfilStrukturPage() {
                 <span>Unsur Administrasi & Ketatausahaan</span>
               </div>
               
-              <div className="relative w-16 h-16 mx-auto rounded-full ring-2 ring-teal-200 overflow-hidden shadow-xs">
-                <Image
-                  src="/guru/guru_pria.jpg"
-                  alt="Wahyudi, S.E."
-                  width={64}
-                  height={64}
-                  className="w-full h-full object-cover"
-                />
+              <div className="relative w-16 h-16 mx-auto rounded-full ring-2 ring-teal-200 overflow-hidden shadow-xs flex items-center justify-center bg-teal-50">
+                {LEADERSHIP_TEAM[2].photo ? (
+                  <Image
+                    src={LEADERSHIP_TEAM[2].photo}
+                    alt="Wahyudi, S.E."
+                    width={64}
+                    height={64}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-teal-800 font-black text-lg tracking-wider">
+                    {getInitials(LEADERSHIP_TEAM[2].name)}
+                  </span>
+                )}
               </div>
 
               <div>
@@ -296,14 +322,20 @@ export default function ProfilStrukturPage() {
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className="relative w-12 h-12 rounded-full ring-2 ring-sky-200 overflow-hidden shadow-xs">
-                        <Image
-                          src={waka.photo}
-                          alt={waka.name}
-                          width={48}
-                          height={48}
-                          className="w-full h-full object-cover"
-                        />
+                      <div className="relative w-12 h-12 rounded-full ring-2 ring-sky-200 overflow-hidden shadow-xs flex items-center justify-center bg-sky-50">
+                        {waka.photo ? (
+                          <Image
+                            src={waka.photo}
+                            alt={waka.name}
+                            width={48}
+                            height={48}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-sky-800 font-extrabold text-xs tracking-wider">
+                            {getInitials(waka.name)}
+                          </span>
+                        )}
                       </div>
                       <span className="text-[11px] font-mono font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded-md">
                         WAKA 0{idx + 1}

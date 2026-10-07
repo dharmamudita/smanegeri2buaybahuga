@@ -32,38 +32,20 @@ import {
   seedTeachersToSupabaseAction 
 } from "@/app/actions/admin";
 
-const PHOTO_PRESETS = [
-  {
-    label: "Ibu Kepala Sekolah",
-    url: "/guru/kepala_sekolah.jpg",
-    subtext: "Ibu Apriyani",
-  },
-  {
-    label: "Waka Kurikulum",
-    url: "/guru/bambang_irawan.jpg",
-    subtext: "Pak Bambang Irawan",
-  },
-  {
-    label: "Waka Kesiswaan",
-    url: "/guru/siti_rahmawati.jpg",
-    subtext: "Bu Siti Rahmawati",
-  },
-  {
-    label: "Waka Sarpras",
-    url: "/guru/ahmad_fauzi.jpg",
-    subtext: "Pak Ahmad Fauzi",
-  },
-  {
-    label: "Dewan Guru Wanita",
-    url: "/guru/guru_wanita.jpg",
-    subtext: "Potret Resmi Wanita",
-  },
-  {
-    label: "Dewan Guru Pria",
-    url: "/guru/guru_pria.jpg",
-    subtext: "Potret Resmi Pria",
-  },
-];
+function getInitials(name: string): string {
+  if (!name) return "GR";
+  const clean = name.replace(/^(drs\.|dra\.|dr\.|h\.|hj\.)\s*/i, "");
+  const parts = clean
+    .split(/[ ,.]+/)
+    .filter((p) => p.length > 1 && !/^(s\.pd|m\.pd|s\.si|m\.mpd|s\.e|s\.sos|s\.kom|a\.md|kons|sh)$/i.test(p));
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  if (parts.length === 1) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+  return "GR";
+}
 
 const SQL_MIGRATION_SNIPPET = `-- Salin dan jalankan di Supabase Dashboard -> SQL Editor:
 ALTER PUBLICATION supabase_realtime ADD TABLE teachers;
@@ -88,18 +70,18 @@ CREATE POLICY "Public can upload photos" ON storage.objects FOR INSERT WITH CHEC
 
 DELETE FROM teachers;
 INSERT INTO teachers (full_name, nip, role_title, subject, photo_url, order_index, is_active) VALUES
-('Apriyani, S.Si., M.M.Pd.', '19780512 200501 2 008', 'Kepala Sekolah', 'Pimpinan Satuan Pendidikan', '/guru/kepala_sekolah.jpg', 1, true),
-('Bambang Irawan, S.Pd., M.Pd.', '19820315 200801 1 012', 'Wakil Kepala Sekolah Bid. Kurikulum', 'Matematika Peminatan', '/guru/bambang_irawan.jpg', 2, true),
-('Siti Rahmawati, S.Pd.', '19840722 200902 2 005', 'Wakil Kepala Sekolah Bid. Kesiswaan', 'Bahasa Indonesia', '/guru/siti_rahmawati.jpg', 3, true),
-('Ahmad Fauzi, S.Pd.', '19801105 200604 1 009', 'Wakil Kepala Sekolah Bid. Sarpras', 'Fisika & Teknologi Informasi', '/guru/ahmad_fauzi.jpg', 4, true),
-('Nurul Hidayah, S.Sos.', '19860918 201101 2 014', 'Wakil Kepala Sekolah Bid. Humas', 'Sosiologi', '/guru/guru_wanita.jpg', 5, true),
-('Dedi Setiawan, S.Pd., Kons.', '19881203 201402 1 003', 'Guru Bimbingan Konseling (BK)', 'Layanan Konseling Siswa', '/guru/guru_pria.jpg', 6, true),
-('Dra. Endang Sulastri', '19750410 200003 2 004', 'Guru Mata Pelajaran', 'Biologi', '/guru/guru_wanita.jpg', 7, true),
-('Hendri Saputra, S.Pd.', '19890214 201503 1 002', 'Guru Mata Pelajaran', 'Kimia', '/guru/guru_pria.jpg', 8, true),
-('Rina Kusuma Dewi, S.Pd.', '19910520 201902 2 008', 'Guru Mata Pelajaran', 'Bahasa Inggris', '/guru/guru_wanita.jpg', 9, true),
-('Agus Pratama, S.Pd.', '19870830 201101 1 007', 'Guru Mata Pelajaran', 'Pendidikan Jasmani & Kesehatan (PJOK)', '/guru/guru_pria.jpg', 10, true),
-('Wahyudi, S.E.', '19850612 201001 1 015', 'Kepala Tata Usaha (KTU)', 'Administrasi & Kepegawaian', '/guru/guru_pria.jpg', 11, true),
-('Sri Mulyani, A.Md.', '19900815 201602 2 011', 'Staf Tata Usaha', 'Operator Dapodik & Kesiswaan', '/guru/guru_wanita.jpg', 12, true);
+('Apriyani, S.Si., M.M.Pd.', '19780512 200501 2 008', 'Kepala Sekolah', 'Pimpinan Satuan Pendidikan', NULL, 1, true),
+('Bambang Irawan, S.Pd., M.Pd.', '19820315 200801 1 012', 'Wakil Kepala Sekolah Bid. Kurikulum', 'Matematika Peminatan', NULL, 2, true),
+('Siti Rahmawati, S.Pd.', '19840722 200902 2 005', 'Wakil Kepala Sekolah Bid. Kesiswaan', 'Bahasa Indonesia', NULL, 3, true),
+('Ahmad Fauzi, S.Pd.', '19801105 200604 1 009', 'Wakil Kepala Sekolah Bid. Sarpras', 'Fisika & Teknologi Informasi', NULL, 4, true),
+('Nurul Hidayah, S.Sos.', '19860918 201101 2 014', 'Wakil Kepala Sekolah Bid. Humas', 'Sosiologi', NULL, 5, true),
+('Dedi Setiawan, S.Pd., Kons.', '19881203 201402 1 003', 'Guru Bimbingan Konseling (BK)', 'Layanan Konseling Siswa', NULL, 6, true),
+('Dra. Endang Sulastri', '19750410 200003 2 004', 'Guru Mata Pelajaran', 'Biologi', NULL, 7, true),
+('Hendri Saputra, S.Pd.', '19890214 201503 1 002', 'Guru Mata Pelajaran', 'Kimia', NULL, 8, true),
+('Rina Kusuma Dewi, S.Pd.', '19910520 201902 2 008', 'Guru Mata Pelajaran', 'Bahasa Inggris', NULL, 9, true),
+('Agus Pratama, S.Pd.', '19870830 201101 1 007', 'Guru Mata Pelajaran', 'Pendidikan Jasmani & Kesehatan (PJOK)', NULL, 10, true),
+('Wahyudi, S.E.', '19850612 201001 1 015', 'Kepala Tata Usaha (KTU)', 'Administrasi & Kepegawaian', NULL, 11, true),
+('Sri Mulyani, A.Md.', '19900815 201602 2 011', 'Staf Tata Usaha', 'Operator Dapodik & Kesiswaan', NULL, 12, true);
 
 -- AKUN ADMIN SUPABASE AUTH
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
@@ -142,7 +124,7 @@ export default function AdminGuruPage() {
     nip: "",
     role_title: "Guru Mata Pelajaran",
     subject: "",
-    photo_url: "/guru/guru_pria.jpg",
+    photo_url: "",
     order_index: 1,
     is_active: true,
   });
@@ -197,7 +179,7 @@ export default function AdminGuruPage() {
       nip: "",
       role_title: "Guru Mata Pelajaran",
       subject: "",
-      photo_url: "/guru/guru_pria.jpg",
+      photo_url: "",
       order_index: teachers.length + 1,
       is_active: true,
     });
@@ -213,7 +195,7 @@ export default function AdminGuruPage() {
       nip: teacher.nip || "",
       role_title: teacher.role_title,
       subject: teacher.subject || "",
-      photo_url: teacher.photo_url || "/guru/guru_pria.jpg",
+      photo_url: teacher.photo_url || "",
       order_index: teacher.order_index,
       is_active: teacher.is_active,
     });
@@ -530,15 +512,15 @@ export default function AdminGuruPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            {/* Left Column: Photo Preview, Upload dari Perangkat & Presets */}
+            {/* Left Column: Photo Preview, Upload dari Perangkat & Official Monogram */}
             <div className="md:col-span-1 space-y-4 p-5 rounded-2xl bg-slate-50 border border-slate-200/80">
               <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wider">
-                Pas Foto Guru *
+                Pas Foto Guru Resmi
               </label>
 
               {/* Photo Preview Avatar */}
               <div className="flex flex-col items-center justify-center p-2 text-center">
-                <div className="relative w-28 h-28 rounded-full ring-4 ring-white shadow-md overflow-hidden bg-slate-200 group">
+                <div className="relative w-28 h-28 rounded-full ring-4 ring-white shadow-md overflow-hidden bg-slate-200 group flex items-center justify-center">
                   {formData.photo_url ? (
                     <Image
                       src={formData.photo_url}
@@ -548,8 +530,13 @@ export default function AdminGuruPage() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-400">
-                      <GraduationCap className="w-10 h-10" />
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-sky-50 to-slate-100 text-sky-900">
+                      <span className="text-2xl font-black tracking-wider">
+                        {getInitials(formData.full_name)}
+                      </span>
+                      <span className="text-[9px] font-bold text-sky-600 mt-1 uppercase tracking-tight">
+                        Monogram Resmi
+                      </span>
                     </div>
                   )}
                   {uploadingPhoto && (
@@ -559,15 +546,27 @@ export default function AdminGuruPage() {
                     </div>
                   )}
                 </div>
-                <span className="text-[11px] font-semibold text-slate-500 mt-2">
-                  Pratinjau Foto Profil
-                </span>
+
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="text-[11px] font-semibold text-slate-500">
+                    {formData.photo_url ? "Foto Resmi Terpasang" : "Lencana Monogram Aktif"}
+                  </span>
+                  {formData.photo_url && (
+                    <button
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, photo_url: "" }))}
+                      className="text-[10px] text-rose-600 hover:text-rose-700 font-bold underline cursor-pointer"
+                    >
+                      Kosongkan Foto
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* UPLOAD LANGSUNG DARI PERANGKAT (KOMPUTER / HP) */}
               <div className="space-y-1.5">
                 <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider block">
-                  Unggah dari Perangkat (Cloud):
+                  Unggah Foto Resmi dari Perangkat:
                 </span>
                 <label
                   className={`w-full p-3.5 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center text-center cursor-pointer transition ${
@@ -597,7 +596,7 @@ export default function AdminGuruPage() {
                         <CloudUpload className="w-4 h-4" />
                       </div>
                       <span className="text-xs font-bold text-slate-800">
-                        Pilih Berkas Foto
+                        Pilih Berkas Foto Asli
                       </span>
                       <span className="text-[10px] text-slate-400 mt-0.5">
                         JPG, PNG, atau WebP (Maks. 5MB)
@@ -614,59 +613,25 @@ export default function AdminGuruPage() {
                 )}
               </div>
 
-              {/* Preset Buttons */}
-              <div className="space-y-1.5 pt-2 border-t border-slate-200/60">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
-                  Atau Gunakan Foto Preset Resmi:
-                </span>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {PHOTO_PRESETS.map((preset) => {
-                    const isSelected = formData.photo_url === preset.url;
-                    return (
-                      <button
-                        key={preset.url}
-                        type="button"
-                        onClick={() => {
-                          setFormData({ ...formData, photo_url: preset.url });
-                          setUploadSuccessNote("");
-                        }}
-                        className={`p-1.5 rounded-xl border text-left flex items-center gap-2 transition ${
-                          isSelected
-                            ? "bg-blue-50 border-blue-600 ring-2 ring-blue-100"
-                            : "bg-white border-slate-200 hover:bg-slate-100/70"
-                        }`}
-                      >
-                        <div className="relative w-7 h-7 rounded-full overflow-hidden shrink-0 border border-slate-200">
-                          <Image
-                            src={preset.url}
-                            alt={preset.label}
-                            width={28}
-                            height={28}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="min-w-0">
-                          <div className="text-[10px] font-bold text-slate-800 truncate">
-                            {preset.label}
-                          </div>
-                          <div className="text-[9px] text-slate-400 truncate">
-                            {preset.subtext}
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })}
+              {/* Panduan Foto Resmi */}
+              <div className="p-3 rounded-xl bg-blue-50/60 border border-blue-100 text-[11px] text-blue-900 leading-relaxed space-y-1">
+                <div className="font-bold flex items-center gap-1.5 text-blue-800">
+                  <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Standar Pas Foto Resmi</span>
                 </div>
+                <p className="text-slate-600 text-[10px]">
+                  Gunakan foto asli berseragam dinas/kependidikan. Jika belum ada foto yang diunggah, profil guru otomatis menampilkan inisial monogram berwibawa.
+                </p>
               </div>
 
               {/* Custom Photo URL Input */}
               <div className="space-y-1 pt-2 border-t border-slate-200/60">
                 <label className="block text-[10px] font-bold text-slate-600">
-                  URL Tautan Foto (Supabase/Cloudinary/Web):
+                  Atau Tempel URL Tautan Foto (Opsional):
                 </label>
                 <input
                   type="text"
-                  placeholder="https://... atau /guru/..."
+                  placeholder="https://... (URL foto)"
                   value={formData.photo_url}
                   onChange={(e) => setFormData({ ...formData, photo_url: e.target.value })}
                   className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-900 text-xs focus:ring-2 focus:ring-blue-100 focus:border-blue-600 focus:outline-none"
@@ -867,7 +832,7 @@ export default function AdminGuruPage() {
 
                       {/* Foto Avatar */}
                       <td className="py-3.5 px-4 text-center">
-                        <div className="relative w-10 h-10 mx-auto rounded-full ring-2 ring-slate-200 overflow-hidden bg-slate-100 shadow-2xs">
+                        <div className="relative w-10 h-10 mx-auto rounded-full ring-2 ring-slate-200 overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 shadow-2xs flex items-center justify-center">
                           {teacher.photo_url ? (
                             <Image
                               src={teacher.photo_url}
@@ -877,9 +842,9 @@ export default function AdminGuruPage() {
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-slate-400">
-                              <GraduationCap className="w-5 h-5 text-slate-400" />
-                            </div>
+                            <span className="font-extrabold text-slate-700 text-xs tracking-wider">
+                              {getInitials(teacher.full_name)}
+                            </span>
                           )}
                         </div>
                       </td>

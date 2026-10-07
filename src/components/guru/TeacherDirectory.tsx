@@ -211,7 +211,18 @@ export default function TeacherDirectory({ initialTeachers }: TeacherDirectoryPr
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <GraduationCap className="w-10 h-10 text-sky-600" />
+                        <div className="flex flex-col items-center justify-center text-sky-800 select-none">
+                          <span className="text-2xl font-black tracking-wider text-sky-700">
+                            {teacher.full_name
+                              .replace(/^(Dra\.|Drs\.|Dr\.)\s*/i, "")
+                              .split(" ")
+                              .filter((w) => !w.includes(".") && !w.includes(","))
+                              .slice(0, 2)
+                              .map((w) => w[0])
+                              .join("") || "SM"}
+                          </span>
+                          <GraduationCap className="w-3.5 h-3.5 text-sky-500 mt-0.5" />
+                        </div>
                       )}
                     </div>
                     {isLeader && (

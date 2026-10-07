@@ -27,8 +27,8 @@ export const metadata: Metadata = {
 const LEADERSHIP_TEAM = [
   {
     role: "Kepala Sekolah",
-    name: "Drs. H. Mulyadi, M.Pd.",
-    nip: "19680512 199303 1 005",
+    name: "Apriyani, S.Si., M.M.Pd.",
+    nip: "Kepala SMA Negeri 2 Buay Bahuga",
     level: "Pimpinan Utama",
     desc: "Penanggung jawab umum seluruh kebijakan, tata kelola manajerial, mutu akademik, dan akuntabilitas kelembagaan sekolah.",
     badge: "Pimpinan Sekolah",
@@ -187,8 +187,8 @@ export default function ProfilStrukturPage() {
 
                 <div>
                   <div className="text-xs text-sky-200 font-semibold uppercase tracking-wider">Kepala Sekolah</div>
-                  <h3 className="text-2xl font-black mt-1">Drs. H. Mulyadi, M.Pd.</h3>
-                  <div className="text-xs font-mono text-sky-200 mt-0.5">NIP. 19680512 199303 1 005</div>
+                  <h3 className="text-2xl font-black mt-1">Apriyani, S.Si., M.M.Pd.</h3>
+                  <div className="text-xs font-mono text-sky-200 mt-0.5">Kepala SMA Negeri 2 Buay Bahuga</div>
                 </div>
 
                 <p className="text-xs sm:text-sm text-sky-100 leading-relaxed pt-2 border-t border-white/10">

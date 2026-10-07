@@ -90,7 +90,7 @@ export default function ProfilHubPage() {
             <div className="flex items-center gap-3">
               <div className="px-4 py-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 text-center">
                 <div className="text-xs text-sky-300 font-medium">NPSN</div>
-                <div className="text-base font-extrabold text-white font-mono">69947098</div>
+                <div className="text-base font-extrabold text-white font-mono">10810192</div>
               </div>
               <div className="px-4 py-2 rounded-xl bg-emerald-500/20 border border-emerald-400/30 text-center">
                 <div className="text-xs text-emerald-300 font-medium">Status</div>

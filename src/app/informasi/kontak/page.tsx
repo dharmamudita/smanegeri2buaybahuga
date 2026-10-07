@@ -62,9 +62,9 @@ export default function InformasiKontakPage() {
               <div className="space-y-1">
                 <h3 className="font-extrabold text-slate-900 text-base">Alamat Kampus Sekolah</h3>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Kecamatan Buay Bahuga, Kabupaten Way Kanan, Provinsi Lampung, Kode Pos 34764
+                  Jl. Ryacudu No. 04, Kampung Suka Agung, Kec. Buay Bahuga, Kab. Way Kanan, Lampung 34764
                 </p>
-                <div className="pt-1 text-[11px] font-mono text-slate-400">NPSN: 69947098</div>
+                <div className="pt-1 text-[11px] font-mono text-slate-400">NPSN: 10810192 • NSS: 301120814020</div>
               </div>
             </div>
 
@@ -74,13 +74,13 @@ export default function InformasiKontakPage() {
                 <Phone className="w-6 h-6" />
               </div>
               <div className="space-y-2 flex-1">
-                <h3 className="font-extrabold text-slate-900 text-base">Telepon & WhatsApp Helpdesk</h3>
+                <h3 className="font-extrabold text-slate-900 text-base">Telepon & WhatsApp Layanan</h3>
                 <p className="text-xs sm:text-sm text-slate-600">
-                  0821-7890-1234 (Panitia Layanan PPDB)
+                  0852-6337-6378 (Layanan Sekolah & Panitia PPDB)
                 </p>
                 <div>
                   <a
-                    href="https://wa.me/6282178901234"
+                    href="https://wa.me/6285263376378"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-xs"
@@ -100,7 +100,7 @@ export default function InformasiKontakPage() {
               <div className="space-y-1">
                 <h3 className="font-extrabold text-slate-900 text-base">Surat Elektronik Resmi</h3>
                 <p className="text-xs sm:text-sm text-slate-600">
-                  info@sman2buaybahuga.sch.id
+                  sman2buaybahuga@gmail.com
                 </p>
                 <span className="text-[11px] text-slate-400">Respon maksimal 1x24 jam hari kerja</span>
               </div>

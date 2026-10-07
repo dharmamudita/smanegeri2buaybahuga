@@ -146,7 +146,7 @@ INSERT INTO school_profiles (section_key, title, content, metadata) VALUES
     'principal_greeting',
     'Sambutan Kepala Sekolah',
     'Selamat datang di website resmi SMA Negeri 2 Buay Bahuga. Platform ini kami dedikasikan sebagai jembatan informasi transparan dan akuntabel antara sekolah, orang tua, dan masyarakat luas.',
-    '{"principal_name": "Drs. H. Mulyadi, M.Pd.", "nip": "19680512 199303 1 005"}'::jsonb
+    '{"principal_name": "Apriyani, S.Si., M.M.Pd.", "role": "Kepala SMAN 2 Buay Bahuga"}'::jsonb
 ),
 (
     'vision_mission',

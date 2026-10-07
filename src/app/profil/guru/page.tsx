@@ -14,10 +14,10 @@ export const metadata: Metadata = {
 const DEFAULT_TEACHERS: Teacher[] = [
   {
     id: "t1",
-    full_name: "Drs. H. Mulyadi, M.Pd.",
-    nip: "19680512 199303 1 005",
+    full_name: "Apriyani, S.Si., M.M.Pd.",
+    nip: "Kepala SMA Negeri 2 Buay Bahuga",
     role_title: "Kepala Sekolah",
-    subject: "Manajemen Pendidikan",
+    subject: "Manajemen Sekolah",
     photo_url: null,
     order_index: 1,
     is_active: true,

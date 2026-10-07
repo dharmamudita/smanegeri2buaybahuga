@@ -86,23 +86,35 @@ export default function ProfilTentangPage() {
             </div>
             <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
               <span className="text-xs text-slate-400 font-semibold">Nomor Pokok Sekolah Nasional (NPSN)</span>
-              <div className="text-base font-bold text-sky-600 font-mono">69947098</div>
+              <div className="text-base font-bold text-sky-600 font-mono">10810192 (NSS: 301120814020)</div>
             </div>
             <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-              <span className="text-xs text-slate-400 font-semibold">Status Sekolah</span>
-              <div className="text-base font-bold text-emerald-600">Negeri (Pemerintah Provinsi)</div>
+              <span className="text-xs text-slate-400 font-semibold">Status & Naungan</span>
+              <div className="text-base font-bold text-emerald-600">Negeri (Dinas Pendidikan Prov. Lampung)</div>
             </div>
             <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
               <span className="text-xs text-slate-400 font-semibold">Peringkat Akreditasi</span>
               <div className="text-base font-bold text-slate-900">A (Unggul) - BAN-S/M</div>
             </div>
             <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-              <span className="text-xs text-slate-400 font-semibold">Kurikulum Operasional</span>
-              <div className="text-base font-bold text-slate-900">Kurikulum Merdeka</div>
+              <span className="text-xs text-slate-400 font-semibold">SK Pendirian Sekolah</span>
+              <div className="text-base font-bold text-slate-900">No. 03 Tahun 2008 (22 Feb 2008)</div>
             </div>
             <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-              <span className="text-xs text-slate-400 font-semibold">Wilayah Penyelenggaraan</span>
-              <div className="text-base font-bold text-slate-900">Kec. Buay Bahuga, Way Kanan</div>
+              <span className="text-xs text-slate-400 font-semibold">SK Izin Operasional</span>
+              <div className="text-base font-bold text-slate-900">463/3497/A 0001896/V. 16/2023</div>
+            </div>
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+              <span className="text-xs text-slate-400 font-semibold">Alamat Lengkap</span>
+              <div className="text-base font-bold text-slate-900">Jl. Ryacudu No. 04, Kampung Suka Agung</div>
+            </div>
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+              <span className="text-xs text-slate-400 font-semibold">Kepala Sekolah Saat Ini</span>
+              <div className="text-base font-bold text-sky-700">Apriyani, S.Si., M.M.Pd.</div>
+            </div>
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+              <span className="text-xs text-slate-400 font-semibold">Kurikulum & Penyelenggaraan</span>
+              <div className="text-base font-bold text-slate-900">Kurikulum Merdeka (Sehari Penuh)</div>
             </div>
           </div>
         </div>

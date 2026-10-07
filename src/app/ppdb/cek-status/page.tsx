@@ -191,7 +191,7 @@ function CekStatusContent() {
                       SMA NEGERI 2 BUAY BAHUGA
                     </h2>
                     <p className="text-xs text-slate-600">
-                      Kecamatan Buay Bahuga, Kabupaten Way Kanan, Provinsi Lampung • NPSN: 69947098
+                      Jl. Ryacudu No. 04, Suka Agung, Buay Bahuga, Way Kanan, Lampung • NPSN: 10810192
                     </p>
                     <p className="text-xs font-bold text-sky-700">
                       TANDA BUKTI PENERIMAAN PESERTA DIDIK BARU (PPDB) ONLINE

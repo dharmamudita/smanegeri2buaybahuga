@@ -177,14 +177,14 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm text-center space-y-1">
-            <div className="text-3xl sm:text-4xl font-black text-sky-600">450+</div>
+            <div className="text-3xl sm:text-4xl font-black text-sky-600">980+</div>
             <div className="text-sm font-bold text-slate-800">Siswa Aktif</div>
-            <div className="text-xs text-slate-500">Tersebar di Fase E & F</div>
+            <div className="text-xs text-slate-500">29 Rombongan Belajar</div>
           </div>
 
           <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm text-center space-y-1">
-            <div className="text-3xl sm:text-4xl font-black text-sky-600">32+</div>
-            <div className="text-sm font-bold text-slate-800">Pendidik & Staf</div>
+            <div className="text-3xl sm:text-4xl font-black text-sky-600">47</div>
+            <div className="text-sm font-bold text-slate-800">Pendidik & Tenaga Kependidikan</div>
             <div className="text-xs text-slate-500">Kualifikasi S1 & S2</div>
           </div>
 
@@ -216,9 +216,9 @@ export default function HomePage() {
                 <School className="w-16 h-16 sm:w-20 sm:h-20 text-sky-400" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white">Drs. H. Mulyadi, M.Pd.</h3>
+                <h3 className="text-lg font-bold text-white">Apriyani, S.Si., M.M.Pd.</h3>
                 <p className="text-xs text-sky-300 font-medium">Kepala SMAN 2 Buay Bahuga</p>
-                <p className="text-[11px] text-slate-400">NIP. 19680512 199303 1 005</p>
+                <p className="text-[11px] text-slate-400">Pembina SMA Negeri 2 Buay Bahuga</p>
               </div>
             </div>
 
@@ -407,7 +407,7 @@ export default function HomePage() {
 
             <div className="flex items-center gap-3">
               <a
-                href="https://wa.me/6282178901234"
+                href="https://wa.me/6285263376378"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md shadow-emerald-600/20 transition active:scale-95"
@@ -428,7 +428,7 @@ export default function HomePage() {
                 <div>
                   <div className="font-bold text-slate-900 text-sm">Alamat Kampus Sekolah</div>
                   <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
-                    Kecamatan Buay Bahuga, Kabupaten Way Kanan, Provinsi Lampung 34764
+                    Jl. Ryacudu No. 04, Kampung Suka Agung, Kec. Buay Bahuga, Kab. Way Kanan, Lampung 34764
                   </p>
                 </div>
               </div>
@@ -440,9 +440,9 @@ export default function HomePage() {
                 <div>
                   <div className="font-bold text-slate-900 text-sm">Telepon & WhatsApp Helpdesk</div>
                   <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                    0821-7890-1234 (Panitia PPDB)
+                    0852-6337-6378 (Layanan Sekolah & PPDB)
                   </p>
-                  <span className="text-[11px] text-emerald-600 font-semibold block mt-0.5">Aktif selama masa PPDB</span>
+                  <span className="text-[11px] text-emerald-600 font-semibold block mt-0.5">Aktif selama jam dinas & masa PPDB</span>
                 </div>
               </div>
 
@@ -453,7 +453,7 @@ export default function HomePage() {
                 <div>
                   <div className="font-bold text-slate-900 text-sm">Surat Elektronik Resmi</div>
                   <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                    info@sman2buaybahuga.sch.id
+                    sman2buaybahuga@gmail.com
                   </p>
                 </div>
               </div>

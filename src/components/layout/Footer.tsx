@@ -37,7 +37,7 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-2 text-xs font-medium text-sky-400">
               <ShieldCheck className="w-4 h-4 text-sky-400" />
-              <span>NPSN: 69947098 • Akreditasi A Unggul</span>
+              <span>NPSN: 10810192 • Akreditasi A Unggul</span>
             </div>
           </div>
 
@@ -123,15 +123,15 @@ export default function Footer() {
             <div className="space-y-3 text-sm text-slate-400">
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-sky-400 shrink-0 mt-0.5" />
-                <span>Kecamatan Buay Bahuga, Kabupaten Way Kanan, Provinsi Lampung 34764</span>
+                <span>Jl. Ryacudu No. 04, Kampung Suka Agung, Kec. Buay Bahuga, Kab. Way Kanan, Lampung 34764</span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-sky-400 shrink-0" />
-                <span>Helpdesk PPDB: 0821-7890-1234</span>
+                <span>Telepon / WA: 0852-6337-6378</span>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-sky-400 shrink-0" />
-                <span>info@sman2buaybahuga.sch.id</span>
+                <span>sman2buaybahuga@gmail.com</span>
               </div>
               <div className="flex items-center gap-3">
                 <Clock className="w-4 h-4 text-sky-400 shrink-0" />

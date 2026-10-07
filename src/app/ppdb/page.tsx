@@ -181,7 +181,7 @@ export default async function PPDBPage() {
             </p>
             <div className="pt-1 flex items-center gap-2 text-xs font-bold text-sky-600">
               <Phone className="w-3.5 h-3.5" />
-              <span>WhatsApp: 0821-7890-1234</span>
+              <span>WhatsApp / Telp: 0852-6337-6378</span>
             </div>
           </div>
         </div>

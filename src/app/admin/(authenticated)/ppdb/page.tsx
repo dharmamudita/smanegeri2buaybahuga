@@ -15,7 +15,8 @@ import {
   Loader2, 
   Download,
   Phone,
-  FileText
+  FileText,
+  X
 } from "lucide-react";
 import { updateRegistrationStatus, forceSyncToGoogleSheets } from "@/app/actions/admin";
 import { formatDate, formatDateTime, getStatusBadge, getTrackLabel } from "@/lib/utils";
@@ -40,7 +41,7 @@ export default function AdminPPDBPage() {
     setLoading(true);
     try {
       const supabase = createClient();
-      let query = supabase
+      const query = supabase
         .from("registrations")
         .select(`
           *,
@@ -127,32 +128,32 @@ export default function AdminPPDBPage() {
   };
 
   return (
-    <div className="p-6 sm:p-10 space-y-8 max-w-7xl mx-auto">
+    <div className="p-6 sm:p-10 space-y-6 max-w-7xl mx-auto">
       
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      {/* Top Filter and Actions Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white">
-            Manajemen Pendaftar PPDB
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-400">
-            Verifikasi berkas, validasi status kelulusan, dan kontrol sinkronisasi spreadsheet.
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            Data Calon Peserta Didik Baru
+          </h2>
+          <p className="text-xs text-slate-500 font-medium mt-0.5">
+            Total {registrations.length} data calon siswa terdaftar di pangkalan data sekolah.
           </p>
         </div>
 
         <button
           onClick={fetchRegistrations}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold transition border border-slate-700 self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition border border-slate-200 shadow-2xs self-start sm:self-auto"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin text-blue-600" : "text-slate-500"}`} />
           <span>Muat Ulang Data</span>
         </button>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
         <div className="md:col-span-5 relative">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
             <Search className="w-4 h-4" />
           </div>
           <input
@@ -160,7 +161,7 @@ export default function AdminPPDBPage() {
             placeholder="Cari nama siswa, NISN, atau no. registrasi..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-900 placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-600 shadow-2xs"
           />
         </div>
 
@@ -168,7 +169,7 @@ export default function AdminPPDBPage() {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs sm:text-sm focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-600 shadow-2xs"
           >
             <option value="all">Semua Status Verifikasi</option>
             <option value="pending">Menunggu Verifikasi</option>
@@ -183,9 +184,9 @@ export default function AdminPPDBPage() {
           <select
             value={selectedTrack}
             onChange={(e) => setSelectedTrack(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs sm:text-sm focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-600 shadow-2xs"
           >
-            <option value="all">Semua Jalur</option>
+            <option value="all">Semua Jalur Pendaftaran</option>
             <option value="zonasi">Zonasi</option>
             <option value="afirmasi">Afirmasi</option>
             <option value="prestasi">Prestasi</option>
@@ -196,65 +197,65 @@ export default function AdminPPDBPage() {
       </div>
 
       {/* Main Table */}
-      <div className="rounded-3xl bg-slate-800/40 border border-slate-800 overflow-hidden">
+      <div className="rounded-3xl bg-white border border-slate-200/90 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="border-b border-slate-700 text-slate-400 uppercase tracking-wider font-semibold bg-slate-800/60">
+            <thead className="bg-slate-50/80 border-b border-slate-200/80 text-slate-600 uppercase tracking-wider font-bold">
               <tr>
-                <th className="py-3.5 px-4">No. Registrasi</th>
-                <th className="py-3.5 px-4">Nama Siswa</th>
-                <th className="py-3.5 px-4">NISN / Asal Sekolah</th>
-                <th className="py-3.5 px-4">Jalur</th>
-                <th className="py-3.5 px-4">Status</th>
-                <th className="py-3.5 px-4">Sync Sheets</th>
-                <th className="py-3.5 px-4 text-center">Aksi</th>
+                <th className="py-3.5 px-5">No. Registrasi</th>
+                <th className="py-3.5 px-5">Nama Siswa</th>
+                <th className="py-3.5 px-5">NISN / Asal Sekolah</th>
+                <th className="py-3.5 px-5">Jalur</th>
+                <th className="py-3.5 px-5">Status</th>
+                <th className="py-3.5 px-5">Sync Sheets</th>
+                <th className="py-3.5 px-5 text-center">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800 text-slate-300">
+            <tbody className="divide-y divide-slate-100 text-slate-700">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-500">
-                    <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-sky-400" />
-                    <span>Memuat data pendaftar...</span>
+                  <td colSpan={7} className="py-16 text-center text-slate-400">
+                    <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-blue-600" />
+                    <span className="font-medium text-xs">Memuat data pendaftar...</span>
                   </td>
                 </tr>
               ) : filteredList.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-500">
-                    Tidak ada data pendaftar yang sesuai filter.
+                  <td colSpan={7} className="py-16 text-center text-slate-400">
+                    Tidak ada data pendaftar yang sesuai kriteria pencarian.
                   </td>
                 </tr>
               ) : (
                 filteredList.map((item) => {
                   const badge = getStatusBadge(item.status);
                   return (
-                    <tr key={item.id} className="hover:bg-slate-800/50 transition">
-                      <td className="py-3.5 px-4 font-mono font-bold text-sky-400">
+                    <tr key={item.id} className="hover:bg-slate-50/60 transition">
+                      <td className="py-3.5 px-5 font-mono font-bold text-blue-700">
                         {item.reg_number}
                       </td>
-                      <td className="py-3.5 px-4">
-                        <div className="font-bold text-white text-sm">{item.full_name}</div>
-                        <div className="text-[11px] text-slate-400">
+                      <td className="py-3.5 px-5">
+                        <div className="font-bold text-slate-900 text-sm">{item.full_name}</div>
+                        <div className="text-[11px] text-slate-500">
                           {item.gender} • {item.phone_number}
                         </div>
                       </td>
-                      <td className="py-3.5 px-4">
-                        <div className="font-mono text-slate-300">{item.nisn}</div>
-                        <div className="text-[11px] text-slate-400">{item.school_origin}</div>
+                      <td className="py-3.5 px-5">
+                        <div className="font-mono text-slate-700">{item.nisn}</div>
+                        <div className="text-[11px] text-slate-500">{item.school_origin}</div>
                       </td>
-                      <td className="py-3.5 px-4">
-                        <span className="px-2 py-0.5 rounded-md bg-slate-700 text-slate-300 font-semibold text-[10px] uppercase">
+                      <td className="py-3.5 px-5">
+                        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-semibold text-[10px] uppercase border border-slate-200">
                           {item.registration_track}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4">
-                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${badge.bg} ${badge.text}`}>
+                      <td className="py-3.5 px-5">
+                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${badge.bg} ${badge.text} ${badge.border}`}>
                           {badge.label}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4">
+                      <td className="py-3.5 px-5">
                         {item.synced_to_sheets ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400">
+                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600">
                             <CheckCircle className="w-3.5 h-3.5" />
                             <span>Tersinkron</span>
                           </span>
@@ -262,20 +263,20 @@ export default function AdminPPDBPage() {
                           <button
                             onClick={() => handleManualSync(item.id)}
                             disabled={syncingId === item.id}
-                            className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 hover:text-amber-300 transition"
+                            className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-600 hover:text-amber-700 transition"
                           >
                             <RefreshCw className={`w-3.5 h-3.5 ${syncingId === item.id ? "animate-spin" : ""}`} />
                             <span>Sync Ulang</span>
                           </button>
                         )}
                       </td>
-                      <td className="py-3.5 px-4 text-center">
+                      <td className="py-3.5 px-5 text-center">
                         <button
                           onClick={() => {
                             setActiveModalReg(item);
                             setAdminNotes(item.admin_notes || "");
                           }}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition shadow-xs"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold transition shadow-xs"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           <span>Tinjau</span>
@@ -292,51 +293,51 @@ export default function AdminPPDBPage() {
 
       {/* DETAIL & VERIFICATION MODAL */}
       {activeModalReg && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="rounded-3xl bg-slate-900 border border-slate-700 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="rounded-3xl bg-white border border-slate-200 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6">
             
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
-                <span className="text-xs uppercase tracking-wider font-bold text-sky-400">
-                  Verifikasi Berkas Siswa
+                <span className="text-[11px] uppercase tracking-wider font-bold text-blue-700">
+                  Verifikasi Berkas Calon Siswa
                 </span>
-                <h3 className="text-xl font-bold text-white">{activeModalReg.full_name}</h3>
+                <h3 className="text-xl font-black text-slate-900">{activeModalReg.full_name}</h3>
               </div>
               <button
                 onClick={() => setActiveModalReg(null)}
-                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Quick Details Grid */}
-            <div className="grid grid-cols-2 gap-3 text-xs bg-slate-800/60 p-4 rounded-2xl">
+            <div className="grid grid-cols-2 gap-3 text-xs bg-slate-50 border border-slate-200/80 p-4 rounded-2xl">
               <div>
-                <span className="text-slate-400">No. Registrasi:</span>
-                <div className="font-mono font-bold text-sky-400">{activeModalReg.reg_number}</div>
+                <span className="text-slate-400 font-medium">No. Registrasi:</span>
+                <div className="font-mono font-bold text-blue-700 mt-0.5">{activeModalReg.reg_number}</div>
               </div>
               <div>
-                <span className="text-slate-400">Jalur Pendaftaran:</span>
-                <div className="font-bold text-white">{getTrackLabel(activeModalReg.registration_track)}</div>
+                <span className="text-slate-400 font-medium">Jalur Pendaftaran:</span>
+                <div className="font-bold text-slate-800 mt-0.5">{getTrackLabel(activeModalReg.registration_track)}</div>
               </div>
               <div>
-                <span className="text-slate-400">NISN / NIK:</span>
-                <div className="font-mono text-slate-200">{activeModalReg.nisn} / {activeModalReg.nik}</div>
+                <span className="text-slate-400 font-medium">NISN / NIK:</span>
+                <div className="font-mono text-slate-700 mt-0.5">{activeModalReg.nisn} / {activeModalReg.nik}</div>
               </div>
               <div>
-                <span className="text-slate-400">Kontak WhatsApp:</span>
-                <div className="text-slate-200">{activeModalReg.phone_number} (Ortu: {activeModalReg.parent_phone})</div>
+                <span className="text-slate-400 font-medium">Kontak WhatsApp:</span>
+                <div className="text-slate-700 mt-0.5">{activeModalReg.phone_number} (Ortu: {activeModalReg.parent_phone})</div>
               </div>
               <div className="col-span-2">
-                <span className="text-slate-400">Alamat Lengkap:</span>
-                <div className="text-slate-200">{activeModalReg.address}</div>
+                <span className="text-slate-400 font-medium">Alamat Lengkap:</span>
+                <div className="text-slate-700 mt-0.5">{activeModalReg.address}</div>
               </div>
             </div>
 
             {/* Uploaded Documents Check */}
-            <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <div className="space-y-2.5">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
                 Pindaian Dokumen Prasyarat
               </h4>
               <div className="grid grid-cols-3 gap-3">
@@ -345,20 +346,20 @@ export default function AdminPPDBPage() {
                   { label: "Kartu Keluarga", url: activeModalReg.document_urls?.kk },
                   { label: "SKL / Ijazah", url: activeModalReg.document_urls?.skl },
                 ].map((doc, idx) => (
-                  <div key={idx} className="p-3 rounded-xl bg-slate-800 border border-slate-700 text-center space-y-2">
-                    <span className="text-[11px] font-semibold text-slate-300 block">{doc.label}</span>
+                  <div key={idx} className="p-3.5 rounded-2xl bg-white border border-slate-200 text-center space-y-2 shadow-2xs">
+                    <span className="text-[11px] font-bold text-slate-700 block">{doc.label}</span>
                     {doc.url ? (
                       <a
                         href={doc.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1 text-[10px] font-bold text-sky-400 hover:text-sky-300"
+                        className="inline-flex items-center gap-1.5 text-[11px] font-bold text-blue-700 hover:text-blue-800 transition px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-200"
                       >
-                        <Eye className="w-3 h-3" />
+                        <Eye className="w-3.5 h-3.5" />
                         <span>Buka Berkas</span>
                       </a>
                     ) : (
-                      <span className="text-[10px] text-slate-500">Belum Ada</span>
+                      <span className="text-[11px] text-slate-400 font-medium">Belum Diunggah</span>
                     )}
                   </div>
                 ))}
@@ -367,29 +368,29 @@ export default function AdminPPDBPage() {
 
             {/* Admin Notes Field */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                Catatan Verifikator (Dapat Dilihat Calon Siswa)
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Catatan Verifikator (Dapat Dilihat Calon Siswa di Cek Status)
               </label>
               <textarea
                 rows={2}
-                placeholder="Contoh: Foto Kartu Keluarga terpotong, mohon unggah ulang lembar lengkap..."
+                placeholder="Contoh: Foto Kartu Keluarga kurang jelas, mohon perbaiki berkas saat verifikasi fisik..."
                 value={adminNotes}
                 onChange={(e) => setAdminNotes(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition"
               />
             </div>
 
             {/* Action Decision Buttons */}
-            <div className="pt-2 border-t border-slate-800 space-y-2">
-              <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                Ubah Keputusan Status:
+            <div className="pt-3 border-t border-slate-100 space-y-2.5">
+              <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Ubah Keputusan Status Siswa:
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <button
                   type="button"
                   disabled={updating}
                   onClick={() => handleStatusChange("verified")}
-                  className="py-2.5 px-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition text-center shadow-xs"
+                  className="py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition text-center shadow-2xs disabled:opacity-50"
                 >
                   Verifikasi Berkas
                 </button>
@@ -397,7 +398,7 @@ export default function AdminPPDBPage() {
                   type="button"
                   disabled={updating}
                   onClick={() => handleStatusChange("accepted")}
-                  className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition text-center shadow-xs"
+                  className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition text-center shadow-2xs disabled:opacity-50"
                 >
                   Luluskan Siswa
                 </button>
@@ -405,7 +406,7 @@ export default function AdminPPDBPage() {
                   type="button"
                   disabled={updating}
                   onClick={() => handleStatusChange("revision_needed")}
-                  className="py-2.5 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition text-center shadow-xs"
+                  className="py-2.5 px-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition text-center shadow-2xs disabled:opacity-50"
                 >
                   Minta Revisi
                 </button>
@@ -413,7 +414,7 @@ export default function AdminPPDBPage() {
                   type="button"
                   disabled={updating}
                   onClick={() => handleStatusChange("rejected")}
-                  className="py-2.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition text-center shadow-xs"
+                  className="py-2.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition text-center shadow-2xs disabled:opacity-50"
                 >
                   Tolak Berkas
                 </button>

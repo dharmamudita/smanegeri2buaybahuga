@@ -201,32 +201,33 @@ export default function AdminGuruPage() {
   };
 
   return (
-    <div className="p-6 sm:p-10 space-y-8 max-w-6xl mx-auto">
+    <div className="p-6 sm:p-10 space-y-6 max-w-6xl mx-auto">
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      {/* Header Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white">
-            Manajemen Dewan Guru & Staf
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-400">
-            Tambah, perbarui, atau nonaktifkan data pendidik dan tenaga kependidikan.
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            Direktori Dewan Guru & Staf
+          </h2>
+          <p className="text-xs text-slate-500 font-medium mt-0.5">
+            Kelola data dewan guru dan tenaga kependidikan yang tampil pada halaman profil publik.
           </p>
         </div>
 
         <div className="flex items-center gap-2 self-start sm:self-auto">
           <button
             onClick={fetchTeachers}
-            className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+            className="p-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 transition shadow-2xs"
+            title="Muat ulang data"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-blue-600" : ""}`} />
           </button>
           <button
             onClick={() => {
               resetForm();
               setShowForm(true);
             }}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition shadow-md shadow-sky-600/20"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold transition shadow-xs"
           >
             <Plus className="w-4 h-4" />
             <span>Tambah Guru / Staf</span>
@@ -236,13 +237,13 @@ export default function AdminGuruPage() {
 
       {/* Success Banner */}
       {successMsg && (
-        <div className="p-3.5 rounded-xl bg-emerald-950/60 border border-emerald-800 text-emerald-300 text-xs flex items-center justify-between gap-2">
+        <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center justify-between gap-2 shadow-2xs">
           <div className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-400" />
-            <span>{successMsg}</span>
+            <CheckCircle className="w-4 h-4 text-emerald-600" />
+            <span className="font-semibold">{successMsg}</span>
           </div>
-          <button onClick={() => setSuccessMsg("")} className="text-emerald-400 hover:text-emerald-200">
-            <X className="w-3.5 h-3.5" />
+          <button onClick={() => setSuccessMsg("")} className="text-emerald-600 hover:text-emerald-800 p-1">
+            <X className="w-4 h-4" />
           </button>
         </div>
       )}
@@ -251,11 +252,11 @@ export default function AdminGuruPage() {
       {showForm && (
         <form
           onSubmit={handleSave}
-          className="rounded-3xl bg-slate-800/60 border border-slate-700 p-6 sm:p-8 space-y-4"
+          className="rounded-3xl bg-white border border-slate-200 shadow-sm p-6 sm:p-8 space-y-4"
         >
-          <div className="flex items-center justify-between">
-            <h3 className="text-base font-extrabold text-white">
-              {editingTeacher ? `Edit: ${editingTeacher.full_name}` : "Tambah Data Guru / Staf Baru"}
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <h3 className="text-base font-extrabold text-slate-900">
+              {editingTeacher ? `Perbarui Data: ${editingTeacher.full_name}` : "Tambah Data Guru / Staf Baru"}
             </h3>
             <button
               type="button"
@@ -263,22 +264,22 @@ export default function AdminGuruPage() {
                 setShowForm(false);
                 resetForm();
               }}
-              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
           {errorMsg && (
-            <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+            <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2">
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Nama Lengkap Guru / Staf *
               </label>
               <input
@@ -287,12 +288,12 @@ export default function AdminGuruPage() {
                 placeholder="Contoh: Dewi Lestari, S.Pd."
                 value={formData.full_name}
                 onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-50/50 border border-slate-300 text-slate-900 placeholder-slate-400 text-sm focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 NIP (Opsional)
               </label>
               <input
@@ -300,18 +301,18 @@ export default function AdminGuruPage() {
                 placeholder="Contoh: 19860410 201001 2 018"
                 value={formData.nip}
                 onChange={(e) => setFormData({ ...formData, nip: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-50/50 border border-slate-300 text-slate-900 placeholder-slate-400 text-sm focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Jabatan / Posisi *
               </label>
               <select
                 value={formData.role_title}
                 onChange={(e) => setFormData({ ...formData, role_title: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-50/50 border border-slate-300 text-slate-900 text-sm focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition"
               >
                 <option value="Kepala Sekolah">Kepala Sekolah</option>
                 <option value="Wakil Kepala Sekolah Bid. Kurikulum">Waka Kurikulum</option>
@@ -328,7 +329,7 @@ export default function AdminGuruPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Mata Pelajaran / Bidang (Opsional)
               </label>
               <input
@@ -336,12 +337,12 @@ export default function AdminGuruPage() {
                 placeholder="Contoh: Bahasa Indonesia"
                 value={formData.subject}
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-50/50 border border-slate-300 text-slate-900 placeholder-slate-400 text-sm focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Urutan Tampil di Portal
               </label>
               <input
@@ -349,26 +350,26 @@ export default function AdminGuruPage() {
                 min={0}
                 value={formData.order_index}
                 onChange={(e) => setFormData({ ...formData, order_index: Number(e.target.value) })}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-50/50 border border-slate-300 text-slate-900 text-sm focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition"
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-2">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={() => {
                 setShowForm(false);
                 resetForm();
               }}
-              className="px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-600 text-slate-300 text-xs font-bold hover:bg-slate-700 transition"
+              className="px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-50 transition"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition shadow-md shadow-sky-600/20 disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold transition shadow-xs disabled:opacity-50"
             >
               {saving ? (
                 <>
@@ -387,76 +388,76 @@ export default function AdminGuruPage() {
       )}
 
       {/* Teachers Table */}
-      <div className="rounded-3xl bg-slate-800/40 border border-slate-800 overflow-hidden">
+      <div className="rounded-3xl bg-white border border-slate-200/90 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="border-b border-slate-700 text-slate-400 uppercase tracking-wider font-semibold bg-slate-800/60">
+            <thead className="bg-slate-50/80 border-b border-slate-200/80 text-slate-600 uppercase tracking-wider font-bold">
               <tr>
-                <th className="py-3.5 px-4">#</th>
-                <th className="py-3.5 px-4">Nama Lengkap</th>
-                <th className="py-3.5 px-4">NIP</th>
-                <th className="py-3.5 px-4">Jabatan</th>
-                <th className="py-3.5 px-4">Mata Pelajaran</th>
-                <th className="py-3.5 px-4">Status</th>
-                <th className="py-3.5 px-4 text-center">Aksi</th>
+                <th className="py-3.5 px-5">#</th>
+                <th className="py-3.5 px-5">Nama Lengkap</th>
+                <th className="py-3.5 px-5">NIP</th>
+                <th className="py-3.5 px-5">Jabatan</th>
+                <th className="py-3.5 px-5">Mata Pelajaran</th>
+                <th className="py-3.5 px-5">Status</th>
+                <th className="py-3.5 px-5 text-center">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800 text-slate-300">
+            <tbody className="divide-y divide-slate-100 text-slate-700">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-500">
-                    <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-sky-400" />
-                    <span>Memuat data guru...</span>
+                  <td colSpan={7} className="py-16 text-center text-slate-400">
+                    <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-blue-600" />
+                    <span className="font-medium">Memuat data guru...</span>
                   </td>
                 </tr>
               ) : teachers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-500">
-                    Belum ada data guru atau staf. Silakan tambahkan.
+                  <td colSpan={7} className="py-16 text-center text-slate-400">
+                    Belum ada data guru atau staf. Silakan tambahkan melalui tombol di atas.
                   </td>
                 </tr>
               ) : (
                 teachers.map((teacher, idx) => (
-                  <tr key={teacher.id} className="hover:bg-slate-800/50 transition">
-                    <td className="py-3.5 px-4 font-mono text-slate-500">{idx + 1}</td>
-                    <td className="py-3.5 px-4">
-                      <div className="font-bold text-white text-sm">{teacher.full_name}</div>
+                  <tr key={teacher.id} className="hover:bg-slate-50/60 transition">
+                    <td className="py-3.5 px-5 font-mono text-slate-400">{idx + 1}</td>
+                    <td className="py-3.5 px-5">
+                      <div className="font-bold text-slate-900 text-sm">{teacher.full_name}</div>
                     </td>
-                    <td className="py-3.5 px-4 font-mono text-slate-400">
+                    <td className="py-3.5 px-5 font-mono text-slate-600">
                       {teacher.nip || "-"}
                     </td>
-                    <td className="py-3.5 px-4">
-                      <span className="px-2 py-0.5 rounded-md bg-slate-700 text-slate-200 font-semibold text-[10px]">
+                    <td className="py-3.5 px-5">
+                      <span className="px-2.5 py-0.5 rounded-md bg-blue-50 text-blue-800 font-semibold text-[10px] border border-blue-200/60">
                         {teacher.role_title}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 text-slate-300">
+                    <td className="py-3.5 px-5 text-slate-600 font-medium">
                       {teacher.subject || "-"}
                     </td>
-                    <td className="py-3.5 px-4">
+                    <td className="py-3.5 px-5">
                       <button
                         onClick={() => handleToggleActive(teacher)}
-                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold transition cursor-pointer ${
+                        className={`px-3 py-1 rounded-full text-[10px] font-bold transition cursor-pointer border ${
                           teacher.is_active
-                            ? "bg-emerald-950 text-emerald-400 border border-emerald-800 hover:bg-emerald-900"
-                            : "bg-slate-800 text-slate-500 border border-slate-700 hover:bg-slate-700"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                            : "bg-slate-100 text-slate-500 border-slate-200 hover:bg-slate-200"
                         }`}
                       >
                         {teacher.is_active ? "Aktif" : "Nonaktif"}
                       </button>
                     </td>
-                    <td className="py-3.5 px-4 text-center">
-                      <div className="flex items-center justify-center gap-2">
+                    <td className="py-3.5 px-5 text-center">
+                      <div className="flex items-center justify-center gap-1.5">
                         <button
                           onClick={() => openEditForm(teacher)}
-                          className="p-1.5 rounded-lg bg-sky-600/20 text-sky-400 hover:bg-sky-600/30 transition"
+                          className="p-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition"
                           title="Edit Data"
                         >
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => handleDelete(teacher)}
-                          className="p-1.5 rounded-lg bg-rose-600/20 text-rose-400 hover:bg-rose-600/30 transition"
+                          className="p-1.5 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 transition"
                           title="Hapus Data"
                         >
                           <Trash2 className="w-3.5 h-3.5" />

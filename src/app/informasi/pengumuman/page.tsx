@@ -11,6 +11,8 @@ export const metadata: Metadata = {
     "Portal berita, agenda kegiatan, pengumuman kelulusan, dan publikasi resmi SMA Negeri 2 Buay Bahuga, Kabupaten Way Kanan.",
 };
 
+export const dynamic = "force-dynamic";
+
 const DEFAULT_ANNOUNCEMENTS: Announcement[] = [
   {
     id: "a1",

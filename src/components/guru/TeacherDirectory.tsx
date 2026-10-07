@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Search, GraduationCap, Users, ShieldCheck, BookOpen, X, Sparkles } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
+import Image from "next/image";
+import { Search, GraduationCap, Users, ShieldCheck, BookOpen, X, Sparkles, Radio } from "lucide-react";
 import { Teacher } from "@/types/database";
+import { createClient } from "@/lib/supabase/client";
 
 interface TeacherDirectoryProps {
   initialTeachers: Teacher[];
@@ -11,11 +13,45 @@ interface TeacherDirectoryProps {
 type RoleFilter = "all" | "pimpinan" | "guru" | "staf";
 
 export default function TeacherDirectory({ initialTeachers }: TeacherDirectoryProps) {
+  const [teachers, setTeachers] = useState<Teacher[]>(initialTeachers);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState<RoleFilter>("all");
 
+  useEffect(() => {
+    setTeachers(initialTeachers);
+  }, [initialTeachers]);
+
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel("public-realtime-teachers")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "teachers",
+        },
+        async () => {
+          const { data } = await supabase
+            .from("teachers")
+            .select("*")
+            .eq("is_active", true)
+            .order("order_index", { ascending: true });
+          if (data && data.length > 0) {
+            setTeachers(data as Teacher[]);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   const filteredTeachers = useMemo(() => {
-    return initialTeachers.filter((teacher) => {
+    return teachers.filter((teacher) => {
       // 1. Text Search Filter
       const q = searchQuery.toLowerCase().trim();
       const matchSearch =
@@ -55,28 +91,28 @@ export default function TeacherDirectory({ initialTeachers }: TeacherDirectoryPr
 
       return true;
     });
-  }, [initialTeachers, searchQuery, selectedFilter]);
+  }, [teachers, searchQuery, selectedFilter]);
 
   const filterTabs = [
-    { id: "all" as RoleFilter, label: "Semua", count: initialTeachers.length },
+    { id: "all" as RoleFilter, label: "Semua", count: teachers.length },
     {
       id: "pimpinan" as RoleFilter,
       label: "Pimpinan",
-      count: initialTeachers.filter((t) =>
+      count: teachers.filter((t) =>
         t.role_title.toLowerCase().includes("kepala") || t.role_title.toLowerCase().includes("wakil")
       ).length,
     },
     {
       id: "guru" as RoleFilter,
       label: "Guru Pengajar",
-      count: initialTeachers.filter((t) =>
+      count: teachers.filter((t) =>
         t.role_title.toLowerCase().includes("guru")
       ).length,
     },
     {
       id: "staf" as RoleFilter,
       label: "Tata Usaha & Staf",
-      count: initialTeachers.filter(
+      count: teachers.filter(
         (t) =>
           t.role_title.toLowerCase().includes("tata usaha") ||
           t.role_title.toLowerCase().includes("staf")
@@ -163,13 +199,23 @@ export default function TeacherDirectory({ initialTeachers }: TeacherDirectoryPr
                 }`}
               >
                 <div className="p-6 space-y-4 text-center">
-                  {/* Avatar Icon */}
-                  <div className="relative w-24 h-24 mx-auto rounded-full bg-gradient-to-tr from-sky-600 via-sky-500 to-sky-400 p-1 shadow-md group-hover:scale-105 transition-transform duration-300">
-                    <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center overflow-hidden">
-                      <GraduationCap className="w-10 h-10 text-sky-600" />
+                  {/* Avatar Photo / Icon */}
+                  <div className="relative w-28 h-28 mx-auto rounded-full bg-gradient-to-tr from-sky-600 via-sky-500 to-sky-400 p-1 shadow-md group-hover:scale-105 transition-transform duration-300">
+                    <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center overflow-hidden relative">
+                      {teacher.photo_url ? (
+                        <Image
+                          src={teacher.photo_url}
+                          alt={teacher.full_name}
+                          width={112}
+                          height={112}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <GraduationCap className="w-10 h-10 text-sky-600" />
+                      )}
                     </div>
                     {isLeader && (
-                      <span className="absolute -top-1 -right-1 p-1 bg-amber-400 text-slate-950 rounded-full shadow-md" title="Pimpinan Sekolah">
+                      <span className="absolute -top-1 -right-1 p-1 bg-amber-400 text-slate-950 rounded-full shadow-md z-10" title="Pimpinan Sekolah">
                         <Sparkles className="w-3.5 h-3.5" />
                       </span>
                     )}

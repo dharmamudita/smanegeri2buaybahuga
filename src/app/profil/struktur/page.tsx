@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { 
   Network, 
   ChevronRight, 
@@ -12,10 +13,10 @@ import {
   Building2, 
   PhoneCall, 
   Compass, 
-  Laptop,
-  CheckCircle2,
-  Layers,
-  ArrowRight
+  Laptop, 
+  CheckCircle2, 
+  Layers, 
+  ArrowRight 
 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -28,7 +29,8 @@ const LEADERSHIP_TEAM = [
   {
     role: "Kepala Sekolah",
     name: "Apriyani, S.Si., M.M.Pd.",
-    nip: "Kepala SMA Negeri 2 Buay Bahuga",
+    nip: "19780512 200501 2 008",
+    photo: "/guru/kepala_sekolah.jpg",
     level: "Pimpinan Utama",
     desc: "Penanggung jawab umum seluruh kebijakan, tata kelola manajerial, mutu akademik, dan akuntabilitas kelembagaan sekolah.",
     badge: "Pimpinan Sekolah",
@@ -38,6 +40,7 @@ const LEADERSHIP_TEAM = [
     role: "Komite Sekolah",
     name: "H. Sudirman, S.H.",
     nip: "Tokoh Masyarakat",
+    photo: null,
     level: "Badan Pertimbangan & Mitra",
     desc: "Lembaga mandiri yang memberikan pertimbangan, pengawasan transparansi, dan dukungan peran serta masyarakat dalam pemajuan sekolah.",
     badge: "Mitra Independen",
@@ -45,10 +48,11 @@ const LEADERSHIP_TEAM = [
   },
   {
     role: "Kepala Tata Usaha (KTU)",
-    name: "Eko Prasetyo, S.AP.",
-    nip: "19870311 201101 1 009",
+    name: "Wahyudi, S.E.",
+    nip: "19850612 201001 1 015",
+    photo: "/guru/guru_pria.jpg",
     level: "Unsur Tata Usaha",
-    desc: "Memimpin pengelolaan ketatausahaan, administrasi kepegawaian, surat-menyurat, pengelolaan keuangan rutin, dan sarana umum.",
+    desc: "Memimpin pengelolaan ketatausahaan, administrasi kepegawaian, surat-menyurat, pengelolaan anggaran rutin, dan sarana umum.",
     badge: "Administrasi",
     color: "from-teal-600 to-teal-800",
   },
@@ -57,8 +61,9 @@ const LEADERSHIP_TEAM = [
 const WAKA_TEAM = [
   {
     title: "Waka Bidang Kurikulum",
-    name: "Siti Rahmawati, S.Pd., M.Si.",
-    nip: "19750821 200212 2 003",
+    name: "Bambang Irawan, S.Pd., M.Pd.",
+    nip: "19820315 200801 1 012",
+    photo: "/guru/bambang_irawan.jpg",
     icon: BookOpen,
     desc: "Mengkoordinasikan implementasi Kurikulum Merdeka, pembagian jam mengajar, kalender akademik, ANBK/asesmen, dan evaluasi belajar peserta didik.",
     tupoksi: [
@@ -69,8 +74,9 @@ const WAKA_TEAM = [
   },
   {
     title: "Waka Bidang Kesiswaan",
-    name: "Ahmad Fauzi, S.Pd.",
-    nip: "19820315 200801 1 012",
+    name: "Siti Rahmawati, S.Pd.",
+    nip: "19840722 200902 2 005",
+    photo: "/guru/siti_rahmawati.jpg",
     icon: Users,
     desc: "Membina kedisiplinan siswa, memfasilitasi program OSIS/MPK, mengelola seleksi lomba kesiswaan, dan pembinaan karakter.",
     tupoksi: [
@@ -81,8 +87,9 @@ const WAKA_TEAM = [
   },
   {
     title: "Waka Bidang Sarana & Prasarana",
-    name: "Budi Santoso, S.Si.",
-    nip: "19890912 201502 1 007",
+    name: "Ahmad Fauzi, S.Pd.",
+    nip: "19801105 200604 1 009",
+    photo: "/guru/ahmad_fauzi.jpg",
     icon: Building2,
     desc: "Mengelola pemeliharaan aset fisik sekolah, laboratorium komputer CBT, laboratorium sains IPA, dan keamanan lingkungan kampus.",
     tupoksi: [
@@ -93,8 +100,9 @@ const WAKA_TEAM = [
   },
   {
     title: "Waka Bidang Hubungan Masyarakat (Humas)",
-    name: "Dewi Lestari, S.Pd.",
-    nip: "19860410 201001 2 018",
+    name: "Nurul Hidayah, S.Sos.",
+    nip: "19860918 201101 2 014",
+    photo: "/guru/guru_wanita.jpg",
     icon: PhoneCall,
     desc: "Membangun kemitraan eksternal dengan perguruan tinggi negeri, instansi kedinasan, dunia usaha, media publikasi, dan orang tua siswa.",
     tupoksi: [
@@ -175,20 +183,26 @@ export default function ProfilStrukturPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {/* Kepala Sekolah */}
             <div className="p-8 rounded-3xl bg-gradient-to-br from-sky-600 via-sky-700 to-sky-900 text-white shadow-xl space-y-4 relative overflow-hidden flex flex-col justify-between">
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="px-3 py-1 rounded-full bg-white/20 text-sky-100 text-xs font-bold uppercase tracking-wider">
                     Pimpinan Utama
                   </span>
-                  <div className="p-2 rounded-xl bg-white/10 text-sky-200">
-                    <GraduationCap className="w-5 h-5" />
+                  <div className="relative w-14 h-14 rounded-full ring-2 ring-white/60 overflow-hidden shadow-md shrink-0">
+                    <Image
+                      src="/guru/kepala_sekolah.jpg"
+                      alt="Apriyani, S.Si., M.M.Pd."
+                      width={56}
+                      height={56}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 </div>
 
                 <div>
                   <div className="text-xs text-sky-200 font-semibold uppercase tracking-wider">Kepala Sekolah</div>
                   <h3 className="text-2xl font-black mt-1">Apriyani, S.Si., M.M.Pd.</h3>
-                  <div className="text-xs font-mono text-sky-200 mt-0.5">Kepala SMA Negeri 2 Buay Bahuga</div>
+                  <div className="text-xs font-mono text-sky-200 mt-0.5">NIP. 19780512 200501 2 008</div>
                 </div>
 
                 <p className="text-xs sm:text-sm text-sky-100 leading-relaxed pt-2 border-t border-white/10">
@@ -234,14 +248,28 @@ export default function ProfilStrukturPage() {
 
           {/* Level 2: Kepala Tata Usaha (KTU) */}
           <div className="max-w-md mx-auto">
-            <div className="p-6 rounded-3xl bg-white border-2 border-slate-200 shadow-sm text-center space-y-2">
+            <div className="p-6 rounded-3xl bg-white border-2 border-slate-200 shadow-sm text-center space-y-3">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-700 text-xs font-bold uppercase tracking-wider">
                 <Briefcase className="w-3.5 h-3.5" />
                 <span>Unsur Administrasi & Ketatausahaan</span>
               </div>
-              <h3 className="text-lg font-extrabold text-slate-900">Eko Prasetyo, S.AP.</h3>
-              <div className="text-xs text-teal-800 font-semibold">Kepala Tata Usaha (KTU)</div>
-              <div className="text-[11px] font-mono text-slate-400">NIP. 19870311 201101 1 009</div>
+              
+              <div className="relative w-16 h-16 mx-auto rounded-full ring-2 ring-teal-200 overflow-hidden shadow-xs">
+                <Image
+                  src="/guru/guru_pria.jpg"
+                  alt="Wahyudi, S.E."
+                  width={64}
+                  height={64}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900">Wahyudi, S.E.</h3>
+                <div className="text-xs text-teal-800 font-semibold">Kepala Tata Usaha (KTU)</div>
+                <div className="text-[11px] font-mono text-slate-400">NIP. 19850612 201001 1 015</div>
+              </div>
+
               <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
                 Membawahi layanan administrasi kepegawaian, operator Dapodik, aset, dan kearsipan persuratan dinas.
               </p>
@@ -268,8 +296,14 @@ export default function ProfilStrukturPage() {
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
-                        <Icon className="w-5 h-5" />
+                      <div className="relative w-12 h-12 rounded-full ring-2 ring-sky-200 overflow-hidden shadow-xs">
+                        <Image
+                          src={waka.photo}
+                          alt={waka.name}
+                          width={48}
+                          height={48}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                       <span className="text-[11px] font-mono font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded-md">
                         WAKA 0{idx + 1}

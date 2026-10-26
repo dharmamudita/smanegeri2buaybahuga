@@ -35,9 +35,14 @@ export default function InstitutionalHeader() {
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white text-[#2A2C5E] flex items-center justify-center shadow-xs group-hover:bg-blue-50 transition-colors">
               <GraduationCap className="w-5 h-5" />
             </div>
-            <span className="text-base sm:text-lg font-extrabold text-white tracking-tight leading-none whitespace-nowrap">
-              SMAN 2 BUAY BAHUGA
-            </span>
+            <div className="flex flex-col">
+              <span className="text-base sm:text-lg font-extrabold text-white tracking-tight leading-none whitespace-nowrap">
+                SMAN 2 BUAY BAHUGA
+              </span>
+              <span className="text-[11px] sm:text-xs font-semibold text-blue-200/90 tracking-wide mt-1 leading-none whitespace-nowrap">
+                Terakreditasi A
+              </span>
+            </div>
           </Link>
 
           {/* Navigasi Kapsul Floating Di Tengah (Sedikit Lebih Besar, Teks Jelas, Berjarak Nyaman) */}

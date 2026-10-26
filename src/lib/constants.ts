@@ -2,7 +2,7 @@ export const SCHOOL_INFO = {
   nama: "SMA Negeri 2 Buay Bahuga",
   namaPendek: "SMAN 2 Buay Bahuga",
   npsn: "69989823",
-  akreditasi: "B",
+  akreditasi: "A",
   provinsi: "Lampung",
   kabupaten: "Kabupaten Way Kanan",
   kecamatan: "Kecamatan Buay Bahuga",

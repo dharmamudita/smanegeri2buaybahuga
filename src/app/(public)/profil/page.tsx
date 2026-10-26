@@ -22,7 +22,6 @@ import { SCHOOL_INFO } from "@/lib/constants";
 import { MOCK_USERS } from "@/lib/mockData";
 
 type ProfilTab =
-  | "ALL"
   | "VISI_MISI"
   | "STRUKTUR_ORGANISASI"
   | "GURU_STAFF"
@@ -31,15 +30,14 @@ type ProfilTab =
 
 function ProfilContent() {
   const searchParams = useSearchParams();
-  const initialTab = (searchParams.get("tab")?.toUpperCase() as ProfilTab) || "ALL";
+  const initialTab = (searchParams.get("tab")?.toUpperCase() as ProfilTab) || "VISI_MISI";
   const [activeTab, setActiveTab] = useState<ProfilTab>(
-    ["ALL", "VISI_MISI", "STRUKTUR_ORGANISASI", "GURU_STAFF", "IDENTITAS_SEKOLAH", "FASILITAS"].includes(initialTab)
+    ["VISI_MISI", "STRUKTUR_ORGANISASI", "GURU_STAFF", "IDENTITAS_SEKOLAH", "FASILITAS"].includes(initialTab)
       ? initialTab
-      : "ALL"
+      : "VISI_MISI"
   );
 
   const tabs: { key: ProfilTab; label: string }[] = [
-    { key: "ALL", label: "Semua Profil" },
     { key: "VISI_MISI", label: "Visi Misi" },
     { key: "STRUKTUR_ORGANISASI", label: "Struktur Organisasi" },
     { key: "GURU_STAFF", label: "Guru & Staff" },
@@ -172,7 +170,7 @@ function ProfilContent() {
       </div>
 
       {/* TAB 1: VISI & MISI */}
-      {(activeTab === "ALL" || activeTab === "VISI_MISI") && (
+      {activeTab === "VISI_MISI" && (
         <section className="space-y-6">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">
@@ -227,7 +225,7 @@ function ProfilContent() {
       )}
 
       {/* TAB 2: STRUKTUR ORGANISASI */}
-      {(activeTab === "ALL" || activeTab === "STRUKTUR_ORGANISASI") && (
+      {activeTab === "STRUKTUR_ORGANISASI" && (
         <section className="space-y-6">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">
@@ -260,7 +258,7 @@ function ProfilContent() {
       )}
 
       {/* TAB 3: GURU & STAFF */}
-      {(activeTab === "ALL" || activeTab === "GURU_STAFF") && (
+      {activeTab === "GURU_STAFF" && (
         <section className="space-y-6">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">
@@ -304,7 +302,7 @@ function ProfilContent() {
       )}
 
       {/* TAB 4: IDENTITAS SEKOLAH */}
-      {(activeTab === "ALL" || activeTab === "IDENTITAS_SEKOLAH") && (
+      {activeTab === "IDENTITAS_SEKOLAH" && (
         <section className="space-y-6">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">
@@ -373,7 +371,7 @@ function ProfilContent() {
       )}
 
       {/* TAB 5: FASILITAS */}
-      {(activeTab === "ALL" || activeTab === "FASILITAS") && (
+      {activeTab === "FASILITAS" && (
         <section className="space-y-6">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">

@@ -51,37 +51,35 @@ export default function InformasiPage() {
           Temukan rilis pengumuman akademik resmi, jadwal kegiatan sekolah, dan
           liputan prestasi civitas akademika SMA Negeri 2 Buay Bahuga.
         </p>
-      </div>
+        {/* Tab Kategori & Search Bar: Berjarak rapat dan menyatu proporsional dengan teks */}
+        <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="inline-flex flex-wrap items-center gap-1.5 p-1 bg-white rounded-lg border border-gray-200 shadow-2xs">
+            {kategoriList.map((kat) => (
+              <button
+                key={kat}
+                onClick={() => setSelectedKategori(kat)}
+                className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                  selectedKategori === kat
+                    ? "bg-[#2A2C5E] text-white shadow-2xs"
+                    : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                {kat === "ALL" ? "Semua Kategori" : kat}
+              </button>
+            ))}
+          </div>
 
-      {/* Filter and Search Bar: Dekat dan proporsional */}
-      <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-        {/* Kategori Tabs */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          {kategoriList.map((kat) => (
-            <button
-              key={kat}
-              onClick={() => setSelectedKategori(kat)}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
-                selectedKategori === kat
-                  ? "bg-[#2A2C5E] text-white shadow-2xs"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              {kat === "ALL" ? "Semua Kategori" : kat}
-            </button>
-          ))}
-        </div>
-
-        {/* Search */}
-        <div className="relative w-full md:w-72">
-          <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari judul berita..."
-            className="w-full pl-9 pr-3 py-1.5 text-xs bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
-          />
+          {/* Search Box */}
+          <div className="relative w-full sm:w-64">
+            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Cari warta berita..."
+              className="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E] shadow-2xs"
+            />
+          </div>
         </div>
       </div>
 

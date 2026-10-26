@@ -13,19 +13,18 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-type AkademikTab = "ALL" | "KALENDER" | "JADWAL_PELAJARAN" | "JADWAL_UJIAN";
+type AkademikTab = "KALENDER" | "JADWAL_PELAJARAN" | "JADWAL_UJIAN";
 
 function AkademikContent() {
   const searchParams = useSearchParams();
-  const initialTab = (searchParams.get("tab")?.toUpperCase() as AkademikTab) || "ALL";
+  const initialTab = (searchParams.get("tab")?.toUpperCase() as AkademikTab) || "KALENDER";
   const [activeTab, setActiveTab] = useState<AkademikTab>(
-    ["ALL", "KALENDER", "JADWAL_PELAJARAN", "JADWAL_UJIAN"].includes(initialTab)
+    ["KALENDER", "JADWAL_PELAJARAN", "JADWAL_UJIAN"].includes(initialTab)
       ? initialTab
-      : "ALL"
+      : "KALENDER"
   );
 
   const tabs: { key: AkademikTab; label: string }[] = [
-    { key: "ALL", label: "Semua Akademik" },
     { key: "KALENDER", label: "Kalender Akademik" },
     { key: "JADWAL_PELAJARAN", label: "Jadwal Pelajaran" },
     { key: "JADWAL_UJIAN", label: "Jadwal Ujian" },
@@ -127,7 +126,7 @@ function AkademikContent() {
       </div>
 
       {/* TAB 1: KALENDER AKADEMIK */}
-      {(activeTab === "ALL" || activeTab === "KALENDER") && (
+      {activeTab === "KALENDER" && (
         <section className="space-y-6">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">
@@ -180,7 +179,7 @@ function AkademikContent() {
       )}
 
       {/* TAB 2: JADWAL PELAJARAN */}
-      {(activeTab === "ALL" || activeTab === "JADWAL_PELAJARAN") && (
+      {activeTab === "JADWAL_PELAJARAN" && (
         <section className="space-y-6">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">
@@ -214,7 +213,7 @@ function AkademikContent() {
       )}
 
       {/* TAB 3: JADWAL UJIAN */}
-      {(activeTab === "ALL" || activeTab === "JADWAL_UJIAN") && (
+      {activeTab === "JADWAL_UJIAN" && (
         <section className="space-y-6">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">
@@ -266,7 +265,7 @@ function AkademikContent() {
       )}
 
       {/* Program Jurusan / Konsentrasi Kurikulum Merdeka */}
-      {activeTab === "ALL" && (
+      {activeTab === "KALENDER" && (
         <section className="space-y-6 pt-6 border-t border-gray-200">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">

@@ -17,19 +17,18 @@ import {
   Sparkles,
 } from "lucide-react";
 
-type KesiswaanTab = "ALL" | "TATA_TERTIB" | "PRESTASI" | "EKSTRAKURIKULER";
+type KesiswaanTab = "TATA_TERTIB" | "PRESTASI" | "EKSTRAKURIKULER";
 
 function KesiswaanContent() {
   const searchParams = useSearchParams();
-  const initialTab = (searchParams.get("tab")?.toUpperCase() as KesiswaanTab) || "ALL";
+  const initialTab = (searchParams.get("tab")?.toUpperCase() as KesiswaanTab) || "TATA_TERTIB";
   const [activeTab, setActiveTab] = useState<KesiswaanTab>(
-    ["ALL", "TATA_TERTIB", "PRESTASI", "EKSTRAKURIKULER"].includes(initialTab)
+    ["TATA_TERTIB", "PRESTASI", "EKSTRAKURIKULER"].includes(initialTab)
       ? initialTab
-      : "ALL"
+      : "TATA_TERTIB"
   );
 
   const tabs: { key: KesiswaanTab; label: string }[] = [
-    { key: "ALL", label: "Semua Kesiswaan" },
     { key: "TATA_TERTIB", label: "Tata Tertib" },
     { key: "PRESTASI", label: "Prestasi" },
     { key: "EKSTRAKURIKULER", label: "Ekstrakurikuler" },
@@ -197,7 +196,7 @@ function KesiswaanContent() {
       </div>
 
       {/* TAB 1: TATA TERTIB */}
-      {(activeTab === "ALL" || activeTab === "TATA_TERTIB") && (
+      {activeTab === "TATA_TERTIB" && (
         <section className="space-y-6">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">
@@ -245,7 +244,7 @@ function KesiswaanContent() {
       )}
 
       {/* TAB 2: PRESTASI */}
-      {(activeTab === "ALL" || activeTab === "PRESTASI") && (
+      {activeTab === "PRESTASI" && (
         <section className="space-y-6">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">
@@ -283,7 +282,7 @@ function KesiswaanContent() {
       )}
 
       {/* TAB 3: EKSTRAKURIKULER */}
-      {(activeTab === "ALL" || activeTab === "EKSTRAKURIKULER") && (
+      {activeTab === "EKSTRAKURIKULER" && (
         <section className="space-y-6">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">
@@ -335,7 +334,7 @@ function KesiswaanContent() {
       )}
 
       {/* Profil Organisasi Siswa OSIS & MPK */}
-      {activeTab === "ALL" && (
+      {activeTab === "TATA_TERTIB" && (
         <section className="space-y-6 pt-6 border-t border-gray-200">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">

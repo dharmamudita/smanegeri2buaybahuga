@@ -2,56 +2,118 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import {
   GraduationCap,
   Shield,
   User,
+  Users,
   Lock,
   ArrowRight,
   AlertCircle,
   HelpCircle,
+  ChevronLeft,
 } from "lucide-react";
 import { useAuthStore } from "@/lib/store";
 import { MOCK_USERS } from "@/lib/mockData";
 import { Role } from "@/lib/types";
+
+const ROLE_CONFIG: Record<
+  Role,
+  {
+    title: string;
+    subtitle: string;
+    badge: string;
+    badgeClass: string;
+    icon: any;
+    accentColor: string;
+    buttonClass: string;
+    idLabel: string;
+    idPlaceholder: string;
+    btnLabel: string;
+    demoId: string;
+    demoPass: string;
+    demoName: string;
+  }
+> = {
+  SISWA: {
+    title: "Portal Masuk Siswa",
+    subtitle:
+      "Akses E-Learning, Presensi Geofencing & Ujian Digital SMAN 2 Buay Bahuga",
+    badge: "Ruang Peserta Didik",
+    badgeClass: "bg-blue-50 text-[#2E4BA3] border-blue-200",
+    icon: GraduationCap,
+    accentColor: "#2E4BA3",
+    buttonClass: "bg-[#2E4BA3] hover:bg-[#233b82]",
+    idLabel: "Nomor Induk Siswa Nasional (NISN)",
+    idPlaceholder: "10 Digit Angka NISN Siswa",
+    btnLabel: "Masuk ke Ruang Siswa",
+    demoId: "0078129341",
+    demoPass: "siswa12345",
+    demoName: "Dharma Mudita Pratama (XII MIPA 1)",
+  },
+  GURU: {
+    title: "Portal Masuk Dewan Guru",
+    subtitle:
+      "Sistem Manajemen Pembelajaran, Bank Soal & Nilai SMAN 2 Buay Bahuga",
+    badge: "Ruang Tenaga Pendidik",
+    badgeClass: "bg-amber-50 text-amber-800 border-amber-200",
+    icon: Users,
+    accentColor: "#D97706",
+    buttonClass: "bg-[#2E4BA3] hover:bg-[#233b82]",
+    idLabel: "Nomor Unik Pendidik dan Tenaga Kependidikan (NUPTK)",
+    idPlaceholder: "16 Digit NUPTK Guru",
+    btnLabel: "Masuk ke Portal Dewan Guru",
+    demoId: "197805122005011003",
+    demoPass: "guru12345",
+    demoName: "Budi Santoso, S.Pd., M.Si. (Biologi)",
+  },
+  ADMIN: {
+    title: "Portal Masuk Administrator",
+    subtitle:
+      "Pusat Kendali Data Pokok, Pengguna & Seleksi PPDB SMAN 2 Buay Bahuga",
+    badge: "Panel Administrator Sistem",
+    badgeClass: "bg-red-50 text-red-800 border-red-200",
+    icon: Shield,
+    accentColor: "#DC2626",
+    buttonClass: "bg-[#2E4BA3] hover:bg-[#233b82]",
+    idLabel: "ID Akses Administrator",
+    idPlaceholder: "ID Administrator Resmi",
+    btnLabel: "Masuk ke Panel Administrator",
+    demoId: "SMAN2BUBA",
+    demoPass: "SMANegeri2buba",
+    demoName: "Drs. Hendro Wibowo, M.Pd. (Admin)",
+  },
+};
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { setUser } = useAuthStore();
 
-  const [selectedRole, setSelectedRole] = useState<Role>("SISWA");
-  const [username, setUsername] = useState("0078129341");
+  // Tentukan peran aktif murni dari query param ?role=
+  const roleQuery = searchParams.get("role");
+  const currentRole: Role =
+    roleQuery === "ADMIN"
+      ? "ADMIN"
+      : roleQuery === "GURU"
+      ? "GURU"
+      : "SISWA";
+
+  const config = ROLE_CONFIG[currentRole];
+  const Icon = config.icon;
+
+  const [username, setUsername] = useState(config.demoId);
   const [password, setPassword] = useState("password123");
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Deteksi query param ?role=ADMIN / ?role=GURU / ?role=SISWA dari footer
+  // Perbarui isian default saat query param berganti
   useEffect(() => {
-    const roleParam = searchParams.get("role");
-    if (roleParam === "ADMIN") {
-      handleRoleTabChange("ADMIN");
-    } else if (roleParam === "GURU") {
-      handleRoleTabChange("GURU");
-    } else if (roleParam === "SISWA") {
-      handleRoleTabChange("SISWA");
-    }
-  }, [searchParams]);
-
-  const handleRoleTabChange = (role: Role) => {
-    setSelectedRole(role);
+    setUsername(config.demoId);
+    setPassword("password123");
     setErrorMsg("");
-    if (role === "ADMIN") {
-      setUsername("SMAN2BUBA");
-      setPassword("SMANegeri2buba");
-    } else if (role === "GURU") {
-      setUsername("197805122005011003"); // NUPTK Pak Budi Santoso
-      setPassword("guru12345");
-    } else {
-      setUsername("0078129341"); // NISN Dharma Mudita
-      setPassword("siswa12345");
-    }
-  };
+  }, [currentRole, config.demoId]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,13 +123,13 @@ function LoginForm() {
     setTimeout(() => {
       let matched = MOCK_USERS.find(
         (u) =>
-          u.role === selectedRole &&
+          u.role === currentRole &&
           (u.username.toLowerCase() === username.toLowerCase() ||
             u.nisn === username ||
             u.nuptk === username)
       );
 
-      if (selectedRole === "ADMIN") {
+      if (currentRole === "ADMIN") {
         if (username === "SMAN2BUBA" && password === "SMANegeri2buba") {
           matched = MOCK_USERS[0];
         } else {
@@ -88,9 +150,11 @@ function LoginForm() {
         }
       } else {
         setErrorMsg(
-          selectedRole === "GURU"
-            ? "NUPTK tidak ditemukan atau belum didaftarkan oleh Admin."
-            : "NISN tidak ditemukan. Pastikan Anda telah terdaftar aktif di Dapodik."
+          currentRole === "GURU"
+            ? "NUPTK tidak terdaftar di sistem pendidik."
+            : currentRole === "ADMIN"
+            ? "Kredensial Administrator salah."
+            : "NISN tidak terdaftar di pangkalan data siswa."
         );
         setLoading(false);
       }
@@ -99,58 +163,24 @@ function LoginForm() {
 
   return (
     <div className="max-w-md w-full space-y-6">
-      {/* Institutional Header */}
-      <div className="text-center space-y-2">
+      {/* Header Portal Mandiri (Tanpa Tab Bercampur) */}
+      <div className="text-center space-y-3">
         <div className="w-14 h-14 mx-auto rounded-xl bg-[#2E4BA3] text-white flex items-center justify-center shadow-xs">
-          <GraduationCap className="w-8 h-8" />
+          <Icon className="w-7 h-7" />
+        </div>
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-semibold border border-gray-200 bg-white text-gray-700 shadow-2xs">
+          <span>{config.badge}</span>
         </div>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-          Gerbang Masuk Terpadu
+          {config.title}
         </h1>
-        <p className="text-xs text-gray-500">
-          Smart School & Learning Management System SMAN 2 Buay Bahuga
+        <p className="text-xs text-gray-500 max-w-sm mx-auto leading-relaxed">
+          {config.subtitle}
         </p>
       </div>
 
-      {/* Login Box */}
+      {/* Kotak Formulir Khusus Role Ini Saja */}
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8 space-y-6">
-        {/* Role Tabs */}
-        <div className="grid grid-cols-3 gap-1 bg-gray-100 p-1 rounded-lg">
-          <button
-            type="button"
-            onClick={() => handleRoleTabChange("SISWA")}
-            className={`py-2 text-xs font-semibold rounded-md transition-all ${
-              selectedRole === "SISWA"
-                ? "bg-white text-[#2E4BA3] shadow-xs"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Siswa (NISN)
-          </button>
-          <button
-            type="button"
-            onClick={() => handleRoleTabChange("GURU")}
-            className={`py-2 text-xs font-semibold rounded-md transition-all ${
-              selectedRole === "GURU"
-                ? "bg-white text-[#2E4BA3] shadow-xs"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Guru (NUPTK)
-          </button>
-          <button
-            type="button"
-            onClick={() => handleRoleTabChange("ADMIN")}
-            className={`py-2 text-xs font-semibold rounded-md transition-all ${
-              selectedRole === "ADMIN"
-                ? "bg-white text-[#2E4BA3] shadow-xs"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Admin ID
-          </button>
-        </div>
-
         {/* Error Banner */}
         {errorMsg && (
           <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700 flex items-start gap-2">
@@ -159,15 +189,11 @@ function LoginForm() {
           </div>
         )}
 
-        {/* Form */}
+        {/* Form Login Mandiri */}
         <form onSubmit={handleLogin} className="space-y-4">
           <div className="space-y-1">
             <label className="text-xs font-semibold text-gray-700">
-              {selectedRole === "ADMIN"
-                ? "ID Akses Administrator"
-                : selectedRole === "GURU"
-                ? "Nomor Unik Pendidik (NUPTK)"
-                : "Nomor Induk Siswa Nasional (NISN)"}
+              {config.idLabel}
             </label>
             <div className="relative">
               <User className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -176,7 +202,8 @@ function LoginForm() {
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E4BA3]/20 focus:border-[#2E4BA3]"
+                placeholder={config.idPlaceholder}
+                className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E4BA3]/20 focus:border-[#2E4BA3] font-medium"
               />
             </div>
           </div>
@@ -197,6 +224,7 @@ function LoginForm() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="Masukkan kata sandi..."
                 className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E4BA3]/20 focus:border-[#2E4BA3]"
               />
             </div>
@@ -205,35 +233,43 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-[#2E4BA3] hover:bg-[#233b82] text-white text-xs font-bold rounded-md shadow-xs transition-all active:scale-98 disabled:opacity-50"
+            className={`w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 text-white text-xs font-bold rounded-md shadow-xs transition-all active:scale-98 disabled:opacity-50 ${config.buttonClass}`}
           >
             {loading ? (
               <span>Memverifikasi Hak Akses...</span>
             ) : (
               <>
-                <span>Masuk ke {selectedRole === "ADMIN" ? "Panel Admin" : selectedRole === "GURU" ? "Portal Guru" : "Ruang Siswa"}</span>
+                <span>{config.btnLabel}</span>
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
           </button>
         </form>
 
-        {/* Quick Demo Helper */}
+        {/* Demo Helper Khusus Role Ini Saja */}
         <div className="p-3 bg-blue-50/60 rounded-lg border border-blue-100 text-[11px] text-gray-600 space-y-1">
           <div className="flex items-center gap-1.5 font-semibold text-[#2E4BA3]">
             <HelpCircle className="w-3.5 h-3.5" />
-            <span>Info Akses Demo Cepat (PRD):</span>
+            <span>Kredensial Demo Cepat ({config.badge}):</span>
           </div>
-          {selectedRole === "ADMIN" && (
-            <p>ID: <code className="font-bold text-gray-800">SMAN2BUBA</code> | Password: <code className="font-bold text-gray-800">SMANegeri2buba</code></p>
-          )}
-          {selectedRole === "GURU" && (
-            <p>NUPTK: <code className="font-bold text-gray-800">197805122005011003</code> (Budi Santoso, S.Pd.)</p>
-          )}
-          {selectedRole === "SISWA" && (
-            <p>NISN: <code className="font-bold text-gray-800">0078129341</code> (Dharma Mudita Pratama - XII MIPA 1)</p>
-          )}
+          <p>
+            Identitas: <code className="font-bold text-gray-800">{config.demoId}</code> ({config.demoName})
+          </p>
+          <p>
+            Kata Sandi: <code className="font-bold text-gray-800">{config.demoPass}</code>
+          </p>
         </div>
+      </div>
+
+      {/* Navigasi Berpindah ke Portal Lain jika Salah Akses */}
+      <div className="text-center text-xs text-gray-500 pt-2">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1 hover:text-[#2E4BA3] transition-colors"
+        >
+          <ChevronLeft className="w-3.5 h-3.5" />
+          <span>Kembali ke Beranda Utama</span>
+        </Link>
       </div>
     </div>
   );

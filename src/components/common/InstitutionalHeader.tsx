@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   GraduationCap,
+  Building2,
   BookOpen,
   Users,
   Info,
@@ -19,6 +20,7 @@ export default function InstitutionalHeader() {
 
   const navLinks = [
     { href: "/", label: "Beranda", icon: GraduationCap },
+    { href: "/profil", label: "Profil", icon: Building2 },
     { href: "/akademik", label: "Akademik", icon: BookOpen },
     { href: "/kesiswaan", label: "Kesiswaan", icon: Users },
     { href: "/informasi", label: "Informasi", icon: Info },

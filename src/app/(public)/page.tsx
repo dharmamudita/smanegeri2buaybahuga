@@ -25,14 +25,14 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Left Column: Headlines & CTA */}
             <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100/70 border border-blue-200 text-[#2E4BA3] text-xs font-semibold">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100/70 border border-blue-200 text-[#2A2C5E] text-xs font-semibold">
                 <ShieldCheck className="w-4 h-4" />
                 <span>Portal Resmi Pendidikan Terakreditasi {SCHOOL_INFO.akreditasi}</span>
               </div>
 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-[1.15]">
                 Pusat Keunggulan Akademik &{" "}
-                <span className="text-[#2E4BA3]">Smart School Terintegrasi</span>
+                <span className="text-[#2A2C5E]">Smart School Terintegrasi</span>
               </h1>
 
               <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl">
@@ -45,7 +45,7 @@ export default function HomePage() {
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 <Link
                   href="/ppdb"
-                  className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 text-sm font-bold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-lg shadow-sm transition-all active:scale-98"
+                  className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 text-sm font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-lg shadow-sm transition-all active:scale-98"
                 >
                   <span>Pendaftaran PPDB 2026/2027</span>
                   <ArrowRight className="w-4 h-4" />
@@ -55,7 +55,7 @@ export default function HomePage() {
                   href="/login"
                   className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 rounded-lg shadow-2xs transition-all active:scale-98"
                 >
-                  <Lock className="w-4 h-4 text-[#2E4BA3]" />
+                  <Lock className="w-4 h-4 text-[#2A2C5E]" />
                   <span>Akses LMS & Dashboard</span>
                 </Link>
               </div>
@@ -82,7 +82,7 @@ export default function HomePage() {
               <div className="relative mx-auto max-w-md bg-white rounded-2xl shadow-xl border border-gray-200 p-6 space-y-6">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-[#2E4BA3] text-white flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">
                       <GraduationCap className="w-6 h-6" />
                     </div>
                     <div>
@@ -101,7 +101,7 @@ export default function HomePage() {
 
                 <div className="space-y-3.5 text-xs">
                   <div className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100">
-                    <Building2 className="w-4 h-4 text-[#2E4BA3] shrink-0 mt-0.5" />
+                    <Building2 className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
                     <div>
                       <span className="font-semibold text-gray-800">
                         Lokasi Kampus
@@ -113,7 +113,7 @@ export default function HomePage() {
                   </div>
 
                   <div className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100">
-                    <MapPin className="w-4 h-4 text-[#2E4BA3] shrink-0 mt-0.5" />
+                    <MapPin className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
                     <div>
                       <span className="font-semibold text-gray-800">
                         Radius Presensi Siswa
@@ -125,7 +125,7 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="bg-[#2E4BA3] rounded-xl p-4 text-white space-y-2">
+                <div className="bg-[#2A2C5E] rounded-xl p-4 text-white space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-medium text-blue-200">
                       Tahun Ajaran 2026/2027
@@ -148,7 +148,7 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-2xs text-center space-y-1">
-            <div className="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-[#2E4BA3] flex items-center justify-center mb-3">
+            <div className="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-3">
               <Users className="w-5 h-5" />
             </div>
             <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">450+</div>
@@ -158,7 +158,7 @@ export default function HomePage() {
           </div>
 
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-2xs text-center space-y-1">
-            <div className="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-[#2E4BA3] flex items-center justify-center mb-3">
+            <div className="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-3">
               <GraduationCap className="w-5 h-5" />
             </div>
             <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">32</div>
@@ -168,7 +168,7 @@ export default function HomePage() {
           </div>
 
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-2xs text-center space-y-1">
-            <div className="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-[#2E4BA3] flex items-center justify-center mb-3">
+            <div className="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-3">
               <Award className="w-5 h-5" />
             </div>
             <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">18+</div>
@@ -178,7 +178,7 @@ export default function HomePage() {
           </div>
 
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-2xs text-center space-y-1">
-            <div className="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-[#2E4BA3] flex items-center justify-center mb-3">
+            <div className="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-3">
               <BookOpen className="w-5 h-5" />
             </div>
             <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">100%</div>
@@ -206,7 +206,7 @@ export default function HomePage() {
                 <h3 className="font-bold text-gray-900 text-base">
                   Drs. Hendro Wibowo, M.Pd.
                 </h3>
-                <p className="text-xs text-[#2E4BA3] font-medium">
+                <p className="text-xs text-[#2A2C5E] font-medium">
                   Kepala SMA Negeri 2 Buay Bahuga
                 </p>
                 <p className="text-[11px] text-gray-400">NIP. 197003181995121002</p>
@@ -214,7 +214,7 @@ export default function HomePage() {
             </div>
 
             <div className="lg:col-span-8 space-y-4">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2E4BA3] text-xs font-semibold">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>Sambutan Pimpinan Sekolah</span>
               </div>
@@ -250,7 +250,7 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-4">
           <div>
-            <div className="text-xs font-bold uppercase tracking-wider text-[#2E4BA3]">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#2A2C5E]">
               Informasi Publik
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mt-1">
@@ -259,7 +259,7 @@ export default function HomePage() {
           </div>
           <Link
             href="/informasi"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#2E4BA3] hover:text-[#233b82]"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#2A2C5E] hover:text-[#1F2147]"
           >
             <span>Lihat Semua Informasi</span>
             <ChevronRight className="w-4 h-4" />
@@ -279,7 +279,7 @@ export default function HomePage() {
                   alt={berita.judul}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <span className="absolute top-3 left-3 bg-[#2E4BA3] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-xs uppercase tracking-wider">
+                <span className="absolute top-3 left-3 bg-[#2A2C5E] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-xs uppercase tracking-wider">
                   {berita.kategori}
                 </span>
               </div>
@@ -300,7 +300,7 @@ export default function HomePage() {
                 <div className="pt-2 border-t border-gray-100">
                   <Link
                     href="/informasi"
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#2E4BA3] hover:underline"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#2A2C5E] hover:underline"
                   >
                     <span>Baca Selengkapnya</span>
                     <ArrowRight className="w-3 h-3" />

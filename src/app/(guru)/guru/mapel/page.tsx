@@ -56,7 +56,7 @@ export default function GuruMapelPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-5">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2E4BA3] text-xs font-semibold mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
             <BookOpen className="w-3.5 h-3.5" />
             <span>Manajemen Materi Pembelajaran</span>
           </div>
@@ -70,7 +70,7 @@ export default function GuruMapelPage() {
 
         <button
           onClick={() => setShowUploadModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md shadow-2xs self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md shadow-2xs self-start sm:self-auto"
         >
           <PlusCircle className="w-4 h-4" />
           <span>Unggah Modul Baru</span>
@@ -84,14 +84,14 @@ export default function GuruMapelPage() {
           return (
             <div
               key={materi.id}
-              className="bg-white rounded-xl border border-gray-200 p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-[#2E4BA3] transition-colors"
+              className="bg-white rounded-xl border border-gray-200 p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-[#2A2C5E] transition-colors"
             >
               <div className="flex items-start gap-4">
                 <div
                   className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
                     materi.tipe === "VIDEO"
                       ? "bg-purple-50 text-purple-600"
-                      : "bg-blue-50 text-[#2E4BA3]"
+                      : "bg-blue-50 text-[#2A2C5E]"
                   }`}
                 >
                   {materi.tipe === "VIDEO" ? (
@@ -106,7 +106,7 @@ export default function GuruMapelPage() {
                     <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 text-gray-700">
                       {materi.tipe}
                     </span>
-                    <span className="text-xs font-semibold text-[#2E4BA3]">
+                    <span className="text-xs font-semibold text-[#2A2C5E]">
                       {mapel?.nama}
                     </span>
                   </div>
@@ -218,7 +218,7 @@ export default function GuruMapelPage() {
                   <label className="font-semibold text-gray-700">Pilih Berkas</label>
                   <input
                     type="file"
-                    className="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-[#2E4BA3]"
+                    className="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-[#2A2C5E]"
                   />
                 </div>
               </div>
@@ -233,7 +233,7 @@ export default function GuruMapelPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-xs font-bold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md shadow-xs"
+                  className="px-4 py-2 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md shadow-xs"
                 >
                   Terbitkan Materi
                 </button>

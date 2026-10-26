@@ -134,7 +134,7 @@ export default function DataTable<T extends Record<string, any>>({
                 setCurrentPage(1);
               }}
               placeholder={searchPlaceholder}
-              className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E4BA3]/20 focus:border-[#2E4BA3] transition-all"
+              className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E] transition-all"
             />
           </div>
 
@@ -150,7 +150,7 @@ export default function DataTable<T extends Record<string, any>>({
                   key={flt.key}
                   value={currentFilters[flt.key] || "ALL"}
                   onChange={(e) => handleFilterUpdate(flt.key, e.target.value)}
-                  className="text-xs font-medium bg-white border border-gray-300 text-gray-700 py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E4BA3]/20 focus:border-[#2E4BA3]"
+                  className="text-xs font-medium bg-white border border-gray-300 text-gray-700 py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
                 >
                   <option value="ALL">{flt.label} (Semua)</option>
                   {flt.options.map((opt) => (
@@ -168,7 +168,7 @@ export default function DataTable<T extends Record<string, any>>({
       {/* Table Element */}
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs sm:text-sm text-gray-600">
-          <thead className="bg-[#2E4BA3] text-white text-xs font-semibold uppercase tracking-wider">
+          <thead className="bg-[#2A2C5E] text-white text-xs font-semibold uppercase tracking-wider">
             <tr>
               <th scope="col" className="px-4 py-3.5 w-12 text-center">
                 No

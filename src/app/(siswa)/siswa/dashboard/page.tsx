@@ -27,7 +27,7 @@ export default function SiswaDashboardPage() {
   return (
     <div className="space-y-8">
       {/* 1. Welcome Banner */}
-      <div className="bg-[#2E4BA3] text-white rounded-2xl p-6 sm:p-8 shadow-xs relative overflow-hidden">
+      <div className="bg-[#2A2C5E] text-white rounded-2xl p-6 sm:p-8 shadow-xs relative overflow-hidden">
         <div className="relative z-10 space-y-2 max-w-2xl">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/15 text-blue-100 text-xs font-semibold backdrop-blur-xs">
             <GraduationCap className="w-3.5 h-3.5" />
@@ -64,7 +64,7 @@ export default function SiswaDashboardPage() {
           <div className="pt-2">
             <Link
               href="/siswa/presensi"
-              className="text-xs font-semibold text-[#2E4BA3] hover:underline flex items-center gap-1"
+              className="text-xs font-semibold text-[#2A2C5E] hover:underline flex items-center gap-1"
             >
               <span>Buka Menu Presensi GPS</span>
               <ArrowRight className="w-3 h-3" />
@@ -105,7 +105,7 @@ export default function SiswaDashboardPage() {
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
               Mata Pelajaran
             </span>
-            <span className="p-2 bg-blue-50 text-[#2E4BA3] rounded-lg">
+            <span className="p-2 bg-blue-50 text-[#2A2C5E] rounded-lg">
               <BookOpen className="w-4 h-4" />
             </span>
           </div>
@@ -118,7 +118,7 @@ export default function SiswaDashboardPage() {
           <div className="pt-2">
             <Link
               href="/siswa/mapel"
-              className="text-xs font-semibold text-[#2E4BA3] hover:underline flex items-center gap-1"
+              className="text-xs font-semibold text-[#2A2C5E] hover:underline flex items-center gap-1"
             >
               <span>Lihat Semua Materi</span>
               <ArrowRight className="w-3 h-3" />
@@ -135,7 +135,7 @@ export default function SiswaDashboardPage() {
           </h2>
           <Link
             href="/siswa/mapel"
-            className="text-xs font-semibold text-[#2E4BA3] hover:underline"
+            className="text-xs font-semibold text-[#2A2C5E] hover:underline"
           >
             Lihat Modul & Materi Lengkap &rarr;
           </Link>
@@ -145,11 +145,11 @@ export default function SiswaDashboardPage() {
           {MOCK_MAPEL.map((mapel) => (
             <div
               key={mapel.id}
-              className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden flex flex-col justify-between hover:border-[#2E4BA3] transition-colors"
+              className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden flex flex-col justify-between hover:border-[#2A2C5E] transition-colors"
             >
               <div className="p-5 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-50 text-[#2E4BA3] border border-blue-100">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-50 text-[#2A2C5E] border border-blue-100">
                     {mapel.kode}
                   </span>
                   <span className="text-xs text-gray-500 font-medium">
@@ -182,7 +182,7 @@ export default function SiswaDashboardPage() {
                 <span className="text-[11px] text-gray-500">{mapel.jadwal}</span>
                 <Link
                   href="/siswa/mapel"
-                  className="px-3 py-1.5 text-xs font-semibold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md transition-all"
+                  className="px-3 py-1.5 text-xs font-semibold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md transition-all"
                 >
                   Masuk Kelas
                 </Link>
@@ -209,7 +209,7 @@ export default function SiswaDashboardPage() {
                     className={`text-[10px] font-bold px-2 py-0.5 rounded ${
                       tugas.tipe.startsWith("UJIAN")
                         ? "bg-red-50 text-red-700 border border-red-200"
-                        : "bg-blue-50 text-[#2E4BA3] border border-blue-200"
+                        : "bg-blue-50 text-[#2A2C5E] border border-blue-200"
                     }`}
                   >
                     {tugas.tipe}
@@ -234,7 +234,7 @@ export default function SiswaDashboardPage() {
                 ) : (
                   <Link
                     href="/siswa/tugas"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md shadow-2xs"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md shadow-2xs"
                   >
                     <span>Kerjakan Sekarang</span>
                     <ArrowRight className="w-3.5 h-3.5" />

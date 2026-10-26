@@ -53,7 +53,7 @@ export default function AdminPPDBPage() {
       header: "No. Pendaftaran & Nama",
       cell: (row) => (
         <div>
-          <div className="font-mono font-bold text-[#2E4BA3] text-xs">
+          <div className="font-mono font-bold text-[#2A2C5E] text-xs">
             {row.nomorPendaftaran}
           </div>
           <div className="font-semibold text-gray-900 mt-0.5">
@@ -71,7 +71,7 @@ export default function AdminPPDBPage() {
         <span
           className={`text-[10px] font-bold px-2.5 py-0.5 rounded border ${
             row.pilihanJurusan === "MIPA"
-              ? "bg-blue-50 text-[#2E4BA3] border-blue-200"
+              ? "bg-blue-50 text-[#2A2C5E] border-blue-200"
               : "bg-amber-50 text-amber-700 border-amber-200"
           }`}
         >
@@ -111,7 +111,7 @@ export default function AdminPPDBPage() {
         }
         if (row.status === "DIVERIFIKASI") {
           return (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-50 text-[#2E4BA3] border border-blue-200">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-50 text-[#2A2C5E] border border-blue-200">
               <CheckCircle2 className="w-3.5 h-3.5" />
               Berkas Sah
             </span>
@@ -162,7 +162,7 @@ export default function AdminPPDBPage() {
     <div className="space-y-8">
       {/* Page Header */}
       <div className="border-b border-gray-200 pb-5">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2E4BA3] text-xs font-semibold mb-2">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
           <FileCheck className="w-3.5 h-3.5" />
           <span>Panitia Seleksi PPDB Online</span>
         </div>

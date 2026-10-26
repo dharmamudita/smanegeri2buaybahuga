@@ -85,7 +85,7 @@ export default function AdminBeritaPage() {
     {
       header: "Kategori",
       cell: (row) => (
-        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-50 text-[#2E4BA3] border border-blue-100">
+        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-50 text-[#2A2C5E] border border-blue-100">
           {row.kategori}
         </span>
       ),
@@ -128,7 +128,7 @@ export default function AdminBeritaPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-5">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2E4BA3] text-xs font-semibold mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
             <FileText className="w-3.5 h-3.5" />
             <span>Content Management System (CMS)</span>
           </div>
@@ -142,7 +142,7 @@ export default function AdminBeritaPage() {
 
         <button
           onClick={() => setShowModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md shadow-2xs self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md shadow-2xs self-start sm:self-auto"
         >
           <PlusCircle className="w-4 h-4" />
           <span>Tulis Pengumuman Baru</span>
@@ -192,7 +192,7 @@ export default function AdminBeritaPage() {
                 <select
                   value={kategori}
                   onChange={(e) => setKategori(e.target.value as any)}
-                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md font-semibold text-[#2E4BA3]"
+                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md font-semibold text-[#2A2C5E]"
                 >
                   <option value="PENGUMUMAN">PENGUMUMAN</option>
                   <option value="AKADEMIK">AKADEMIK</option>
@@ -235,7 +235,7 @@ export default function AdminBeritaPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-xs font-bold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md shadow-xs"
+                  className="px-4 py-2 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md shadow-xs"
                 >
                   Terbitkan Pengumuman
                 </button>

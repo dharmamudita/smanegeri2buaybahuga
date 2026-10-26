@@ -47,7 +47,7 @@ SMAN 2 Buay Bahuga memerlukan sistem informasi terintegrasi yang menggabungkan:
 - **Nuansa**: Profesional, bersih, terpercaya, dan modern formal.
 - **Tanpa Emoji**: Seluruh elemen visual menggunakan icon vektor SVG (`lucide-react`) atau badge elementar. Tidak ada penggunaan emoticon/emoji santai agar citra institusi pendidikan tetap kredibel.
 - **Palet Warna**:
-  - **Primary**: `#2E4BA3` (Deep Institutional Navy Blue) — Tombol aksi, header tabel, active state navigation, aksen identitas.
+  - **Primary**: `#2A2C5E` (Deep Institutional Navy Blue) — Tombol aksi, header tabel, active state navigation, aksen identitas.
   - **Background**: `#FFFFFF` (Pure White) & `#F9FAFB` (Subtle Off-White) untuk section contrast.
   - **Text**: `#111827` (Gray-900 primer) dan `#4B5563` (Gray-600 sekunder).
   - **Border**: `#E5E7EB` (Gray-200) halus dan tegas.

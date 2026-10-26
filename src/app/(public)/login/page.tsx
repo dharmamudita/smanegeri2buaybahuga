@@ -41,10 +41,10 @@ const ROLE_CONFIG: Record<
     subtitle:
       "Akses E-Learning, Presensi Geofencing & Ujian Digital SMAN 2 Buay Bahuga",
     badge: "Ruang Peserta Didik",
-    badgeClass: "bg-blue-50 text-[#2E4BA3] border-blue-200",
+    badgeClass: "bg-blue-50 text-[#2A2C5E] border-blue-200",
     icon: GraduationCap,
-    accentColor: "#2E4BA3",
-    buttonClass: "bg-[#2E4BA3] hover:bg-[#233b82]",
+    accentColor: "#2A2C5E",
+    buttonClass: "bg-[#2A2C5E] hover:bg-[#1F2147]",
     idLabel: "Nomor Induk Siswa Nasional (NISN)",
     idPlaceholder: "10 Digit Angka NISN Siswa",
     btnLabel: "Masuk ke Ruang Siswa",
@@ -60,7 +60,7 @@ const ROLE_CONFIG: Record<
     badgeClass: "bg-amber-50 text-amber-800 border-amber-200",
     icon: Users,
     accentColor: "#D97706",
-    buttonClass: "bg-[#2E4BA3] hover:bg-[#233b82]",
+    buttonClass: "bg-[#2A2C5E] hover:bg-[#1F2147]",
     idLabel: "Nomor Unik Pendidik dan Tenaga Kependidikan (NUPTK)",
     idPlaceholder: "16 Digit NUPTK Guru",
     btnLabel: "Masuk ke Portal Dewan Guru",
@@ -76,7 +76,7 @@ const ROLE_CONFIG: Record<
     badgeClass: "bg-red-50 text-red-800 border-red-200",
     icon: Shield,
     accentColor: "#DC2626",
-    buttonClass: "bg-[#2E4BA3] hover:bg-[#233b82]",
+    buttonClass: "bg-[#2A2C5E] hover:bg-[#1F2147]",
     idLabel: "ID Akses Administrator",
     idPlaceholder: "ID Administrator Resmi",
     btnLabel: "Masuk ke Panel Administrator",
@@ -165,7 +165,7 @@ function LoginForm() {
     <div className="max-w-md w-full space-y-6">
       {/* Header Portal Mandiri (Tanpa Tab Bercampur) */}
       <div className="text-center space-y-3">
-        <div className="w-14 h-14 mx-auto rounded-xl bg-[#2E4BA3] text-white flex items-center justify-center shadow-xs">
+        <div className="w-14 h-14 mx-auto rounded-xl bg-[#2A2C5E] text-white flex items-center justify-center shadow-xs">
           <Icon className="w-7 h-7" />
         </div>
         <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-semibold border border-gray-200 bg-white text-gray-700 shadow-2xs">
@@ -203,7 +203,7 @@ function LoginForm() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder={config.idPlaceholder}
-                className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E4BA3]/20 focus:border-[#2E4BA3] font-medium"
+                className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E] font-medium"
               />
             </div>
           </div>
@@ -225,7 +225,7 @@ function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Masukkan kata sandi..."
-                className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E4BA3]/20 focus:border-[#2E4BA3]"
+                className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
               />
             </div>
           </div>
@@ -248,7 +248,7 @@ function LoginForm() {
 
         {/* Demo Helper Khusus Role Ini Saja */}
         <div className="p-3 bg-blue-50/60 rounded-lg border border-blue-100 text-[11px] text-gray-600 space-y-1">
-          <div className="flex items-center gap-1.5 font-semibold text-[#2E4BA3]">
+          <div className="flex items-center gap-1.5 font-semibold text-[#2A2C5E]">
             <HelpCircle className="w-3.5 h-3.5" />
             <span>Kredensial Demo Cepat ({config.badge}):</span>
           </div>
@@ -265,7 +265,7 @@ function LoginForm() {
       <div className="text-center text-xs text-gray-500 pt-2">
         <Link
           href="/"
-          className="inline-flex items-center gap-1 hover:text-[#2E4BA3] transition-colors"
+          className="inline-flex items-center gap-1 hover:text-[#2A2C5E] transition-colors"
         >
           <ChevronLeft className="w-3.5 h-3.5" />
           <span>Kembali ke Beranda Utama</span>

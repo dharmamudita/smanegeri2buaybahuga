@@ -12,14 +12,14 @@ import { SCHOOL_INFO } from "@/lib/constants";
 
 export default function InstitutionalFooter() {
   return (
-    <footer className="bg-[#111827] text-gray-300 border-t-4 border-[#2E4BA3] mt-auto">
+    <footer className="bg-[#111827] text-gray-300 border-t-4 border-[#2A2C5E] mt-auto">
       {/* Upper Footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Kolom 1: Profil & Identitas Institusi */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[#2E4BA3] flex items-center justify-center text-white">
+              <div className="w-10 h-10 rounded-lg bg-[#2A2C5E] flex items-center justify-center text-white">
                 <GraduationCap className="w-6 h-6" />
               </div>
               <div>
@@ -47,7 +47,7 @@ export default function InstitutionalFooter() {
 
           {/* Kolom 2: Portal Masuk Pengguna (Gaya daftar bersih sama seperti Tautan Layanan) */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4 border-l-2 border-[#2E4BA3] pl-2.5">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4 border-l-2 border-[#2A2C5E] pl-2.5">
               Portal Masuk Pengguna
             </h4>
             <ul className="space-y-2.5 text-xs">
@@ -83,7 +83,7 @@ export default function InstitutionalFooter() {
 
           {/* Kolom 3: Tautan Layanan */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4 border-l-2 border-[#2E4BA3] pl-2.5">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4 border-l-2 border-[#2A2C5E] pl-2.5">
               Tautan Layanan
             </h4>
             <ul className="space-y-2.5 text-xs">
@@ -128,7 +128,7 @@ export default function InstitutionalFooter() {
 
           {/* Kolom 4: Kontak & Lokasi Sekretariat */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4 border-l-2 border-[#2E4BA3] pl-2.5">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4 border-l-2 border-[#2A2C5E] pl-2.5">
               Sekretariat & Lokasi
             </h4>
             <ul className="space-y-3 text-xs text-gray-400">

@@ -43,7 +43,7 @@ export default function PPDBPage() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 space-y-10">
       {/* Header */}
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-[#2E4BA3] text-xs font-semibold">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-[#2A2C5E] text-xs font-semibold">
           <ShieldCheck className="w-3.5 h-3.5" />
           <span>Penerimaan Peserta Didik Baru (PPDB) 2026/2027</span>
         </div>
@@ -74,7 +74,7 @@ export default function PPDBPage() {
           <div className="bg-blue-50/50 border border-blue-200 rounded-xl p-5 space-y-3 text-xs">
             <div className="flex items-center justify-between border-b border-blue-100 pb-2">
               <span className="text-gray-500 font-medium">Nomor Pendaftaran</span>
-              <span className="font-mono text-base font-bold text-[#2E4BA3]">
+              <span className="font-mono text-base font-bold text-[#2A2C5E]">
                 {regNumber}
               </span>
             </div>
@@ -96,7 +96,7 @@ export default function PPDBPage() {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-gray-500 font-medium">Pilihan Program</span>
-              <span className="font-semibold text-[#2E4BA3]">
+              <span className="font-semibold text-[#2A2C5E]">
                 Peminatan {formData.pilihanJurusan}
               </span>
             </div>
@@ -126,7 +126,7 @@ export default function PPDBPage() {
             </button>
             <button
               onClick={() => setSubmitted(false)}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 text-xs font-semibold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md shadow-2xs"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 text-xs font-semibold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md shadow-2xs"
             >
               <span>Daftarkan Siswa Baru Lain</span>
             </button>
@@ -140,7 +140,7 @@ export default function PPDBPage() {
         >
           {/* Bagian 1: Data Diri Calon Siswa */}
           <div className="space-y-4">
-            <h3 className="text-base font-bold text-gray-900 border-l-4 border-[#2E4BA3] pl-3">
+            <h3 className="text-base font-bold text-gray-900 border-l-4 border-[#2A2C5E] pl-3">
               1. Identitas Calon Siswa
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -156,7 +156,7 @@ export default function PPDBPage() {
                     setFormData({ ...formData, namaLengkap: e.target.value })
                   }
                   placeholder="Contoh: Muhammad Aditya Pratama"
-                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2E4BA3]/20 focus:border-[#2E4BA3]"
+                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
                 />
               </div>
 
@@ -173,7 +173,7 @@ export default function PPDBPage() {
                     setFormData({ ...formData, nisn: e.target.value })
                   }
                   placeholder="10 Digit Angka NISN"
-                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2E4BA3]/20 focus:border-[#2E4BA3]"
+                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
                 />
               </div>
 
@@ -189,7 +189,7 @@ export default function PPDBPage() {
                     setFormData({ ...formData, asalSekolah: e.target.value })
                   }
                   placeholder="Contoh: SMP Negeri 1 Buay Bahuga"
-                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2E4BA3]/20 focus:border-[#2E4BA3]"
+                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
                 />
               </div>
 
@@ -203,7 +203,7 @@ export default function PPDBPage() {
                     setFormData({ ...formData, tempatLahir: e.target.value })
                   }
                   placeholder="Contoh: Way Kanan"
-                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2E4BA3]/20 focus:border-[#2E4BA3]"
+                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
                 />
               </div>
 
@@ -216,7 +216,7 @@ export default function PPDBPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, tanggalLahir: e.target.value })
                   }
-                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2E4BA3]/20 focus:border-[#2E4BA3]"
+                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
                 />
               </div>
 
@@ -227,7 +227,7 @@ export default function PPDBPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, jenisKelamin: e.target.value })
                   }
-                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2E4BA3]/20 focus:border-[#2E4BA3]"
+                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
                 >
                   <option value="L">Laki-laki</option>
                   <option value="P">Perempuan</option>
@@ -241,7 +241,7 @@ export default function PPDBPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, pilihanJurusan: e.target.value })
                   }
-                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md font-semibold text-[#2E4BA3]"
+                  className="w-full p-2.5 bg-white border border-gray-300 rounded-md font-semibold text-[#2A2C5E]"
                 >
                   <option value="MIPA">MIPA (Matematika & Ilmu Pengetahuan Alam)</option>
                   <option value="IPS">IPS (Ilmu Pengetahuan Sosial)</option>
@@ -252,7 +252,7 @@ export default function PPDBPage() {
 
           {/* Bagian 2: Data Orang Tua / Wali */}
           <div className="space-y-4 pt-4 border-t border-gray-200">
-            <h3 className="text-base font-bold text-gray-900 border-l-4 border-[#2E4BA3] pl-3">
+            <h3 className="text-base font-bold text-gray-900 border-l-4 border-[#2A2C5E] pl-3">
               2. Data Orang Tua / Wali & Alamat
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -308,11 +308,11 @@ export default function PPDBPage() {
 
           {/* Bagian 3: Unggah Berkas Persyaratan */}
           <div className="space-y-4 pt-4 border-t border-gray-200">
-            <h3 className="text-base font-bold text-gray-900 border-l-4 border-[#2E4BA3] pl-3">
+            <h3 className="text-base font-bold text-gray-900 border-l-4 border-[#2A2C5E] pl-3">
               3. Berkas Persyaratan (Simulasi Cloudinary Storage)
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-              <div className="border border-dashed border-gray-300 rounded-xl p-4 text-center space-y-2 hover:border-[#2E4BA3] transition-colors">
+              <div className="border border-dashed border-gray-300 rounded-xl p-4 text-center space-y-2 hover:border-[#2A2C5E] transition-colors">
                 <UploadCloud className="w-8 h-8 text-gray-400 mx-auto" />
                 <div className="font-semibold text-gray-700">
                   Scan Kartu Keluarga (KK)
@@ -321,11 +321,11 @@ export default function PPDBPage() {
                 <input
                   type="file"
                   accept=".pdf,image/*"
-                  className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-[#2E4BA3]"
+                  className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-[#2A2C5E]"
                 />
               </div>
 
-              <div className="border border-dashed border-gray-300 rounded-xl p-4 text-center space-y-2 hover:border-[#2E4BA3] transition-colors">
+              <div className="border border-dashed border-gray-300 rounded-xl p-4 text-center space-y-2 hover:border-[#2A2C5E] transition-colors">
                 <UploadCloud className="w-8 h-8 text-gray-400 mx-auto" />
                 <div className="font-semibold text-gray-700">
                   Scan Ijazah / Surat Keterangan Lulus
@@ -334,7 +334,7 @@ export default function PPDBPage() {
                 <input
                   type="file"
                   accept=".pdf,image/*"
-                  className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-[#2E4BA3]"
+                  className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-[#2A2C5E]"
                 />
               </div>
             </div>
@@ -347,7 +347,7 @@ export default function PPDBPage() {
             </p>
             <button
               type="submit"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 bg-[#2E4BA3] hover:bg-[#233b82] text-white text-xs font-bold rounded-md shadow-xs transition-all active:scale-98"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 bg-[#2A2C5E] hover:bg-[#1F2147] text-white text-xs font-bold rounded-md shadow-xs transition-all active:scale-98"
             >
               <span>Kirim Formulir Pendaftaran</span>
               <ArrowRight className="w-4 h-4" />

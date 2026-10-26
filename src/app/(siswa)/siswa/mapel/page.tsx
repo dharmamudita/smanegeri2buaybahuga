@@ -37,7 +37,7 @@ export default function SiswaMapelPage() {
     <div className="space-y-8">
       {/* Page Header */}
       <div className="border-b border-gray-200 pb-5">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2E4BA3] text-xs font-semibold mb-2">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
           <BookOpen className="w-3.5 h-3.5" />
           <span>E-Learning & Modul Pembelajaran</span>
         </div>
@@ -58,7 +58,7 @@ export default function SiswaMapelPage() {
           <select
             value={selectedMapelId}
             onChange={(e) => setSelectedMapelId(e.target.value)}
-            className="text-xs font-semibold bg-white border border-gray-300 rounded-md py-1.5 px-3 text-[#2E4BA3]"
+            className="text-xs font-semibold bg-white border border-gray-300 rounded-md py-1.5 px-3 text-[#2A2C5E]"
           >
             <option value="ALL">Semua Mata Pelajaran</option>
             {MOCK_MAPEL.map((m) => (
@@ -77,7 +77,7 @@ export default function SiswaMapelPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari judul modul..."
-            className="w-full pl-9 pr-3 py-1.5 text-xs bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E4BA3]/20 focus:border-[#2E4BA3]"
+            className="w-full pl-9 pr-3 py-1.5 text-xs bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
           />
         </div>
       </div>
@@ -89,14 +89,14 @@ export default function SiswaMapelPage() {
           return (
             <div
               key={materi.id}
-              className="bg-white rounded-xl border border-gray-200 p-5 shadow-2xs hover:border-[#2E4BA3] transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              className="bg-white rounded-xl border border-gray-200 p-5 shadow-2xs hover:border-[#2A2C5E] transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4"
             >
               <div className="flex items-start gap-4">
                 <div
                   className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
                     materi.tipe === "VIDEO"
                       ? "bg-purple-50 text-purple-600"
-                      : "bg-blue-50 text-[#2E4BA3]"
+                      : "bg-blue-50 text-[#2A2C5E]"
                   }`}
                 >
                   {materi.tipe === "VIDEO" ? (
@@ -111,7 +111,7 @@ export default function SiswaMapelPage() {
                     <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 text-gray-700">
                       {materi.tipe}
                     </span>
-                    <span className="text-xs font-semibold text-[#2E4BA3]">
+                    <span className="text-xs font-semibold text-[#2A2C5E]">
                       {mapel?.nama}
                     </span>
                   </div>
@@ -144,7 +144,7 @@ export default function SiswaMapelPage() {
                   onClick={() =>
                     alert(`Mengunduh materi resmi: ${materi.judul}`)
                   }
-                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md shadow-2xs transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md shadow-2xs transition-colors"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>Unduh Modul</span>

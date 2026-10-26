@@ -83,7 +83,7 @@ export default function AdminUsersPage() {
               ? "bg-red-50 text-red-700 border border-red-200"
               : row.role === "GURU"
               ? "bg-amber-50 text-amber-700 border border-amber-200"
-              : "bg-blue-50 text-[#2E4BA3] border border-blue-200"
+              : "bg-blue-50 text-[#2A2C5E] border border-blue-200"
           }`}
         >
           {row.role}
@@ -124,7 +124,7 @@ export default function AdminUsersPage() {
           className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-300 rounded transition-colors"
           title="Reset Password Default"
         >
-          <RotateCcw className="w-3 h-3 text-[#2E4BA3]" />
+          <RotateCcw className="w-3 h-3 text-[#2A2C5E]" />
           <span>Reset Sandi</span>
         </button>
       ),
@@ -136,7 +136,7 @@ export default function AdminUsersPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-5">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2E4BA3] text-xs font-semibold mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
             <Users className="w-3.5 h-3.5" />
             <span>Manajemen Autentikasi & RBAC</span>
           </div>
@@ -159,7 +159,7 @@ export default function AdminUsersPage() {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md shadow-2xs transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md shadow-2xs transition-colors"
           >
             <UserPlus className="w-4 h-4" />
             <span>Tambah Akun Baru</span>
@@ -261,7 +261,7 @@ export default function AdminUsersPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-xs font-bold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md shadow-xs"
+                  className="px-4 py-2 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md shadow-xs"
                 >
                   Simpan Akun
                 </button>

@@ -30,7 +30,7 @@ export default function GuruDashboardPage() {
   return (
     <div className="space-y-8">
       {/* Welcome Banner */}
-      <div className="bg-[#2E4BA3] text-white rounded-2xl p-6 sm:p-8 shadow-xs relative overflow-hidden">
+      <div className="bg-[#2A2C5E] text-white rounded-2xl p-6 sm:p-8 shadow-xs relative overflow-hidden">
         <div className="relative z-10 space-y-2 max-w-2xl">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/15 text-blue-100 text-xs font-semibold backdrop-blur-xs">
             <GraduationCap className="w-3.5 h-3.5" />
@@ -48,7 +48,7 @@ export default function GuruDashboardPage() {
       {/* Stats Widgets */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-2xs space-y-1">
-          <div className="w-9 h-9 rounded-lg bg-blue-50 text-[#2E4BA3] flex items-center justify-center mb-2">
+          <div className="w-9 h-9 rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-2">
             <BookOpen className="w-4 h-4" />
           </div>
           <div className="text-2xl font-bold text-gray-900">2 Mapel</div>
@@ -56,7 +56,7 @@ export default function GuruDashboardPage() {
         </div>
 
         <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-2xs space-y-1">
-          <div className="w-9 h-9 rounded-lg bg-blue-50 text-[#2E4BA3] flex items-center justify-center mb-2">
+          <div className="w-9 h-9 rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-2">
             <Users className="w-4 h-4" />
           </div>
           <div className="text-2xl font-bold text-gray-900">72 Siswa</div>
@@ -64,7 +64,7 @@ export default function GuruDashboardPage() {
         </div>
 
         <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-2xs space-y-1">
-          <div className="w-9 h-9 rounded-lg bg-blue-50 text-[#2E4BA3] flex items-center justify-center mb-2">
+          <div className="w-9 h-9 rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-2">
             <ClipboardList className="w-4 h-4" />
           </div>
           <div className="text-2xl font-bold text-gray-900">3 Tugas/Ujian</div>
@@ -86,7 +86,7 @@ export default function GuruDashboardPage() {
       <div className="flex flex-wrap items-center gap-3">
         <Link
           href="/guru/mapel"
-          className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md shadow-2xs"
+          className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md shadow-2xs"
         >
           <PlusCircle className="w-4 h-4" />
           <span>Unggah Materi Baru</span>
@@ -96,7 +96,7 @@ export default function GuruDashboardPage() {
           href="/guru/tugas"
           className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 rounded-md shadow-2xs"
         >
-          <ClipboardList className="w-4 h-4 text-[#2E4BA3]" />
+          <ClipboardList className="w-4 h-4 text-[#2A2C5E]" />
           <span>Buat Soal Ujian Anti-Cheat</span>
         </Link>
 
@@ -183,7 +183,7 @@ export default function GuruDashboardPage() {
               className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
             >
               <div className="space-y-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-50 text-[#2E4BA3] border border-blue-100">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-50 text-[#2A2C5E] border border-blue-100">
                   {t.tipe}
                 </span>
                 <h4 className="text-sm font-bold text-gray-900">{t.judul}</h4>
@@ -195,7 +195,7 @@ export default function GuruDashboardPage() {
               <div className="flex items-center gap-3">
                 <Link
                   href="/guru/rekap-nilai"
-                  className="px-3 py-1.5 text-xs font-semibold text-[#2E4BA3] bg-blue-50 hover:bg-blue-100 rounded-md transition-colors"
+                  className="px-3 py-1.5 text-xs font-semibold text-[#2A2C5E] bg-blue-50 hover:bg-blue-100 rounded-md transition-colors"
                 >
                   Lihat Rekap Hasil
                 </Link>

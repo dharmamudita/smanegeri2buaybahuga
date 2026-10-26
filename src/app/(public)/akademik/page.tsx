@@ -15,7 +15,7 @@ export default function AkademikPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-12">
       {/* Header */}
       <div className="border-b border-gray-200 pb-6">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2E4BA3] text-xs font-semibold mb-2">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
           <BookOpen className="w-3.5 h-3.5" />
           <span>Layanan Pendidikan</span>
         </div>
@@ -37,7 +37,7 @@ export default function AkademikPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-2xs space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#2E4BA3] bg-blue-50 px-2.5 py-1 rounded">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-50 px-2.5 py-1 rounded">
                 Program Sains
               </span>
               <span className="text-xs text-gray-500">Tingkat X, XI, XII</span>
@@ -110,7 +110,7 @@ export default function AkademikPage() {
       {/* Kalender Akademik */}
       <div className="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 space-y-6 shadow-2xs">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-[#2E4BA3] text-white flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">
             <Calendar className="w-5 h-5" />
           </div>
           <div>
@@ -125,7 +125,7 @@ export default function AkademikPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
           <div className="p-4 rounded-lg bg-gray-50 border border-gray-200 space-y-1.5">
-            <span className="font-semibold text-[#2E4BA3]">
+            <span className="font-semibold text-[#2A2C5E]">
               15 - 19 Juli 2026
             </span>
             <h4 className="font-bold text-gray-900">
@@ -137,7 +137,7 @@ export default function AkademikPage() {
           </div>
 
           <div className="p-4 rounded-lg bg-gray-50 border border-gray-200 space-y-1.5">
-            <span className="font-semibold text-[#2E4BA3]">
+            <span className="font-semibold text-[#2A2C5E]">
               21 - 26 September 2026
             </span>
             <h4 className="font-bold text-gray-900">
@@ -149,7 +149,7 @@ export default function AkademikPage() {
           </div>
 
           <div className="p-4 rounded-lg bg-gray-50 border border-gray-200 space-y-1.5">
-            <span className="font-semibold text-[#2E4BA3]">
+            <span className="font-semibold text-[#2A2C5E]">
               1 - 10 Desember 2026
             </span>
             <h4 className="font-bold text-gray-900">
@@ -173,7 +173,7 @@ export default function AkademikPage() {
               key={guru.id}
               className="bg-white p-5 rounded-xl border border-gray-200 shadow-2xs flex items-center gap-4"
             >
-              <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-[#2E4BA3] font-bold text-lg overflow-hidden shrink-0">
+              <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-[#2A2C5E] font-bold text-lg overflow-hidden shrink-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={guru.avatarUrl}
@@ -185,7 +185,7 @@ export default function AkademikPage() {
                 <h4 className="text-sm font-bold text-gray-900 truncate">
                   {guru.name}
                 </h4>
-                <p className="text-xs text-[#2E4BA3] font-medium mt-0.5">
+                <p className="text-xs text-[#2A2C5E] font-medium mt-0.5">
                   {guru.mataPelajaran}
                 </p>
                 <p className="text-[11px] text-gray-400 mt-0.5">

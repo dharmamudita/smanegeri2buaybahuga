@@ -86,7 +86,7 @@ export default function DashboardSidebar({ currentRole }: { currentRole: Role })
       {/* Brand Header */}
       <div className="p-5 border-b border-gray-200 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-[#2E4BA3] flex items-center justify-center text-white font-bold shadow-xs">
+          <div className="w-10 h-10 rounded-lg bg-[#2A2C5E] flex items-center justify-center text-white font-bold shadow-xs">
             <GraduationCap className="w-5 h-5" />
           </div>
           <div>
@@ -107,7 +107,7 @@ export default function DashboardSidebar({ currentRole }: { currentRole: Role })
       {/* User Session Profile Card */}
       <div className="p-4 border-b border-gray-100 bg-gray-50/70">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[#2E4BA3]/10 border border-blue-200 flex items-center justify-center text-[#2E4BA3] font-semibold text-sm">
+          <div className="w-10 h-10 rounded-full bg-[#2A2C5E]/10 border border-blue-200 flex items-center justify-center text-[#2A2C5E] font-semibold text-sm">
             {currentUser?.name?.slice(0, 2).toUpperCase() || "US"}
           </div>
           <div className="flex-1 min-w-0">
@@ -143,7 +143,7 @@ export default function DashboardSidebar({ currentRole }: { currentRole: Role })
               onClick={() => setMobileOpen(false)}
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-md text-xs font-medium transition-all ${
                 isActive
-                  ? "bg-[#2E4BA3] text-white font-semibold shadow-xs"
+                  ? "bg-[#2A2C5E] text-white font-semibold shadow-xs"
                   : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
               }`}
             >
@@ -196,7 +196,7 @@ export default function DashboardSidebar({ currentRole }: { currentRole: Role })
           >
             <Menu className="w-6 h-6" />
           </button>
-          <span className="font-bold text-sm text-[#2E4BA3]">
+          <span className="font-bold text-sm text-[#2A2C5E]">
             SMAN 2 BUAY BAHUGA
           </span>
         </div>

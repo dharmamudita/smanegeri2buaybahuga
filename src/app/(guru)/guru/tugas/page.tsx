@@ -47,7 +47,7 @@ export default function GuruTugasPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-5">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2E4BA3] text-xs font-semibold mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
             <ClipboardList className="w-3.5 h-3.5" />
             <span>Bank Soal & Penilaian</span>
           </div>
@@ -61,7 +61,7 @@ export default function GuruTugasPage() {
 
         <button
           onClick={() => setShowModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md shadow-2xs self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md shadow-2xs self-start sm:self-auto"
         >
           <PlusCircle className="w-4 h-4" />
           <span>Buat Ujian / Tugas Baru</span>
@@ -73,7 +73,7 @@ export default function GuruTugasPage() {
         {tugasList.map((tugas) => (
           <div
             key={tugas.id}
-            className="bg-white rounded-xl border border-gray-200 p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-[#2E4BA3] transition-colors"
+            className="bg-white rounded-xl border border-gray-200 p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-[#2A2C5E] transition-colors"
           >
             <div className="space-y-1.5">
               <div className="flex items-center gap-2">
@@ -81,12 +81,12 @@ export default function GuruTugasPage() {
                   className={`text-[10px] font-bold px-2 py-0.5 rounded ${
                     tugas.tipe.startsWith("UJIAN")
                       ? "bg-red-50 text-red-700 border border-red-200"
-                      : "bg-blue-50 text-[#2E4BA3] border border-blue-200"
+                      : "bg-blue-50 text-[#2A2C5E] border border-blue-200"
                   }`}
                 >
                   {tugas.tipe}
                 </span>
-                <span className="text-xs font-semibold text-[#2E4BA3]">
+                <span className="text-xs font-semibold text-[#2A2C5E]">
                   {tugas.mapelNama}
                 </span>
               </div>
@@ -97,7 +97,7 @@ export default function GuruTugasPage() {
 
               <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 pt-1">
                 {tugas.durasiMenit && (
-                  <span className="flex items-center gap-1 text-[#2E4BA3] font-semibold">
+                  <span className="flex items-center gap-1 text-[#2A2C5E] font-semibold">
                     <Clock className="w-3.5 h-3.5" />
                     Durasi: {tugas.durasiMenit} Menit
                   </span>
@@ -222,7 +222,7 @@ export default function GuruTugasPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-xs font-bold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md shadow-xs"
+                  className="px-4 py-2 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md shadow-xs"
                 >
                   Publikasikan Ujian
                 </button>

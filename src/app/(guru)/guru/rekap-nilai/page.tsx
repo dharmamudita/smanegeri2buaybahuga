@@ -143,7 +143,7 @@ export default function GuruRekapNilaiPage() {
     {
       header: "Nilai Akhir",
       cell: (row) => (
-        <span className="font-mono font-bold text-[#2E4BA3] text-sm">
+        <span className="font-mono font-bold text-[#2A2C5E] text-sm">
           {row.nilaiAkhir}
         </span>
       ),
@@ -156,7 +156,7 @@ export default function GuruRekapNilaiPage() {
           className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-semibold ${
             row.predikat.startsWith("A")
               ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-              : "bg-blue-50 text-[#2E4BA3] border border-blue-200"
+              : "bg-blue-50 text-[#2A2C5E] border border-blue-200"
           }`}
         >
           <CheckCircle2 className="w-3 h-3" />
@@ -177,7 +177,7 @@ export default function GuruRekapNilaiPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-5">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2E4BA3] text-xs font-semibold mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
             <Award className="w-3.5 h-3.5" />
             <span>Pengolahan & Pelaporan Nilai</span>
           </div>

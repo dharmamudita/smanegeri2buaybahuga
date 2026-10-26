@@ -148,8 +148,8 @@ export default function SiswaTugasPage() {
     <div className="space-y-8">
       {/* Page Header */}
       <div className="border-b border-gray-200 pb-5">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2E4BA3] text-xs font-semibold mb-2">
-          <ShieldAlert className="w-3.5 h-3.5 text-[#2E4BA3]" />
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
+          <ShieldAlert className="w-3.5 h-3.5 text-[#2A2C5E]" />
           <span>Sistem Ujian Terproteksi (Anti-Cheat Engine)</span>
         </div>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
@@ -179,7 +179,7 @@ export default function SiswaTugasPage() {
               <span className="text-xs font-semibold text-gray-500">
                 Alokasi Waktu
               </span>
-              <div className="text-lg font-bold text-[#2E4BA3] flex items-center justify-end gap-1">
+              <div className="text-lg font-bold text-[#2A2C5E] flex items-center justify-end gap-1">
                 <Clock className="w-4 h-4" />
                 <span>{examData.durasiMenit} Menit</span>
               </div>
@@ -192,28 +192,28 @@ export default function SiswaTugasPage() {
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-gray-600">
               <div className="p-3 rounded-lg bg-gray-50 border border-gray-100 flex items-start gap-2.5">
-                <ShieldAlert className="w-4 h-4 text-[#2E4BA3] shrink-0 mt-0.5" />
+                <ShieldAlert className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-gray-900">Dynamic Watermark:</strong> Layar pengerjaan dilapisi identitas unik Nama dan NISN untuk mencegah kebocoran screenshot.
                 </div>
               </div>
 
               <div className="p-3 rounded-lg bg-gray-50 border border-gray-100 flex items-start gap-2.5">
-                <Lock className="w-4 h-4 text-[#2E4BA3] shrink-0 mt-0.5" />
+                <Lock className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-gray-900">AI-Disruptor Injection:</strong> Teks rahasia terselip di background untuk mengacaukan hasil pemindaian OCR ChatGPT/Gemini.
                 </div>
               </div>
 
               <div className="p-3 rounded-lg bg-gray-50 border border-gray-100 flex items-start gap-2.5">
-                <Eye className="w-4 h-4 text-[#2E4BA3] shrink-0 mt-0.5" />
+                <Eye className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-gray-900">Pelacakan Tab Browser:</strong> Berpindah tab atau aplikasi lain akan otomatis terekam dalam audit log guru.
                 </div>
               </div>
 
               <div className="p-3 rounded-lg bg-gray-50 border border-gray-100 flex items-start gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-[#2E4BA3] shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-gray-900">Anti Copy-Paste:</strong> Pintasan penyalinan teks dinonaktifkan demi integritas akademik murni.
                 </div>
@@ -227,7 +227,7 @@ export default function SiswaTugasPage() {
             </span>
             <button
               onClick={() => startExam(examData.id)}
-              className="inline-flex items-center gap-2 px-6 py-2.5 text-xs font-bold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md shadow-xs transition-all active:scale-98"
+              className="inline-flex items-center gap-2 px-6 py-2.5 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md shadow-xs transition-all active:scale-98"
             >
               <span>Mulai Pengerjaan Ujian</span>
               <ArrowRight className="w-4 h-4" />
@@ -268,7 +268,7 @@ export default function SiswaTugasPage() {
           {/* Exam Header Controls */}
           <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 z-30">
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#2E4BA3] bg-blue-50 px-2 py-0.5 rounded">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-50 px-2 py-0.5 rounded">
                 Ujian Terproteksi Berjalan
               </span>
               <h2 className="text-base font-bold text-gray-900 mt-1">
@@ -291,7 +291,7 @@ export default function SiswaTugasPage() {
 
               {/* Countdown Timer */}
               <div className="flex items-center gap-1.5 px-3 py-1 bg-gray-100 rounded-md text-xs font-mono font-bold text-gray-800">
-                <Clock className="w-3.5 h-3.5 text-[#2E4BA3]" />
+                <Clock className="w-3.5 h-3.5 text-[#2A2C5E]" />
                 <span>Sisa Waktu: {formatMinutes(timeLeft)}</span>
               </div>
             </div>
@@ -316,7 +316,7 @@ export default function SiswaTugasPage() {
           {/* Question Body */}
           <div className="p-6 sm:p-8 space-y-6 relative z-10">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <span className="text-xs font-bold text-[#2E4BA3] uppercase tracking-wider">
+              <span className="text-xs font-bold text-[#2A2C5E] uppercase tracking-wider">
                 Soal Nomor {currentQuestionIndex + 1} dari {questions.length}
               </span>
               <span className="text-xs text-gray-400">
@@ -340,14 +340,14 @@ export default function SiswaTugasPage() {
                     onClick={() => setAnswer(currentQuestion.id, pIdx)}
                     className={`w-full text-left p-4 rounded-xl border text-xs sm:text-sm font-medium flex items-center gap-3.5 transition-all ${
                       isSelected
-                        ? "bg-blue-50/80 border-[#2E4BA3] text-[#2E4BA3] ring-1 ring-[#2E4BA3]"
+                        ? "bg-blue-50/80 border-[#2A2C5E] text-[#2A2C5E] ring-1 ring-[#2A2C5E]"
                         : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50"
                     }`}
                   >
                     <span
                       className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${
                         isSelected
-                          ? "bg-[#2E4BA3] text-white"
+                          ? "bg-[#2A2C5E] text-white"
                           : "bg-gray-100 text-gray-600"
                       }`}
                     >
@@ -372,7 +372,7 @@ export default function SiswaTugasPage() {
               {currentQuestionIndex < questions.length - 1 ? (
                 <button
                   onClick={() => nextQuestion(questions.length)}
-                  className="px-5 py-2 text-xs font-semibold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md shadow-2xs"
+                  className="px-5 py-2 text-xs font-semibold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md shadow-2xs"
                 >
                   Soal Berikutnya &rarr;
                 </button>
@@ -407,7 +407,7 @@ export default function SiswaTugasPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 text-center space-y-1">
               <span className="text-xs text-gray-500">Skor Akhir Siswa</span>
-              <div className="text-3xl font-extrabold text-[#2E4BA3]">
+              <div className="text-3xl font-extrabold text-[#2A2C5E]">
                 {examScore} <span className="text-sm font-normal text-gray-500">/ 100</span>
               </div>
             </div>

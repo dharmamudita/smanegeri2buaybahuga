@@ -193,7 +193,7 @@ export default function SiswaPresensiPage() {
                 ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                 : row.status === "TERLAMBAT"
                 ? "bg-amber-50 text-amber-700 border-amber-200"
-                : "bg-blue-50 text-[#2E4BA3] border-blue-200"
+                : "bg-blue-50 text-[#2A2C5E] border-blue-200"
             }`}
           >
             {isHadir ? (
@@ -225,7 +225,7 @@ export default function SiswaPresensiPage() {
     <div className="space-y-8">
       {/* Page Header */}
       <div className="border-b border-gray-200 pb-5">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2E4BA3] text-xs font-semibold mb-2">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
           <Navigation className="w-3.5 h-3.5" />
           <span>Sistem Validasi Kehadiran Digital</span>
         </div>
@@ -256,7 +256,7 @@ export default function SiswaPresensiPage() {
               className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 rounded-md transition-colors"
             >
               <RefreshCw
-                className={`w-3.5 h-3.5 text-[#2E4BA3] ${
+                className={`w-3.5 h-3.5 text-[#2A2C5E] ${
                   loadingLocation ? "animate-spin" : ""
                 }`}
               />
@@ -268,7 +268,7 @@ export default function SiswaPresensiPage() {
         {/* Demo Simulator Buttons */}
         <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-2">
           <div className="text-[11px] font-bold text-gray-600 flex items-center gap-1.5">
-            <Compass className="w-3.5 h-3.5 text-[#2E4BA3]" />
+            <Compass className="w-3.5 h-3.5 text-[#2A2C5E]" />
             <span>Simulasi Uji Coba Cepat (Testing Preset):</span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -332,7 +332,7 @@ export default function SiswaPresensiPage() {
                 <button
                   onClick={handleCheckIn}
                   disabled={!isWithinGeofence}
-                  className="w-full sm:w-auto px-6 py-2.5 bg-[#2E4BA3] hover:bg-[#233b82] text-white font-bold text-xs rounded-md shadow-xs disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                  className="w-full sm:w-auto px-6 py-2.5 bg-[#2A2C5E] hover:bg-[#1F2147] text-white font-bold text-xs rounded-md shadow-xs disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                 >
                   Kirim Absensi Kehadiran
                 </button>

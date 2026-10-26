@@ -11,12 +11,7 @@ import {
   FileCheck,
   Menu,
   X,
-  Phone,
-  Mail,
-  MapPin,
-  Shield,
 } from "lucide-react";
-import { SCHOOL_INFO } from "@/lib/constants";
 
 export default function InstitutionalHeader() {
   const pathname = usePathname();
@@ -31,37 +26,11 @@ export default function InstitutionalHeader() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white shadow-xs border-b border-gray-200">
-      {/* Top Banner Pemerintah / Identitas Resmi */}
-      <div className="bg-[#2E4BA3] text-white text-xs py-1.5 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
-          <div className="flex items-center gap-4 text-blue-100">
-            <span className="flex items-center gap-1.5">
-              <Shield className="w-3.5 h-3.5" />
-              NPSN: {SCHOOL_INFO.npsn} | Akreditasi: {SCHOOL_INFO.akreditasi}
-            </span>
-            <span className="hidden md:flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5" />
-              {SCHOOL_INFO.kabupaten}, {SCHOOL_INFO.provinsi}
-            </span>
-          </div>
-          <div className="flex items-center gap-4 text-blue-100">
-            <span className="flex items-center gap-1.5">
-              <Mail className="w-3.5 h-3.5" />
-              {SCHOOL_INFO.email}
-            </span>
-            <span className="hidden sm:flex items-center gap-1.5">
-              <Phone className="w-3.5 h-3.5" />
-              {SCHOOL_INFO.telepon}
-            </span>
-          </div>
-        </div>
-      </div>
-
+    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md shadow-xs border-b border-gray-100">
       {/* Main Navbar */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-3.5">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo & Nama Sekolah Saja (Tanpa teks tambahan) */}
+          {/* Logo & Nama Sekolah */}
           <Link href="/" className="flex items-center gap-3 group shrink-0">
             <div className="w-10 h-10 rounded-lg bg-[#2E4BA3] flex items-center justify-center text-white shadow-sm ring-2 ring-blue-100 group-hover:bg-[#233b82] transition-colors">
               <GraduationCap className="w-5 h-5" />

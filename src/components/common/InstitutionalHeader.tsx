@@ -60,8 +60,8 @@ export default function InstitutionalHeader() {
                     href={link.href}
                     className={`group flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-semibold rounded-full whitespace-nowrap shrink-0 flex-nowrap select-none transition-all duration-200 ease-out ${
                       isActive
-                        ? "bg-[#2A2C5E] text-white shadow-[0_2px_12px_rgba(42,44,94,0.7)] border border-white/30 ring-1 ring-white/15 scale-100"
-                        : "text-gray-200/90 border border-transparent hover:bg-[#2A2C5E]/70 hover:text-white hover:border-white/20 hover:shadow-sm hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
+                        ? "bg-[#2A2C5E] text-white shadow-sm scale-100"
+                        : "text-gray-200/90 hover:bg-[#2A2C5E]/80 hover:text-white hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
                     }`}
                     style={{ whiteSpace: "nowrap" }}
                   >
@@ -108,8 +108,8 @@ export default function InstitutionalHeader() {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-2.5 px-4 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
                   isActive
-                    ? "bg-[#2A2C5E] text-white shadow-md border border-white/30"
-                    : "text-gray-200 hover:bg-[#2A2C5E]/70 hover:text-white"
+                    ? "bg-[#2A2C5E] text-white shadow-sm"
+                    : "text-gray-200 hover:bg-[#2A2C5E]/80 hover:text-white"
                 }`}
                 style={{ whiteSpace: "nowrap" }}
               >

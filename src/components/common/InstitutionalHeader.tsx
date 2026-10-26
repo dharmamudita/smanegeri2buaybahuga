@@ -59,28 +59,20 @@ export default function InstitutionalHeader() {
       </div>
 
       {/* Main Navbar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-3.5">
         <div className="flex items-center justify-between">
-          {/* Logo & Identitas Institusi */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-11 h-11 rounded-lg bg-[#2E4BA3] flex items-center justify-center text-white shadow-sm ring-2 ring-blue-100 group-hover:bg-[#233b82] transition-colors">
-              <GraduationCap className="w-6 h-6" />
+          {/* Logo & Nama Sekolah Saja (Tanpa teks tambahan) */}
+          <Link href="/" className="flex items-center gap-3 group shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-[#2E4BA3] flex items-center justify-center text-white shadow-sm ring-2 ring-blue-100 group-hover:bg-[#233b82] transition-colors">
+              <GraduationCap className="w-5 h-5" />
             </div>
-            <div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-[#2E4BA3]">
-                Pemerintah Provinsi Lampung
-              </div>
-              <div className="text-base sm:text-lg font-bold text-gray-900 leading-tight">
-                SMAN 2 BUAY BAHUGA
-              </div>
-              <div className="text-xs text-gray-500 hidden sm:block">
-                Smart School & Integrated Learning System
-              </div>
-            </div>
+            <span className="text-base sm:text-lg font-bold text-gray-900 tracking-tight leading-none group-hover:text-[#2E4BA3] transition-colors">
+              SMAN 2 BUAY BAHUGA
+            </span>
           </Link>
 
-          {/* Desktop Nav Links (Clean without top right login button) */}
-          <nav className="hidden lg:flex items-center gap-1.5">
+          {/* Navigasi Di Tengah (Centered Navigation Links) */}
+          <nav className="hidden lg:flex items-center gap-1.5 absolute left-1/2 -translate-x-1/2">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const isActive = pathname === link.href;
@@ -88,14 +80,14 @@ export default function InstitutionalHeader() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                  className={`flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-md transition-all ${
                     isActive
                       ? "text-[#2E4BA3] bg-blue-50 font-semibold border-b-2 border-[#2E4BA3]"
                       : "text-gray-700 hover:text-[#2E4BA3] hover:bg-gray-50"
                   }`}
                 >
                   <Icon className="w-4 h-4 text-gray-500" />
-                  {link.label}
+                  <span>{link.label}</span>
                 </Link>
               );
             })}
@@ -130,7 +122,7 @@ export default function InstitutionalHeader() {
                 }`}
               >
                 <Icon className="w-4 h-4 text-gray-500" />
-                {link.label}
+                <span>{link.label}</span>
               </Link>
             );
           })}

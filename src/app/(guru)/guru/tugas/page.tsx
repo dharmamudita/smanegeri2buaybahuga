@@ -30,7 +30,7 @@ export default function GuruTugasPage() {
       mapelId,
       mapelNama: mapel?.nama || "Biologi",
       judul,
-      deskripsi: "Soal ujian terproteksi anti-kecurangan SMAN 2 Buay Bahuga.",
+      deskripsi: "Evaluasi pembelajaran kurikulum berjalan SMAN 2 Buay Bahuga.",
       tipe,
       durasiMenit: durasi,
       tenggatWaktu: tenggat,
@@ -134,10 +134,10 @@ export default function GuruTugasPage() {
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl border border-gray-200">
             <div className="border-b border-gray-200 pb-3">
               <h3 className="text-base font-bold text-gray-900">
-                Buat Tugas / Ujian Anti-Cheat Baru
+                Buat Tugas / Ujian Baru
               </h3>
               <p className="text-xs text-gray-500">
-                Lengkapi pengaturan batas waktu dan perlindungan integritas.
+                Lengkapi pengaturan jadwal dan batas waktu pengerjaan.
               </p>
             </div>
 
@@ -177,7 +177,7 @@ export default function GuruTugasPage() {
                     onChange={(e) => setTipe(e.target.value as any)}
                     className="w-full p-2.5 bg-white border border-gray-300 rounded-md"
                   >
-                    <option value="UJIAN_HARIAN">Ujian Harian (Anti-Cheat)</option>
+                    <option value="UJIAN_HARIAN">Ujian Harian (CBT)</option>
                     <option value="KUIS">Kuis Cepat</option>
                     <option value="TUGAS">Tugas Mandiri</option>
                   </select>

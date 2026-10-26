@@ -67,14 +67,14 @@ function AkademikContent() {
     {
       jenis: "Penilaian Tengah Semester (PTS) Ganjil",
       tanggal: "21 - 26 September 2026",
-      metode: "CBT Berbasis LMS Terproteksi Anti-Cheat",
+      metode: "Computer Based Test (CBT) di Lab Multimedia",
       peserta: "Seluruh Tingkat X, XI, XII (450+ Siswa)",
       status: "Terjadwal",
     },
     {
       jenis: "Penilaian Akhir Semester (PAS) Ganjil",
       tanggal: "1 - 10 Desember 2026",
-      metode: "CBT Berbasis LMS Lab Multimedia & Android Terkunci",
+      metode: "Computer Based Test (CBT) Mandiri & Lab Komputer",
       peserta: "Seluruh Tingkat X, XI, XII",
       status: "Persiapan Soal",
     },
@@ -156,10 +156,10 @@ function AkademikContent() {
                 21 - 26 September 2026
               </span>
               <h4 className="font-bold text-gray-900 text-sm">
-                Penilaian Tengah Semester (PTS) Berbasis LMS
+                Penilaian Tengah Semester (PTS) Terpadu
               </h4>
               <p className="text-xs text-gray-600 leading-relaxed">
-                Evaluasi formatif tengah semester terintegrasi ujian anti-cheat dengan proteksi pergantian tab dan dynamic watermark.
+                Evaluasi formatif tengah semester untuk mengukur capaian pemahaman belajar siswa pada kurikulum berjalan secara objektif dan terstandar.
               </p>
             </div>
 
@@ -220,8 +220,8 @@ function AkademikContent() {
               <FileCheck2 className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Jadwal & Ketentuan Ujian Berbasis LMS</h2>
-              <p className="text-xs text-gray-500">Sistem asesmen terproteksi anti-kecurangan untuk menjamin integritas nilai</p>
+              <h2 className="text-xl font-bold text-gray-900">Jadwal & Ketentuan Asesmen Evaluasi Siswa</h2>
+              <p className="text-xs text-gray-500">Pelaksanaan asesmen sumatif dan evaluasi belajar secara tertib, terpadu, dan objektif</p>
             </div>
           </div>
 
@@ -251,14 +251,14 @@ function AkademikContent() {
             ))}
           </div>
 
-          {/* Protokol Ujian Anti-Cheat */}
+          {/* Tata Tertib Pelaksanaan Ujian Siswa */}
           <div className="bg-blue-50/70 border border-blue-100 rounded-xl p-5 text-xs text-gray-700 space-y-2">
             <div className="flex items-center gap-2 text-[#2A2C5E] font-bold text-sm">
               <AlertCircle className="w-4 h-4" />
-              <span>Protokol Keamanan Ujian Daring SMAN 2 Buay Bahuga</span>
+              <span>Tata Tertib & Ketentuan Pelaksanaan Ujian Siswa</span>
             </div>
             <p className="leading-relaxed">
-              Selama ujian berlangsung, sistem LMS menerapkan penguncian tab browser otomatis, dynamic watermark 3% opasitas dengan identitas siswa, serta AI-disruptor prompt injection untuk mencegah penggunaan bot atau ChatGPT. Pelanggaran tercatat otomatis di server pengawas.
+              Peserta didik diharapkan hadir di ruang ujian 15 menit sebelum pelaksanaan dimulai, membawa kartu tanda peserta ujian, menjaga ketenangan ruangan, serta mematuhi seluruh petunjuk pengawas demi kelancaran dan ketertiban evaluasi belajar.
             </p>
           </div>
         </section>

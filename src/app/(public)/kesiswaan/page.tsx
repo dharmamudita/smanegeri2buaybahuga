@@ -38,10 +38,10 @@ function KesiswaanContent() {
     {
       kategori: "Presensi & Kehadiran",
       deskripsi:
-        "Siswa wajib hadir di sekolah sebelum pukul 07:30 WIB dan melakukan presensi geofencing mandiri pada radius maksimal 100 meter dari gerbang sekolah.",
+        "Siswa wajib hadir di sekolah sebelum pukul 07:30 WIB serta melakukan pencatatan kehadiran secara tertib dan disiplin di lingkungan sekolah.",
       kewajiban: [
-        "Presensi dibuka pukul 06:00 - 07:30 WIB (tepat waktu).",
-        "Keterlambatan di atas pukul 07:30 WIB tercatat otomatis dan wajib lapor ke Guru Piket/BK.",
+        "Pencatatan presensi dibuka pukul 06:00 - 07:30 WIB (tepat waktu).",
+        "Keterlambatan di atas pukul 07:30 WIB tercatat dan siswa wajib melapor ke Guru Piket/BK.",
         "Ketidakhadiran karena sakit/izin wajib menyertakan surat keterangan resmi orang tua/dokter.",
       ],
     },

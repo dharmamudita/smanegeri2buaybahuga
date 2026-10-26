@@ -95,14 +95,14 @@ Seluruh berkas pendaftaran diverifikasi secara berjenjang oleh panitia PPDB ting
   {
     id: "berita-2",
     slug: "jadwal-penilaian-akhir-semester-ganjil-2026",
-    judul: "Jadwal dan Ketentuan Penilaian Akhir Semester (PAS) Berbasis LMS Terproteksi",
-    ringkasan: "Pelaksanaan PAS Ganjil 2026/2027 menggunakan sistem ujian anti-kecurangan Smart School SMAN 2 Buay Bahuga.",
-    konten: `Menjelang akhir semester ganjil tahun pelajaran 2026/2027, pihak kurikulum mengumumkan bahwa seluruh ujian komprehensif akan diselenggarakan melalui modul Ujian Terproteksi pada portal Smart School.
+    judul: "Jadwal dan Ketentuan Penilaian Akhir Semester (PAS) Ganjil 2026/2027",
+    ringkasan: "Informasi jadwal resmi, pembagian ruang, dan tata tertib pelaksanaan Penilaian Akhir Semester Ganjil SMAN 2 Buay Bahuga.",
+    konten: `Menjelang akhir semester ganjil tahun pelajaran 2026/2027, pihak kurikulum mengumumkan bahwa seluruh rangkaian evaluasi akhir akan diselenggarakan secara terpadu di lingkungan sekolah.
 
-Ketentuan teknis bagi seluruh siswa:
-1. Siswa wajib berada di dalam area radius geofencing sekolah saat jam ujian berlangsung.
-2. Layar pengerjaan ujian dilindungi watermark identitas unik dan sistem deteksi alih tab.
-3. Siswa dilarang keras membuka aplikasi pihak ketiga atau meninggalkan layar ujian selama durasi pengerjaan.`,
+Ketentuan pelaksanaan bagi seluruh siswa:
+1. Siswa hadir di sekolah 15 menit sebelum waktu asesmen dimulai.
+2. Membawa perlengkapan ujian dan kartu tanda peserta resmi.
+3. Menjaga ketertiban, ketenangan, serta mematuhi arahan pengawas ruang ujian.`,
     kategori: "AKADEMIK",
     penulis: "Wakabid Kurikulum",
     tanggal: "20 Oktober 2026",
@@ -254,7 +254,7 @@ export const MOCK_TUGAS: TugasItem[] = [
     mapelId: "mapel-1",
     mapelNama: "Biologi Umum & Genetika",
     judul: "Ujian Harian: Genetika Populasi & Hukum Hardy-Weinberg",
-    deskripsi: "Ujian terproteksi anti-kecurangan. Dilarang berpindah tab browser dan menyalin teks. Watermark pengawasan aktif.",
+    deskripsi: "Ujian formatif materi Genetika Populasi. Kerjakan secara mandiri, jujur, dan teliti sesuai durasi waktu yang disediakan.",
     tipe: "UJIAN_HARIAN",
     durasiMenit: 30,
     tenggatWaktu: "28 Oktober 2026, 23:59 WIB",

@@ -185,7 +185,7 @@ export default function GuruRekapNilaiPage() {
             Rekapitulasi Capaian Belajar Siswa
           </h1>
           <p className="text-xs text-gray-500 mt-1">
-            Data rekapitulasi nilai formatif, sumatif, dan ujian anti-cheat terintegrasi dengan Google Sheets API.
+            Data rekapitulasi nilai formatif, sumatif, dan asesmen semester terintegrasi dengan pelaporan akademik resmi.
           </p>
         </div>
 

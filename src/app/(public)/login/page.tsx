@@ -39,7 +39,7 @@ const ROLE_CONFIG: Record<
   SISWA: {
     title: "Portal Masuk Siswa",
     subtitle:
-      "Akses E-Learning, Presensi Geofencing & Ujian Digital SMAN 2 Buay Bahuga",
+      "Akses Layanan Pembelajaran Digital & Presensi Siswa SMAN 2 Buay Bahuga",
     badge: "Ruang Peserta Didik",
     badgeClass: "bg-blue-50 text-[#2A2C5E] border-blue-200",
     icon: GraduationCap,

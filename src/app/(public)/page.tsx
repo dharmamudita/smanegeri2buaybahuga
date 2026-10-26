@@ -38,8 +38,8 @@ export default function HomePage() {
               <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl">
                 SMA Negeri 2 Buay Bahuga menyelenggarakan pendidikan berkualitas
                 berlandaskan budi pekerti luhur, penguasaan sains teknologi, serta
-                sistem digital modern dengan presensi geofencing dan pembelajaran
-                daring terproteksi.
+                pembelajaran holistik yang membentuk lulusan unggul, berprestasi,
+                dan berkarakter mulia.
               </p>
 
               <div className="flex flex-wrap items-center gap-4 pt-2">
@@ -68,11 +68,11 @@ export default function HomePage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Anti-Cheat Exam LMS</span>
+                  <span>Terakreditasi A</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Geofencing Absensi</span>
+                  <span>Tenaga Pendidik Berpengalaman</span>
                 </div>
               </div>
             </div>
@@ -113,13 +113,13 @@ export default function HomePage() {
                   </div>
 
                   <div className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100">
-                    <MapPin className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
                     <div>
                       <span className="font-semibold text-gray-800">
-                        Radius Presensi Siswa
+                        Status Akreditasi
                       </span>
                       <p className="text-gray-500 mt-0.5">
-                        Maksimal {SCHOOL_INFO.koordinat.radiusMaksimalMeter} Meter dari gerbang sekolah
+                        Terakreditasi A (Unggul) BAN-S/M
                       </p>
                     </div>
                   </div>
@@ -235,10 +235,10 @@ export default function HomePage() {
                   Way Kanan.
                 </p>
                 <p>
-                  Dengan penerapan Kurikulum Merdeka yang didukung LMS terproteksi
-                  dan presensi berbasis geofencing, kami memastikan bahwa proses
-                  pembelajaran tidak hanya mengejar penguasaan ilmu pengetahuan,
-                  tetapi juga menanamkan kedisiplinan dan integritas yang kokoh.
+                  Dengan penerapan Kurikulum Merdeka yang didukung fasilitas pembelajaran
+                  digital modern, kami memastikan bahwa proses pembelajaran tidak hanya
+                  mengejar penguasaan ilmu pengetahuan, tetapi juga menanamkan kedisiplinan
+                  dan budi pekerti yang kokoh.
                 </p>
               </div>
             </div>

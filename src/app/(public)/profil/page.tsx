@@ -51,7 +51,7 @@ function ProfilContent() {
     {
       nama: "Laboratorium Komputer Multimedia & CBT",
       deskripsi:
-        "Dilengkapi 40 unit PC workstation terkoneksi LAN gigabit untuk pelaksanaan Ujian Anti-Cheat, AKM, dan pembelajaran pemrograman.",
+        "Dilengkapi 40 unit PC workstation modern terhubung internet untuk pelaksanaan Asesmen Nasional (ANBK), KBM digital, dan literasi teknologi.",
       icon: Monitor,
       kapasitas: "40 Siswa",
     },
@@ -208,7 +208,7 @@ function ProfilContent() {
                 </li>
                 <li className="flex items-start gap-2.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>Melaksanakan pembelajaran sains dan teknologi terintegrasi Smart School & LMS terproteksi anti-kecurangan.</span>
+                  <span>Melaksanakan pembelajaran sains dan teknologi terintegrasi dengan pemanfaatan media digital secara inovatif dan efektif.</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
@@ -355,14 +355,14 @@ function ProfilContent() {
                   <span className="font-medium text-gray-900">{SCHOOL_INFO.provinsi} - {SCHOOL_INFO.kodePos}</span>
                 </div>
                 <div className="flex justify-between py-1.5 border-b border-gray-100">
-                  <span className="text-gray-500">Koordinat Geofencing Presensi</span>
+                  <span className="text-gray-500">Titik Koordinat Geografis</span>
                   <span className="font-mono text-gray-900 text-right">
                     Lat {SCHOOL_INFO.koordinat.latitude}, Lng {SCHOOL_INFO.koordinat.longitude}
                   </span>
                 </div>
                 <div className="flex justify-between py-1.5">
-                  <span className="text-gray-500">Radius Toleransi Presensi</span>
-                  <span className="font-bold text-[#2A2C5E]">{SCHOOL_INFO.koordinat.radiusMaksimalMeter} Meter</span>
+                  <span className="text-gray-500">Waktu Penyelenggaraan</span>
+                  <span className="font-bold text-[#2A2C5E]">Pagi / 6 Hari Sekolah</span>
                 </div>
               </div>
             </div>

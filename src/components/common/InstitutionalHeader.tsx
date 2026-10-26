@@ -9,7 +9,6 @@ import {
   Users,
   Info,
   FileCheck,
-  LogIn,
   Menu,
   X,
   Phone,
@@ -80,8 +79,8 @@ export default function InstitutionalHeader() {
             </div>
           </Link>
 
-          {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center gap-1">
+          {/* Desktop Nav Links (Clean without top right login button) */}
+          <nav className="hidden lg:flex items-center gap-1.5">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const isActive = pathname === link.href;
@@ -89,7 +88,7 @@ export default function InstitutionalHeader() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-md transition-all ${
+                  className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-md transition-all ${
                     isActive
                       ? "text-[#2E4BA3] bg-blue-50 font-semibold border-b-2 border-[#2E4BA3]"
                       : "text-gray-700 hover:text-[#2E4BA3] hover:bg-gray-50"
@@ -101,17 +100,6 @@ export default function InstitutionalHeader() {
               );
             })}
           </nav>
-
-          {/* Action Button: Login Terpadu */}
-          <div className="hidden sm:flex items-center gap-3">
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-[#2E4BA3] hover:bg-[#233b82] rounded-md shadow-xs transition-all active:scale-98"
-            >
-              <LogIn className="w-4 h-4" />
-              <span>Portal Masuk</span>
-            </Link>
-          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -146,16 +134,6 @@ export default function InstitutionalHeader() {
               </Link>
             );
           })}
-          <div className="pt-3 border-t border-gray-100">
-            <Link
-              href="/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-sm font-semibold text-white bg-[#2E4BA3] rounded-md"
-            >
-              <LogIn className="w-4 h-4" />
-              <span>Portal Masuk (LMS & Dashboard)</span>
-            </Link>
-          </div>
         </div>
       )}
     </header>

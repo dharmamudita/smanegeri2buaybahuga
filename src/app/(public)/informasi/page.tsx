@@ -20,7 +20,13 @@ export default function InformasiPage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [activeModalBerita, setActiveModalBerita] = useState<BeritaItem | null>(null);
 
-  const kategoriList = ["ALL", "PENGUMUMAN", "AKADEMIK", "KESISWAAN", "PRESTASI"];
+  const kategoriList = [
+    { key: "ALL", label: "Semua Kategori" },
+    { key: "PENGUMUMAN", label: "Pengumuman" },
+    { key: "AKADEMIK", label: "Akademik" },
+    { key: "KESISWAAN", label: "Kesiswaan" },
+    { key: "PRESTASI", label: "Prestasi" },
+  ];
 
   const filteredBerita = MOCK_BERITA.filter((item) => {
     if (selectedKategori !== "ALL" && item.kategori !== selectedKategori) {
@@ -56,15 +62,15 @@ export default function InformasiPage() {
           <div className="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 bg-white rounded-xl border border-gray-200 shadow-2xs">
             {kategoriList.map((kat) => (
               <button
-                key={kat}
-                onClick={() => setSelectedKategori(kat)}
+                key={kat.key}
+                onClick={() => setSelectedKategori(kat.key)}
                 className={`px-3.5 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                  selectedKategori === kat
+                  selectedKategori === kat.key
                     ? "bg-[#2A2C5E] text-white shadow-xs"
                     : "bg-gray-100/90 text-gray-700 hover:bg-gray-200/80 hover:text-gray-900"
                 }`}
               >
-                {kat === "ALL" ? "Semua Kategori" : kat}
+                {kat.label}
               </button>
             ))}
           </div>
@@ -98,8 +104,8 @@ export default function InformasiPage() {
                   alt={berita.judul}
                   className="w-full h-full object-cover"
                 />
-                <span className="absolute top-3 left-3 bg-[#2A2C5E] text-white text-[10px] font-bold px-2.5 py-0.5 rounded uppercase tracking-wider">
-                  {berita.kategori}
+                <span className="absolute top-3 left-3 bg-[#2A2C5E] text-white text-[11px] font-semibold px-2.5 py-0.5 rounded capitalize">
+                  {berita.kategori.toLowerCase()}
                 </span>
               </div>
 
@@ -144,8 +150,8 @@ export default function InformasiPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-50 px-2.5 py-0.5 rounded">
-                {activeModalBerita.kategori}
+              <span className="text-xs font-semibold text-[#2A2C5E] bg-blue-50 px-2.5 py-0.5 rounded capitalize">
+                {activeModalBerita.kategori.toLowerCase()}
               </span>
               <button
                 onClick={() => setActiveModalBerita(null)}

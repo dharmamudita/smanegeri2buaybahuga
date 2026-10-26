@@ -152,7 +152,7 @@ export default function HomePage() {
               <Users className="w-5 h-5" />
             </div>
             <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">450+</div>
-            <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <div className="text-xs font-semibold text-gray-600">
               Peserta Didik Aktif
             </div>
           </div>
@@ -162,7 +162,7 @@ export default function HomePage() {
               <GraduationCap className="w-5 h-5" />
             </div>
             <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">32</div>
-            <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <div className="text-xs font-semibold text-gray-600">
               Pendidik & Tenaga Kependidikan
             </div>
           </div>
@@ -172,7 +172,7 @@ export default function HomePage() {
               <Award className="w-5 h-5" />
             </div>
             <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">18+</div>
-            <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <div className="text-xs font-semibold text-gray-600">
               Prestasi OSN & O2SN
             </div>
           </div>
@@ -182,8 +182,8 @@ export default function HomePage() {
               <BookOpen className="w-5 h-5" />
             </div>
             <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">100%</div>
-            <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Digitalisasi LMS & CBT
+            <div className="text-xs font-semibold text-gray-600">
+              Digitalisasi Pembelajaran & CBT
             </div>
           </div>
         </div>
@@ -250,7 +250,7 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-4">
           <div>
-            <div className="text-xs font-bold uppercase tracking-wider text-[#2A2C5E]">
+            <div className="text-xs font-bold text-[#2A2C5E]">
               Informasi Publik
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mt-1">
@@ -279,8 +279,8 @@ export default function HomePage() {
                   alt={berita.judul}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <span className="absolute top-3 left-3 bg-[#2A2C5E] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-xs uppercase tracking-wider">
-                  {berita.kategori}
+                <span className="absolute top-3 left-3 bg-[#2A2C5E] text-white text-[11px] font-semibold px-2 py-0.5 rounded shadow-xs capitalize">
+                  {berita.kategori.toLowerCase()}
                 </span>
               </div>
               <div className="p-4 flex-1 flex flex-col justify-between space-y-3">

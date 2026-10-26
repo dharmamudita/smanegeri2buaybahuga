@@ -279,7 +279,7 @@ function AkademikContent() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-2xs space-y-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-50 px-2.5 py-1 rounded inline-block">
+              <span className="text-xs font-semibold text-[#2A2C5E] bg-blue-50 px-2.5 py-1 rounded inline-block">
                 Program Sains
               </span>
               <h3 className="text-base font-bold text-gray-900">Matematika dan Ilmu Pengetahuan Alam (MIPA)</h3>
@@ -289,7 +289,7 @@ function AkademikContent() {
             </div>
 
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-2xs space-y-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-1 rounded inline-block">
+              <span className="text-xs font-semibold text-amber-700 bg-amber-50 px-2.5 py-1 rounded inline-block">
                 Program Sosial & Humaniora
               </span>
               <h3 className="text-base font-bold text-gray-900">Ilmu Pengetahuan Sosial (IPS)</h3>

@@ -185,7 +185,7 @@ function ProfilContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Visi */}
             <div className="bg-white p-6 sm:p-8 rounded-xl border border-gray-200 shadow-2xs space-y-4">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-50 px-3 py-1 rounded">
+              <span className="text-xs font-semibold text-[#2A2C5E] bg-blue-50 px-3 py-1 rounded">
                 Visi Sekolah
               </span>
               <h3 className="text-xl font-bold text-gray-900 leading-snug">
@@ -198,7 +198,7 @@ function ProfilContent() {
 
             {/* Misi */}
             <div className="bg-white p-6 sm:p-8 rounded-xl border border-gray-200 shadow-2xs space-y-4">
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded">
+              <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded">
                 Misi Strategis
               </span>
               <ul className="space-y-3 text-xs text-gray-700">
@@ -243,7 +243,7 @@ function ProfilContent() {
                 key={pim.jabatan}
                 className="bg-white p-6 rounded-xl border border-gray-200 shadow-2xs space-y-2.5 hover:shadow-md transition-shadow"
               >
-                <div className="text-[11px] font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-50 px-2.5 py-1 rounded inline-block">
+                <div className="text-xs font-semibold text-[#2A2C5E] bg-blue-50 px-2.5 py-1 rounded inline-block">
                   {pim.jabatan}
                 </div>
                 <h4 className="text-base font-bold text-gray-900">{pim.nama}</h4>

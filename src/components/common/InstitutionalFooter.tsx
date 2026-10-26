@@ -7,11 +7,6 @@ import {
   ShieldCheck,
   ChevronRight,
   Clock,
-  User,
-  Users,
-  Shield,
-  ArrowRight,
-  Lock,
 } from "lucide-react";
 import { SCHOOL_INFO } from "@/lib/constants";
 
@@ -50,78 +45,43 @@ export default function InstitutionalFooter() {
             </div>
           </div>
 
-          {/* Kolom 2: Portal Masuk & Login Pengguna (Admin, Guru, Siswa) */}
-          <div className="space-y-3">
+          {/* Kolom 2: Portal Masuk Pengguna (Gaya daftar bersih sama seperti Tautan Layanan) */}
+          <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4 border-l-2 border-[#2E4BA3] pl-2.5">
               Portal Masuk Pengguna
             </h4>
-            <div className="space-y-2.5 text-xs">
-              {/* Tombol Login Siswa */}
-              <Link
-                href="/login?role=SISWA"
-                className="group flex items-center justify-between p-3 rounded-lg bg-[#1F2937] hover:bg-[#253248] border border-gray-700 hover:border-blue-500 transition-all shadow-xs"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded bg-blue-900/60 text-blue-300 flex items-center justify-center group-hover:bg-[#2E4BA3] group-hover:text-white transition-colors">
-                    <User className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-white group-hover:text-blue-300 transition-colors">
-                      Login Siswa (NISN)
-                    </div>
-                    <div className="text-[11px] text-gray-400">
-                      LMS & Presensi Geofencing
-                    </div>
-                  </div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-blue-400 transition-colors" />
-              </Link>
-
-              {/* Tombol Login Guru */}
-              <Link
-                href="/login?role=GURU"
-                className="group flex items-center justify-between p-3 rounded-lg bg-[#1F2937] hover:bg-[#253248] border border-gray-700 hover:border-amber-500 transition-all shadow-xs"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded bg-amber-900/40 text-amber-300 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                    <Users className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-white group-hover:text-amber-300 transition-colors">
-                      Login Dewan Guru (NUPTK)
-                    </div>
-                    <div className="text-[11px] text-gray-400">
-                      Materi, Ujian & Rekap Nilai
-                    </div>
-                  </div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-amber-400 transition-colors" />
-              </Link>
-
-              {/* Tombol Login Admin */}
-              <Link
-                href="/login?role=ADMIN"
-                className="group flex items-center justify-between p-3 rounded-lg bg-[#1F2937] hover:bg-[#253248] border border-gray-700 hover:border-red-500 transition-all shadow-xs"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded bg-red-900/40 text-red-300 flex items-center justify-center group-hover:bg-red-600 group-hover:text-white transition-colors">
-                    <Shield className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-white group-hover:text-red-300 transition-colors">
-                      Login Administrator
-                    </div>
-                    <div className="text-[11px] text-gray-400">
-                      Master Data & PPDB Seleksi
-                    </div>
-                  </div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-red-400 transition-colors" />
-              </Link>
-            </div>
+            <ul className="space-y-2.5 text-xs">
+              <li>
+                <Link
+                  href="/login?role=SISWA"
+                  className="flex items-center gap-1.5 hover:text-white transition-colors"
+                >
+                  <ChevronRight className="w-3.5 h-3.5 text-blue-400" />
+                  <span>Login Siswa (NISN)</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/login?role=GURU"
+                  className="flex items-center gap-1.5 hover:text-white transition-colors"
+                >
+                  <ChevronRight className="w-3.5 h-3.5 text-blue-400" />
+                  <span>Login Dewan Guru (NUPTK)</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/login?role=ADMIN"
+                  className="flex items-center gap-1.5 hover:text-white transition-colors"
+                >
+                  <ChevronRight className="w-3.5 h-3.5 text-blue-400" />
+                  <span>Login Administrator Sistem</span>
+                </Link>
+              </li>
+            </ul>
           </div>
 
-          {/* Kolom 3: Tautan Layanan (Dipindahkan dari posisi lama, menggantikan Portal Kedinasan) */}
+          {/* Kolom 3: Tautan Layanan */}
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4 border-l-2 border-[#2E4BA3] pl-2.5">
               Tautan Layanan
@@ -133,7 +93,7 @@ export default function InstitutionalFooter() {
                   className="flex items-center gap-1.5 hover:text-white transition-colors"
                 >
                   <ChevronRight className="w-3.5 h-3.5 text-blue-400" />
-                  Penerimaan Peserta Didik Baru (PPDB)
+                  <span>Penerimaan Peserta Didik Baru (PPDB)</span>
                 </Link>
               </li>
               <li>
@@ -142,7 +102,7 @@ export default function InstitutionalFooter() {
                   className="flex items-center gap-1.5 hover:text-white transition-colors"
                 >
                   <ChevronRight className="w-3.5 h-3.5 text-blue-400" />
-                  Kurikulum & Kalender Akademik
+                  <span>Kurikulum & Kalender Akademik</span>
                 </Link>
               </li>
               <li>
@@ -151,7 +111,7 @@ export default function InstitutionalFooter() {
                   className="flex items-center gap-1.5 hover:text-white transition-colors"
                 >
                   <ChevronRight className="w-3.5 h-3.5 text-blue-400" />
-                  Organisasi Kesiswaan & Ekstrakurikuler
+                  <span>Organisasi Kesiswaan & Ekstrakurikuler</span>
                 </Link>
               </li>
               <li>
@@ -160,7 +120,7 @@ export default function InstitutionalFooter() {
                   className="flex items-center gap-1.5 hover:text-white transition-colors"
                 >
                   <ChevronRight className="w-3.5 h-3.5 text-blue-400" />
-                  Warta Berita & Pengumuman Sekolah
+                  <span>Warta Berita & Pengumuman Sekolah</span>
                 </Link>
               </li>
             </ul>

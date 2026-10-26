@@ -37,24 +37,24 @@ export default function InformasiPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       {/* Header */}
-      <div className="border-b border-gray-200 pb-6">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
+      <div className="space-y-2.5">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold">
           <Info className="w-3.5 h-3.5" />
           <span>Warta Informasi & Pengumuman</span>
         </div>
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
           Pusat Informasi & Kabar Sekolah
         </h1>
-        <p className="text-sm text-gray-600 mt-2 max-w-3xl leading-relaxed">
+        <p className="text-xs sm:text-sm text-gray-600 max-w-3xl leading-relaxed">
           Temukan rilis pengumuman akademik resmi, jadwal kegiatan sekolah, dan
           liputan prestasi civitas akademika SMA Negeri 2 Buay Bahuga.
         </p>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+      {/* Filter and Search Bar: Dekat dan proporsional */}
+      <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         {/* Kategori Tabs */}
         <div className="flex flex-wrap items-center gap-1.5">
           {kategoriList.map((kat) => (

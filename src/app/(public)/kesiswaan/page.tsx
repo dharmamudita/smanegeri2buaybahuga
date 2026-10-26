@@ -159,39 +159,41 @@ function KesiswaanContent() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       {/* Page Header */}
-      <div className="border-b border-gray-200 pb-6">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
+      <div className="space-y-2.5">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold">
           <Users className="w-3.5 h-3.5" />
           <span>Pengembangan Karakter Siswa</span>
         </div>
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
           Kesiswaan, Tata Tertib & Ekstrakurikuler
         </h1>
-        <p className="text-sm text-gray-600 mt-2 max-w-3xl leading-relaxed">
+        <p className="text-xs sm:text-sm text-gray-600 max-w-3xl leading-relaxed">
           Membina kepemimpinan organisasi, kedisiplinan beretika, torehan prestasi unggul di berbagai kancah, serta pengembangan minat bakat melalui 12 cabang ekstrakurikuler.
         </p>
-      </div>
 
-      {/* Sub-Navigation Tabs (Style Gambar 4) */}
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-2xs flex flex-wrap items-center gap-2">
-        {tabs.map((tab) => {
-          const isSelected = activeTab === tab.key;
-          return (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`px-3.5 py-1.5 rounded-md text-xs font-semibold transition-all ${
-                isSelected
-                  ? "bg-[#2A2C5E] text-white shadow-2xs"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              {tab.label}
-            </button>
-          );
-        })}
+        {/* Sub-Navigation Tabs: Berjarak rapat dan menyatu proporsional dengan teks */}
+        <div className="pt-2">
+          <div className="inline-flex flex-wrap items-center gap-1.5 p-1 bg-white rounded-lg border border-gray-200 shadow-2xs">
+            {tabs.map((tab) => {
+              const isSelected = activeTab === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                    isSelected
+                      ? "bg-[#2A2C5E] text-white shadow-2xs"
+                      : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* TAB 1: TATA TERTIB */}

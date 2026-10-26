@@ -146,19 +146,19 @@ function ProfilContent() {
           Mengenal lebih dekat identitas institusi, arah visi misi keunggulan, jajaran dewan guru pendidik, struktur kepemimpinan, dan fasilitas sarana pembelajaran modern.
         </p>
 
-        {/* Sub-Navigation Tabs: Berjarak rapat dan menyatu proporsional dengan teks */}
+        {/* Sub-Navigation Tabs: Ukuran lebih besar, jelas, dan proporsional */}
         <div className="pt-2">
-          <div className="inline-flex flex-wrap items-center gap-1.5 p-1 bg-white rounded-lg border border-gray-200 shadow-2xs">
+          <div className="inline-flex flex-wrap items-center gap-2.5 p-2 bg-white rounded-2xl border border-gray-200/80 shadow-xs">
             {tabs.map((tab) => {
               const isSelected = activeTab === tab.key;
               return (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
-                  className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                  className={`px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl text-sm sm:text-base font-bold transition-all cursor-pointer ${
                     isSelected
-                      ? "bg-[#2A2C5E] text-white shadow-2xs"
-                      : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                      ? "bg-[#2A2C5E] text-white shadow-sm"
+                      : "bg-gray-100 text-gray-800 hover:bg-gray-200/80 hover:text-gray-900"
                   }`}
                 >
                   {tab.label}

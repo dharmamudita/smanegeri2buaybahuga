@@ -45,10 +45,10 @@ export default function InstitutionalHeader() {
             </div>
           </Link>
 
-          {/* Navigasi Kapsul Floating Di Tengah (Sedikit Lebih Besar, Teks Jelas, Berjarak Nyaman) */}
+          {/* Navigasi Kapsul Floating Di Tengah (Warna Biru Khas Web #2A2C5E, Transisi Halus & Responsif) */}
           <nav className="hidden lg:flex items-center justify-center absolute left-1/2 -translate-x-1/2">
             <div
-              className="flex items-center gap-1.5 bg-[#17193B]/95 backdrop-blur-md border border-white/20 p-1.5 sm:p-2 rounded-full shadow-lg ring-1 ring-black/25 min-w-max flex-nowrap"
+              className="flex items-center gap-1.5 bg-[#121428]/95 backdrop-blur-md border border-white/15 p-1.5 sm:p-2 rounded-full shadow-2xl ring-1 ring-black/30 min-w-max flex-nowrap"
               style={{ whiteSpace: "nowrap" }}
             >
               {navLinks.map((link) => {
@@ -58,16 +58,18 @@ export default function InstitutionalHeader() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all duration-200 whitespace-nowrap shrink-0 flex-nowrap select-none ${
+                    className={`group flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-semibold rounded-full whitespace-nowrap shrink-0 flex-nowrap select-none transition-all duration-200 ease-out ${
                       isActive
-                        ? "bg-[#434891] text-white shadow-sm border border-white/30"
-                        : "text-blue-100 hover:text-white hover:bg-white/10"
+                        ? "bg-[#2A2C5E] text-white shadow-[0_2px_12px_rgba(42,44,94,0.7)] border border-white/30 ring-1 ring-white/15 scale-100"
+                        : "text-gray-200/90 border border-transparent hover:bg-[#2A2C5E]/70 hover:text-white hover:border-white/20 hover:shadow-sm hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
                     }`}
                     style={{ whiteSpace: "nowrap" }}
                   >
                     <Icon
-                      className={`w-4 h-4 shrink-0 ${
-                        isActive ? "text-white" : "text-blue-200"
+                      className={`w-4 h-4 shrink-0 transition-transform duration-200 ${
+                        isActive
+                          ? "text-white"
+                          : "text-blue-100 group-hover:scale-110 group-hover:text-white"
                       }`}
                     />
                     <span
@@ -85,7 +87,7 @@ export default function InstitutionalHeader() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
+            className="lg:hidden p-2 rounded-lg text-white hover:bg-white/10 active:scale-95 transition-all"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -95,7 +97,7 @@ export default function InstitutionalHeader() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-[#1F2147] bg-[#17193B] px-4 pt-3.5 pb-6 space-y-1 shadow-xl">
+        <div className="lg:hidden border-t border-[#1F2147] bg-[#121428] px-4 pt-3.5 pb-6 space-y-1.5 shadow-2xl transition-all duration-300">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive = pathname === link.href;
@@ -104,16 +106,16 @@ export default function InstitutionalHeader() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-2.5 px-4 py-2.5 rounded-full text-sm font-semibold transition-all whitespace-nowrap ${
+                className={`flex items-center gap-2.5 px-4 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
                   isActive
-                    ? "bg-[#434891] text-white shadow-xs border border-white/30"
-                    : "text-blue-100 hover:bg-white/10 hover:text-white"
+                    ? "bg-[#2A2C5E] text-white shadow-md border border-white/30"
+                    : "text-gray-200 hover:bg-[#2A2C5E]/70 hover:text-white"
                 }`}
                 style={{ whiteSpace: "nowrap" }}
               >
                 <Icon
                   className={`w-4 h-4 shrink-0 ${
-                    isActive ? "text-white" : "text-blue-200"
+                    isActive ? "text-white" : "text-blue-100"
                   }`}
                 />
                 <span

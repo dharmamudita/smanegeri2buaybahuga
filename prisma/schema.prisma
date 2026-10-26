@@ -1,0 +1,253 @@
+// Prisma Schema for Smart School & LMS SMAN 2 Buay Bahuga
+// Database: Supabase PostgreSQL / Local Postgres
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  GURU
+  SISWA
+}
+
+enum TipeTugas {
+  TUGAS
+  KUIS
+  UJIAN_HARIAN
+  UJIAN_SEMESTER
+}
+
+enum StatusSubmission {
+  DRAFT
+  DIKIRIM
+  DINILAI
+  TERLAMBAT
+}
+
+enum StatusPresensi {
+  HADIR
+  TERLAMBAT
+  IZIN
+  SAKIT
+  ALPA
+}
+
+enum UjianEventType {
+  SWITCH_TAB
+  COPY_TEXT
+  WINDOW_BLUR
+  DEVTOOLS_OPEN
+}
+
+enum StatusPPDB {
+  MENUNGGU_VERIFIKASI
+  DIVERIFIKASI
+  DITERIMA
+  DITOLAK
+}
+
+model User {
+  id          String   @id @default(uuid())
+  username    String   @unique // SMAN2BUBA (Admin), NUPTK (Guru), NISN (Siswa)
+  password    String   // Hashed password atau default password
+  name        String
+  email       String?  @unique
+  role        Role     @default(SISWA)
+  nisn        String?  @unique
+  nuptk       String?  @unique
+  avatarUrl   String?
+  phone       String?
+  isActive    Boolean  @default(true)
+
+  // Relasi Guru
+  mapelAjar   Mapel[]
+
+  // Relasi Siswa
+  enrollments Enrollment[]
+  submissions Submission[]
+  presensi    Presensi[]
+  ujianLogs   UjianLog[]
+
+  // Relasi Penulis Berita
+  beritaList  Berita[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([role])
+  @@index([username])
+}
+
+model Mapel {
+  id          String       @id @default(uuid())
+  kode        String       @unique // e.g. "BIO-X-A"
+  nama        String       // e.g. "Biologi Umum"
+  tingkat     String       // "X", "XI", "XII"
+  jurusan     String       @default("Umum") // "MIPA", "IPS", "Umum"
+  deskripsi   String?
+  guruId      String
+  guru        User         @relation(fields: [guruId], references: [id])
+
+  materi      Materi[]
+  tugas       Tugas[]
+  enrollments Enrollment[]
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([guruId])
+}
+
+model Materi {
+  id          String   @id @default(uuid())
+  judul       String
+  deskripsi   String?
+  fileUrl     String?  // Cloudinary / Storage link
+  tipe        String   @default("PDF") // PDF, VIDEO, DOKUMEN, LINK
+  urutan      Int      @default(1)
+  mapelId     String
+  mapel       Mapel    @relation(fields: [mapelId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([mapelId])
+}
+
+model Enrollment {
+  id          String   @id @default(uuid())
+  siswaId     String
+  siswa       User     @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+  mapelId     String
+  mapel       Mapel    @relation(fields: [mapelId], references: [id], onDelete: Cascade)
+  semester    String   @default("Ganjil 2026/2027")
+
+  createdAt   DateTime @default(now())
+
+  @@unique([siswaId, mapelId])
+  @@index([siswaId])
+  @@index([mapelId])
+}
+
+model Tugas {
+  id           String       @id @default(uuid())
+  judul        String
+  deskripsi    String
+  tipe         TipeTugas    @default(TUGAS)
+  mapelId      String
+  mapel        Mapel        @relation(fields: [mapelId], references: [id], onDelete: Cascade)
+  durasiMenit  Int?         // Untuk ujian/kuis berbatas waktu
+  tenggatWaktu DateTime?
+  totalPoin    Int          @default(100)
+  soalJson     String?      // JSON string array of questions
+  
+  submissions  Submission[]
+  ujianLogs    UjianLog[]
+
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([mapelId])
+}
+
+model Submission {
+  id           String           @id @default(uuid())
+  tugasId      String
+  tugas        Tugas            @relation(fields: [tugasId], references: [id], onDelete: Cascade)
+  siswaId      String
+  siswa        User             @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+  jawaban      String?          // Teks jawaban atau URL file
+  nilai        Float?
+  catatanGuru  String?
+  status       StatusSubmission @default(DIKIRIM)
+
+  submittedAt  DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@unique([tugasId, siswaId])
+  @@index([siswaId])
+}
+
+model Presensi {
+  id          String         @id @default(uuid())
+  siswaId     String
+  siswa       User           @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+  tanggal     DateTime       @default(now())
+  status      StatusPresensi @default(HADIR)
+  latitude    Float?
+  longitude   Float?
+  jarakMeter  Float?         // Jarak dari gerbang sekolah (-4.4782, 104.5428)
+  keterangan  String?
+
+  createdAt   DateTime       @default(now())
+
+  @@index([siswaId])
+  @@index([tanggal])
+}
+
+model UjianLog {
+  id         String         @id @default(uuid())
+  siswaId    String
+  siswa      User           @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+  tugasId    String
+  tugas      Tugas          @relation(fields: [tugasId], references: [id], onDelete: Cascade)
+  eventType  UjianEventType
+  metadata   String?        // rincian durasi tab blur, percobaan copy, dll
+  timestamp  DateTime       @default(now())
+
+  @@index([siswaId])
+  @@index([tugasId])
+}
+
+model Berita {
+  id           String   @id @default(uuid())
+  judul        String
+  slug         String   @unique
+  ringkasan    String
+  konten       String
+  kategori     String   // PENGUMUMAN, AKADEMIK, KESISWAAN, PRESTASI
+  thumbnailUrl String?
+  isPublished  Boolean  @default(true)
+  penulisId    String
+  penulis      User     @relation(fields: [penulisId], references: [id])
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([slug])
+  @@index([kategori])
+}
+
+model PPDB {
+  id                String     @id @default(uuid())
+  nomorPendaftaran  String     @unique // e.g. "PPDB-2026-001"
+  namaLengkap       String
+  nisn              String     @unique
+  asalSekolah       String
+  tempatLahir       String
+  tanggalLahir      DateTime
+  jenisKelamin      String     // "L" / "P"
+  agama             String
+  alamat            String
+  namaOrangTua      String
+  noHpOrangTua      String
+  pilihanJurusan    String     // "MIPA" / "IPS"
+  berkasIjazahUrl   String?
+  berkasKKUrl       String?
+  berkasAktaUrl     String?
+  status            StatusPPDB @default(MENUNGGU_VERIFIKASI)
+  catatanAdmin      String?
+
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  @@index([nomorPendaftaran])
+  @@index([nisn])
+  @@index([status])
+}

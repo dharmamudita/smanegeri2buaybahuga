@@ -9,18 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@hookform/resolvers": "^6.0.0",
-    "@prisma/client": "^7.10.1",
-    "dayjs": "^1.11.23",
-    "framer-motion": "^14.6.0",
-    "geolib": "^4.0.0",
-    "lucide-react": "^1.61.0",
+    "@prisma/client": "^6.19.3",
     "next": "16.4.3",
     "react": "19.3.0",
-    "react-dom": "19.3.0",
-    "react-hook-form": "^7.91.0",
-    "zod": "^4.6.7",
-    "zustand": "^5.0.16"
+    "react-dom": "19.3.0"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
@@ -29,7 +21,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
-    "prisma": "^8.0.0-rc.27",
+    "prisma": "^6.19.3",
     "tailwindcss": "^4",
     "typescript": "^7.0.2"
   }

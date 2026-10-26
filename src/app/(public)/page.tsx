@@ -18,11 +18,11 @@ import { MOCK_BERITA } from "@/lib/mockData";
 
 export default function HomePage() {
   return (
-    <div className="space-y-16 pb-16">
+    <div className="space-y-6 sm:space-y-8 pb-12">
       {/* 1. Hero Section */}
       <section className="relative bg-gradient-to-b from-blue-50/70 via-white to-white border-b border-gray-100 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 lg:py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10 pb-4 sm:pb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Column: Headlines & CTA */}
             <div className="lg:col-span-7 space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100/70 border border-blue-200 text-[#2A2C5E] text-xs font-semibold">
@@ -61,7 +61,7 @@ export default function HomePage() {
               </div>
 
               {/* Trust Indicators */}
-              <div className="pt-6 border-t border-gray-200 grid grid-cols-3 gap-4 text-xs text-gray-600">
+              <div className="pt-3 sm:pt-4 border-t border-gray-200 grid grid-cols-3 gap-3 text-xs text-gray-600">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>Kurikulum Merdeka</span>
@@ -79,7 +79,7 @@ export default function HomePage() {
 
             {/* Right Column: Visual Card Highlight */}
             <div className="lg:col-span-5">
-              <div className="relative mx-auto max-w-md bg-white rounded-2xl shadow-xl border border-gray-200 p-6 space-y-6">
+              <div className="relative mx-auto max-w-md bg-white rounded-2xl shadow-xl border border-gray-200 p-5 sm:p-6 space-y-4 sm:space-y-5">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">

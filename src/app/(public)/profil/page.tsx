@@ -149,37 +149,55 @@ function ProfilContent() {
       jabatan: "Kepala Sekolah",
       nama: "Apriyani, S.Si., M.M.Pd.",
       nip: "19720405 200501 2 005",
-      keterangan: "Pembina Tk. I / IV.b — Penanggung Jawab Kebijakan & Manajemen Mutu Satuan Pendidikan",
+      pangkat: "Pembina Tk. I (IV/b)",
+      keterangan: "Penanggung Jawab Kebijakan & Manajemen Mutu Satuan Pendidikan",
+      fotoUrl:
+        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80",
     },
     {
-      jabatan: "Wakil Kepala Sekolah Bidang Kurikulum",
-      nama: "Marsono, S.Pd.",
-      nip: "19820315 200801 1 012",
-      keterangan: "Koordinator Implementasi Kurikulum Merdeka, Jadwal KBM 29 Rombel, & Evaluasi Akademik",
-    },
-    {
-      jabatan: "Wakil Kepala Sekolah Bidang Kesiswaan",
-      nama: "Tumijo, S.Pd.",
-      nip: "19780512 200501 1 003",
-      keterangan: "Pembinaan Disiplin Siswa, Organisasi OSIS/MPK, serta Pendampingan Prestasi OSN, O2SN, & FLS2N",
-    },
-    {
-      jabatan: "Wakil Kepala Sekolah Bidang Sarana & Prasarana",
-      nama: "Wida Awanda, S.Pd.Si.",
-      nip: "19890418 201402 2 004",
-      keterangan: "Pengelolaan 28 Ruang Kelas, 9 Unit Laboratorium, Perpustakaan, & Lingkungan Sekolah ASRI",
-    },
-    {
-      jabatan: "Wakil Kepala Sekolah Bidang Hubungan Masyarakat",
-      nama: "Eva Dwi Kurniawati, S.Pd.",
-      nip: "19880727 201101 2 005",
-      keterangan: "Kemitraan Komite Sekolah, Orang Tua/Wali Murid, Perguruan Tinggi Negeri, & Publikasi",
-    },
-    {
-      jabatan: "Tata Usaha & Operator Pokok Pendidikan (Dapodik)",
+      jabatan: "Kepala Tata Usaha & Operator Dapodik",
       nama: "Abu Yasid",
       nip: "Operator Resmi Dapodik (NPSN: 10810192)",
-      keterangan: "Manajemen Data Pokok Pendidikan Kemendikdasmen, Administrasi Kesiswaan, & Kepegawaian",
+      pangkat: "Staf Administrasi & Dapodik",
+      keterangan: "Layanan Administrasi Sekolah, Dapodik Kemendikdasmen & 5 Tendik",
+      fotoUrl:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&auto=format&fit=crop&q=80",
+    },
+    {
+      jabatan: "Waka Bidang Kurikulum",
+      nama: "Marsono, S.Pd.",
+      nip: "19820315 200801 1 012",
+      pangkat: "Guru Ahli Madya",
+      keterangan: "Implementasi Kurikulum Merdeka, Jadwal KBM 29 Rombel & Evaluasi",
+      fotoUrl:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80",
+    },
+    {
+      jabatan: "Waka Bidang Kesiswaan",
+      nama: "Tumijo, S.Pd.",
+      nip: "19780512 200501 1 003",
+      pangkat: "Guru Ahli Madya",
+      keterangan: "Disiplin Siswa, Pengurus OSIS/MPK, Pembinaan Prestasi & Ekskul",
+      fotoUrl:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80",
+    },
+    {
+      jabatan: "Waka Bidang Sarana & Prasarana",
+      nama: "Wida Awanda, S.Pd.Si.",
+      nip: "19890418 201402 2 004",
+      pangkat: "Guru Ahli Muda",
+      keterangan: "Pengelolaan 28 Ruang Kelas, 9 Laboratorium & Lingkungan ASRI",
+      fotoUrl:
+        "https://images.unsplash.com/photo-1580894732454-d102e3379201?w=400&auto=format&fit=crop&q=80",
+    },
+    {
+      jabatan: "Waka Bidang Hubungan Masyarakat",
+      nama: "Eva Dwi Kurniawati, S.Pd.",
+      nip: "19880727 201101 2 005",
+      pangkat: "Guru Ahli Muda",
+      keterangan: "Kemitraan Komite, Orang Tua/Wali Murid, PTN & Pusat Informasi",
+      fotoUrl:
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=80",
     },
   ];
 
@@ -293,125 +311,114 @@ function ProfilContent() {
             </div>
           </div>
 
-          {/* Container Bagan Hierarki (Rapi & Terhubung Garis di Mobile maupun Desktop) */}
+          {/* Container Bagan Hierarki dengan Foto Pimpinan & Garis Penghubung Terstruktur */}
           <div className="bg-white rounded-2xl border border-gray-200 shadow-2xs p-4 sm:p-8 lg:p-10">
             <div className="max-w-5xl mx-auto flex flex-col items-center">
               
-              {/* LEVEL 1 (DESKTOP): KOMITE - KEPALA SEKOLAH - TATA USAHA */}
-              <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-0 items-center relative">
-                {/* Kiri Desktop: Komite Sekolah */}
-                <div className="hidden lg:flex items-center justify-end">
-                  <div className="w-full max-w-xs bg-gray-50/90 border-2 border-dashed border-gray-300 rounded-xl p-4 text-center space-y-1">
-                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-gray-600 bg-gray-200/80 px-2.5 py-0.5 rounded">
-                      Mitra Koordinasi
-                    </span>
-                    <h4 className="text-sm font-bold text-gray-900">Komite Sekolah</h4>
-                    <p className="text-[11px] text-gray-500 leading-relaxed">
-                      Perwakilan Orang Tua / Wali Murid & Tokoh Masyarakat Buay Bahuga
-                    </p>
+              {/* LEVEL 1: PUNCAK PIMPINAN - KEPALA SEKOLAH */}
+              <div className="flex flex-col items-center z-10 w-full">
+                <div className="w-full max-w-md bg-[#2A2C5E] text-white rounded-2xl p-5 sm:p-6 text-center shadow-md border-2 border-[#2A2C5E] space-y-2.5">
+                  {/* Foto Kepala Sekolah di Atas Kartu */}
+                  <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-white shadow-md mx-auto bg-gray-100 shrink-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={strukturPimpinan[0].fotoUrl}
+                      alt={strukturPimpinan[0].nama}
+                      className="w-full h-full object-cover object-top"
+                    />
                   </div>
-                  <div className="w-8 border-t-2 border-dashed border-[#2A2C5E]/40" />
-                </div>
-
-                {/* Puncak: KEPALA SEKOLAH */}
-                <div className="flex flex-col items-center z-10">
-                  <div className="w-full max-w-sm bg-[#2A2C5E] text-white rounded-xl p-4 sm:p-5 text-center shadow-md border-2 border-[#2A2C5E] space-y-1.5">
-                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider bg-white/15 text-blue-100 px-3 py-0.5 rounded-full">
-                      Kepala Sekolah
+                  <div>
+                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider bg-white/15 text-blue-100 px-3 py-0.5 rounded-full mb-1">
+                      {strukturPimpinan[0].jabatan}
                     </span>
                     <h3 className="text-base sm:text-lg font-extrabold tracking-tight text-white">
-                      Apriyani, S.Si., M.M.Pd.
+                      {strukturPimpinan[0].nama}
                     </h3>
                     <p className="text-[11px] font-mono text-blue-200">
-                      NIP. 19720405 200501 2 005
+                      NIP. {strukturPimpinan[0].nip}
                     </p>
-                    <p className="text-[11px] text-blue-100/90 pt-1.5 border-t border-white/15">
-                      Pembina Tk. I (IV/b) &bull; Pimpinan Satuan Pendidikan
+                    <p className="text-[11px] text-blue-100/90 pt-2 mt-2 border-t border-white/15 leading-relaxed">
+                      {strukturPimpinan[0].pangkat} &bull; {strukturPimpinan[0].keterangan}
                     </p>
                   </div>
                 </div>
+              </div>
 
-                {/* Kanan Desktop: Kepala Tata Usaha & Operator Dapodik */}
-                <div className="hidden lg:flex items-center justify-start">
-                  <div className="w-8 h-0.5 bg-[#2A2C5E]/40" />
-                  <div className="w-full max-w-xs bg-blue-50/50 border border-blue-200 rounded-xl p-4 text-center space-y-1">
-                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-100/80 px-2.5 py-0.5 rounded">
-                      Tata Usaha & Dapodik
+              {/* GARIS VERTIKAL DARI KEPALA SEKOLAH KE TATA USAHA */}
+              <div className="w-0.5 h-7 sm:h-8 bg-[#2A2C5E]/40 relative flex items-center justify-center">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#2A2C5E] ring-4 ring-blue-50" />
+              </div>
+
+              {/* LEVEL 1.5: UNSUR PELAKSANA ADMINISTRASI & TATA USAHA */}
+              <div className="flex flex-col items-center z-10 w-full">
+                <div className="w-full max-w-sm bg-blue-50/70 border-2 border-blue-200 rounded-2xl p-4 sm:p-5 text-center shadow-2xs space-y-2">
+                  {/* Foto Kepala Tata Usaha di Atas Kartu */}
+                  <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-[#2A2C5E] shadow-sm mx-auto bg-gray-100 shrink-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={strukturPimpinan[1].fotoUrl}
+                      alt={strukturPimpinan[1].nama}
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  <div>
+                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-100/80 px-2.5 py-0.5 rounded mb-1">
+                      {strukturPimpinan[1].jabatan}
                     </span>
-                    <h4 className="text-sm font-bold text-gray-900">Abu Yasid</h4>
+                    <h4 className="text-sm sm:text-base font-bold text-gray-900">
+                      {strukturPimpinan[1].nama}
+                    </h4>
                     <p className="text-[11px] font-mono text-gray-500">
-                      Operator Resmi (NPSN: 10810192)
+                      {strukturPimpinan[1].nip}
                     </p>
-                    <p className="text-[11px] text-gray-600">
-                      Administrasi Sekolah, Kepegawaian & 5 Tendik
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* KHUSUS MOBILE & TABLET (< lg): CABANG KOMITE & TATA USAHA BERDAMPINGAN */}
-              <div className="lg:hidden w-full flex flex-col items-center">
-                <div className="w-0.5 h-5 bg-[#2A2C5E]/40" />
-                <div className="w-1/2 h-0.5 bg-[#2A2C5E]/40 relative">
-                  <div className="absolute left-0 top-0 w-0.5 h-3 bg-[#2A2C5E]/40" />
-                  <div className="absolute right-0 top-0 w-0.5 h-3 bg-[#2A2C5E]/40" />
-                </div>
-                <div className="w-full grid grid-cols-2 gap-2.5 pt-3">
-                  <div className="bg-gray-50/90 border-2 border-dashed border-gray-300 rounded-xl p-3 text-center space-y-1 flex flex-col justify-between">
-                    <div className="space-y-1">
-                      <span className="inline-block text-[9px] font-bold uppercase tracking-wider text-gray-600 bg-gray-200/80 px-2 py-0.5 rounded">
-                        Koordinasi
-                      </span>
-                      <h4 className="text-xs sm:text-sm font-bold text-gray-900">Komite Sekolah</h4>
-                    </div>
-                    <p className="text-[10px] sm:text-[11px] text-gray-500 leading-snug pt-1 border-t border-gray-200/70">
-                      Perwakilan Wali Murid & Masyarakat
-                    </p>
-                  </div>
-                  <div className="bg-blue-50/50 border border-blue-200 rounded-xl p-3 text-center space-y-1 flex flex-col justify-between">
-                    <div className="space-y-1">
-                      <span className="inline-block text-[9px] font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-100/80 px-2 py-0.5 rounded">
-                        Tata Usaha
-                      </span>
-                      <h4 className="text-xs sm:text-sm font-bold text-gray-900">Abu Yasid</h4>
-                    </div>
-                    <p className="text-[10px] sm:text-[11px] text-gray-600 leading-snug pt-1 border-t border-blue-100">
-                      Operator Dapodik & 5 Tendik
+                    <p className="text-[11px] text-gray-600 pt-1.5 mt-1.5 border-t border-blue-100 leading-relaxed">
+                      {strukturPimpinan[1].keterangan}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* GARIS VERTIKAL MENUJU JAJARAN WAKIL KEPALA SEKOLAH */}
+              {/* GARIS VERTIKAL DARI TATA USAHA MENUJU 4 WAKIL KEPALA SEKOLAH */}
               <div className="w-0.5 h-7 sm:h-9 bg-[#2A2C5E]/40 relative flex items-center justify-center">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#2A2C5E] ring-4 ring-blue-50" />
               </div>
 
               {/* GARIS CABANG HORIZONTAL UNTUK 4 WAKIL KEPALA SEKOLAH (Desktop) */}
-              <div className="hidden lg:block w-[76%] h-0.5 bg-[#2A2C5E]/40 relative">
+              <div className="hidden lg:block w-[78%] h-0.5 bg-[#2A2C5E]/40 relative">
                 <div className="absolute left-0 top-0 w-0.5 h-5 bg-[#2A2C5E]/40" />
-                <div className="absolute left-1/3 top-0 w-0.5 h-5 bg-[#2A2C5E]/40" />
-                <div className="absolute left-2/3 top-0 w-0.5 h-5 bg-[#2A2C5E]/40" />
+                <div className="absolute left-[33.3%] top-0 w-0.5 h-5 bg-[#2A2C5E]/40" />
+                <div className="absolute left-[66.6%] top-0 w-0.5 h-5 bg-[#2A2C5E]/40" />
                 <div className="absolute right-0 top-0 w-0.5 h-5 bg-[#2A2C5E]/40" />
               </div>
 
-              {/* LEVEL 2: 4 WAKIL KEPALA SEKOLAH (WAKA) */}
+              {/* LEVEL 2: 4 WAKIL KEPALA SEKOLAH (DENGAN FOTO MASING-MASING DI ATAS KARTU) */}
               <div className="w-full relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:pt-5">
                 {/* Garis Vertikal Penghubung Antar-Kartu di Mobile */}
                 <div className="sm:hidden absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 bg-[#2A2C5E]/35 z-0" />
-                {strukturPimpinan.slice(1, 5).map((waka) => (
+                {strukturPimpinan.slice(2, 6).map((waka) => (
                   <div
                     key={waka.jabatan}
-                    className="relative z-10 bg-white rounded-xl border-2 border-[#2A2C5E]/20 hover:border-[#2A2C5E] p-3.5 sm:p-4 text-center shadow-2xs transition-all flex flex-col justify-between space-y-2"
+                    className="relative z-10 bg-white rounded-2xl border-2 border-[#2A2C5E]/20 hover:border-[#2A2C5E] p-4 text-center shadow-2xs hover:shadow-md transition-all flex flex-col justify-between space-y-2"
                   >
-                    <div className="space-y-1">
-                      <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-blue-50 px-2.5 py-0.5 rounded">
-                        {waka.jabatan.replace("Wakil Kepala Sekolah ", "Waka ")}
-                      </span>
-                      <h4 className="text-sm font-bold text-gray-900">{waka.nama}</h4>
-                      <p className="text-[11px] font-mono text-gray-500">NIP. {waka.nip}</p>
+                    <div className="space-y-2">
+                      {/* Foto Wakil Kepala Sekolah di Atas Kartu */}
+                      <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-[#2A2C5E] shadow-sm mx-auto bg-gray-100 shrink-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={waka.fotoUrl}
+                          alt={waka.nama}
+                          className="w-full h-full object-cover object-top"
+                        />
+                      </div>
+                      <div>
+                        <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-blue-50 px-2.5 py-0.5 rounded">
+                          {waka.jabatan}
+                        </span>
+                        <h4 className="text-sm font-bold text-gray-900 mt-1">{waka.nama}</h4>
+                        <p className="text-[11px] font-mono text-gray-500">NIP. {waka.nip}</p>
+                      </div>
                     </div>
-                    <p className="text-[11px] text-gray-600 pt-2 border-t border-gray-100 leading-relaxed">
+                    <p className="text-[11px] text-gray-600 pt-2 border-t border-gray-100 leading-relaxed min-h-[2.75rem] flex items-center justify-center">
                       {waka.keterangan}
                     </p>
                   </div>
@@ -419,10 +426,10 @@ function ProfilContent() {
               </div>
 
               {/* GARIS PENGHUBUNG DARI WAKA KE KOORDINATOR & DEWAN GURU */}
-              <div className="hidden lg:block w-[76%] h-5 relative">
+              <div className="hidden lg:block w-[78%] h-5 relative">
                 <div className="absolute left-0 top-0 w-0.5 h-5 bg-[#2A2C5E]/30" />
-                <div className="absolute left-1/3 top-0 w-0.5 h-5 bg-[#2A2C5E]/30" />
-                <div className="absolute left-2/3 top-0 w-0.5 h-5 bg-[#2A2C5E]/30" />
+                <div className="absolute left-[33.3%] top-0 w-0.5 h-5 bg-[#2A2C5E]/30" />
+                <div className="absolute left-[66.6%] top-0 w-0.5 h-5 bg-[#2A2C5E]/30" />
                 <div className="absolute right-0 top-0 w-0.5 h-5 bg-[#2A2C5E]/30" />
                 <div className="absolute inset-x-0 bottom-0 h-0.5 bg-[#2A2C5E]/30" />
               </div>

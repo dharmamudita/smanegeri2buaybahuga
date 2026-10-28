@@ -236,27 +236,181 @@ function ProfilContent() {
               <Layers className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Struktur Organisasi Kepemimpinan</h2>
-              <p className="text-xs text-gray-500">Bagan kepengurusan dan pimpinan manajemen sekolah tahun ajaran 2026/2027</p>
+              <h2 className="text-xl font-bold text-gray-900">Bagan Struktur Organisasi Sekolah</h2>
+              <p className="text-xs text-gray-500">Hierarki kepemimpinan dan garis koordinasi manajemen SMAN 2 Buay Bahuga</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {strukturPimpinan.map((pim) => (
-              <div
-                key={pim.jabatan}
-                className="bg-white p-6 rounded-xl border border-gray-200 shadow-2xs space-y-2.5 hover:shadow-md transition-shadow"
-              >
-                <div className="text-xs font-semibold text-[#2A2C5E] bg-blue-50 px-2.5 py-1 rounded inline-block">
-                  {pim.jabatan}
+          {/* Container Bagan Hierarki */}
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-2xs p-6 sm:p-10 overflow-x-auto">
+            <div className="min-w-[300px] max-w-5xl mx-auto flex flex-col items-center">
+              
+              {/* LEVEL 1: KEPALA SEKOLAH + GARIS KOORDINASI KOMITE & TATA USAHA */}
+              <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-0 items-center relative">
+                {/* Kiri: Komite Sekolah (Garis Koordinasi) */}
+                <div className="order-2 lg:order-1 flex flex-col lg:flex-row items-center justify-end">
+                  <div className="w-full max-w-xs bg-gray-50/90 border-2 border-dashed border-gray-300 rounded-xl p-4 text-center space-y-1">
+                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-gray-600 bg-gray-200/80 px-2.5 py-0.5 rounded">
+                      Mitra Koordinasi
+                    </span>
+                    <h4 className="text-sm font-bold text-gray-900">Komite Sekolah</h4>
+                    <p className="text-[11px] text-gray-500 leading-relaxed">
+                      Perwakilan Orang Tua / Wali Murid & Tokoh Masyarakat Buay Bahuga
+                    </p>
+                  </div>
+                  {/* Garis Putus-putus Horizontal ke Kepala Sekolah (Desktop) */}
+                  <div className="hidden lg:block w-8 border-t-2 border-dashed border-[#2A2C5E]/40" />
                 </div>
-                <h4 className="text-base font-bold text-gray-900">{pim.nama}</h4>
-                <p className="text-xs text-gray-500 font-mono">NIP: {pim.nip}</p>
-                <p className="text-xs text-gray-600 pt-2 border-t border-gray-100 leading-relaxed">
-                  {pim.keterangan}
+
+                {/* Tengah Puncak: KEPALA SEKOLAH */}
+                <div className="order-1 lg:order-2 flex flex-col items-center z-10">
+                  <div className="w-full max-w-sm bg-[#2A2C5E] text-white rounded-xl p-5 text-center shadow-md border-2 border-[#2A2C5E] space-y-1.5">
+                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider bg-white/15 text-blue-100 px-3 py-0.5 rounded-full">
+                      Kepala Sekolah
+                    </span>
+                    <h3 className="text-base sm:text-lg font-extrabold tracking-tight text-white">
+                      Apriyani, S.Si., M.M.Pd.
+                    </h3>
+                    <p className="text-[11px] font-mono text-blue-200">
+                      NIP. 19720405 200501 2 005
+                    </p>
+                    <p className="text-[11px] text-blue-100/90 pt-1.5 border-t border-white/15">
+                      Pembina Tk. I (IV/b) &bull; Pimpinan Satuan Pendidikan
+                    </p>
+                  </div>
+                </div>
+
+                {/* Kanan: Kepala Tata Usaha & Operator Dapodik */}
+                <div className="order-3 flex flex-col lg:flex-row items-center justify-start">
+                  {/* Garis Horizontal ke Tata Usaha (Desktop) */}
+                  <div className="hidden lg:block w-8 h-0.5 bg-[#2A2C5E]/40" />
+                  <div className="w-full max-w-xs bg-blue-50/50 border border-blue-200 rounded-xl p-4 text-center space-y-1">
+                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-100/80 px-2.5 py-0.5 rounded">
+                      Tata Usaha & Dapodik
+                    </span>
+                    <h4 className="text-sm font-bold text-gray-900">Abu Yasid</h4>
+                    <p className="text-[11px] font-mono text-gray-500">
+                      Operator Resmi (NPSN: 10810192)
+                    </p>
+                    <p className="text-[11px] text-gray-600">
+                      Administrasi Sekolah, Kepegawaian & 5 Tendik
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* GARIS VERTIKAL DARI KEPALA SEKOLAH KE JAJARAN WAKA */}
+              <div className="w-0.5 h-8 sm:h-10 bg-[#2A2C5E]/40 relative flex items-center justify-center">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#2A2C5E] ring-4 ring-blue-50" />
+              </div>
+
+              {/* GARIS CABANG HORIZONTAL UNTUK 4 WAKIL KEPALA SEKOLAH (Desktop) */}
+              <div className="hidden lg:block w-[76%] h-0.5 bg-[#2A2C5E]/40 relative">
+                <div className="absolute left-0 top-0 w-0.5 h-5 bg-[#2A2C5E]/40" />
+                <div className="absolute left-1/3 top-0 w-0.5 h-5 bg-[#2A2C5E]/40" />
+                <div className="absolute left-2/3 top-0 w-0.5 h-5 bg-[#2A2C5E]/40" />
+                <div className="absolute right-0 top-0 w-0.5 h-5 bg-[#2A2C5E]/40" />
+              </div>
+
+              {/* LEVEL 2: 4 WAKIL KEPALA SEKOLAH (WAKA) */}
+              <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:pt-5">
+                {strukturPimpinan.slice(1, 5).map((waka) => (
+                  <div
+                    key={waka.jabatan}
+                    className="bg-white rounded-xl border-2 border-[#2A2C5E]/20 hover:border-[#2A2C5E] p-4 text-center shadow-2xs transition-all flex flex-col justify-between space-y-2"
+                  >
+                    <div className="space-y-1.5">
+                      <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-blue-50 px-2.5 py-0.5 rounded">
+                        {waka.jabatan.replace("Wakil Kepala Sekolah ", "Waka ")}
+                      </span>
+                      <h4 className="text-sm font-bold text-gray-900">{waka.nama}</h4>
+                      <p className="text-[11px] font-mono text-gray-500">NIP. {waka.nip}</p>
+                    </div>
+                    <p className="text-[11px] text-gray-600 pt-2 border-t border-gray-100 leading-relaxed">
+                      {waka.keterangan}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {/* GARIS PENGHUBUNG DARI WAKA KE KOORDINATOR & DEWAN GURU */}
+              <div className="hidden lg:block w-[76%] h-5 relative">
+                <div className="absolute left-0 top-0 w-0.5 h-5 bg-[#2A2C5E]/30" />
+                <div className="absolute left-1/3 top-0 w-0.5 h-5 bg-[#2A2C5E]/30" />
+                <div className="absolute left-2/3 top-0 w-0.5 h-5 bg-[#2A2C5E]/30" />
+                <div className="absolute right-0 top-0 w-0.5 h-5 bg-[#2A2C5E]/30" />
+                <div className="absolute inset-x-0 bottom-0 h-0.5 bg-[#2A2C5E]/30" />
+              </div>
+
+              <div className="w-0.5 h-8 bg-[#2A2C5E]/40 relative flex items-center justify-center">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#2A2C5E] ring-4 ring-blue-50" />
+              </div>
+
+              {/* GARIS CABANG HORIZONTAL UNTUK 3 UNIT PELAKSANA AKADEMIK (Desktop) */}
+              <div className="hidden md:block w-[68%] h-0.5 bg-[#2A2C5E]/35 relative">
+                <div className="absolute left-0 top-0 w-0.5 h-4 bg-[#2A2C5E]/35" />
+                <div className="absolute left-1/2 -translate-x-1/2 top-0 w-0.5 h-4 bg-[#2A2C5E]/35" />
+                <div className="absolute right-0 top-0 w-0.5 h-4 bg-[#2A2C5E]/35" />
+              </div>
+
+              {/* LEVEL 3: KOORDINATOR LAB, DEWAN GURU & WALI KELAS, GURU BK & PEMBINA EKSKUL */}
+              <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 md:pt-4">
+                <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 text-center space-y-1.5">
+                  <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-white border border-gray-200 px-2.5 py-0.5 rounded">
+                    Unit Penunjang Akademik
+                  </span>
+                  <h4 className="text-sm font-bold text-gray-900">
+                    Kepala Laboratorium & Perpustakaan
+                  </h4>
+                  <p className="text-[11px] text-gray-600 leading-relaxed">
+                    Pengelola 9 Unit Laboratorium (IPA, Fisika, Kimia, Biologi, Komputer, Bahasa) & 1 Perpustakaan Induk
+                  </p>
+                </div>
+
+                <div className="bg-blue-50/60 rounded-xl border-2 border-[#2A2C5E]/30 p-4 text-center space-y-1.5 shadow-2xs">
+                  <span className="inline-block text-[10px] font-bold text-white bg-[#2A2C5E] px-2.5 py-0.5 rounded">
+                    Unsur Pelaksana Pendidik
+                  </span>
+                  <h4 className="text-sm font-bold text-gray-900">
+                    Dewan Guru Mata Pelajaran & Wali Kelas
+                  </h4>
+                  <p className="text-[11px] text-gray-700 leading-relaxed">
+                    48 Guru Mata Pelajaran Bersertifikasi &bull; Wali Kelas X, XI, dan XII (29 Rombongan Belajar)
+                  </p>
+                </div>
+
+                <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 text-center space-y-1.5">
+                  <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-white border border-gray-200 px-2.5 py-0.5 rounded">
+                    Unit Pembinaan Karakter
+                  </span>
+                  <h4 className="text-sm font-bold text-gray-900">
+                    Bimbingan Konseling (BK) & Pembina Ekskul
+                  </h4>
+                  <p className="text-[11px] text-gray-600 leading-relaxed">
+                    Pendampingan Minat Bakat, Seleksi SNBP/SNBT PTN, Pengurus OSIS/MPK, & Ekstrakurikuler
+                  </p>
+                </div>
+              </div>
+
+              {/* GARIS VERTIKAL MENUJU PESERTA DIDIK */}
+              <div className="w-0.5 h-8 bg-[#2A2C5E]/40 relative flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-[#2A2C5E]" />
+              </div>
+
+              {/* LEVEL 4: PESERTA DIDIK */}
+              <div className="w-full max-w-xl bg-emerald-50/80 border-2 border-emerald-600/30 rounded-xl p-4 text-center space-y-1">
+                <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3 py-0.5 rounded-full">
+                  Subjek Pendidikan
+                </span>
+                <h4 className="text-sm sm:text-base font-extrabold text-gray-900">
+                  Peserta Didik SMA Negeri 2 Buay Bahuga
+                </h4>
+                <p className="text-xs text-emerald-900 font-medium">
+                  983 Siswa Aktif (468 Siswa Laki-laki &bull; 515 Siswi Perempuan &bull; 29 Rombongan Belajar)
                 </p>
               </div>
-            ))}
+
+            </div>
           </div>
         </section>
       )}

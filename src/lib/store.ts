@@ -111,33 +111,61 @@ export const usePresensiStore = create<PresensiState>((set) => ({
 
 interface BeritaState {
   beritaList: BeritaItem[];
+  isLoaded: boolean;
+  fetchBerita: () => Promise<void>;
   addBerita: (item: BeritaItem) => void;
   updateBerita: (id: string, item: Partial<BeritaItem>) => void;
   deleteBerita: (id: string) => void;
 }
 
-export const useBeritaStore = create<BeritaState>()(
-  persist(
-    (set) => ({
-      beritaList: MOCK_BERITA,
-      addBerita: (item) =>
-        set((state) => ({
-          // Pastikan berita terbaru selalu berada di posisi paling atas / paling depan (index 0)
-          beritaList: [item, ...state.beritaList],
-        })),
-      updateBerita: (id, item) =>
-        set((state) => ({
-          beritaList: state.beritaList.map((b) =>
-            b.id === id ? { ...b, ...item } : b
-          ),
-        })),
-      deleteBerita: (id) =>
-        set((state) => ({
-          beritaList: state.beritaList.filter((b) => b.id !== id),
-        })),
-    }),
-    {
-      name: "sman2buba_berita_v2",
+export const useBeritaStore = create<BeritaState>((set, get) => ({
+  beritaList: MOCK_BERITA,
+  isLoaded: false,
+  fetchBerita: async () => {
+    try {
+      const res = await fetch("/api/cms");
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data?.beritaList) {
+          set({ beritaList: json.data.beritaList, isLoaded: true });
+        }
+      }
+    } catch (e) {
+      console.warn("Gagal mengambil berita dari Supabase:", e);
     }
-  )
-);
+  },
+  addBerita: (item) => {
+    set((state) => ({
+      beritaList: [item, ...state.beritaList],
+    }));
+    // Kirim langsung ke Supabase
+    fetch("/api/cms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        judul: item.judul,
+        slug: item.slug,
+        ringkasan: item.ringkasan,
+        konten: item.konten,
+        kategori: item.kategori,
+        thumbnailUrl: item.thumbnailUrl,
+      }),
+    }).catch(console.error);
+  },
+  updateBerita: (id, item) => {
+    set((state) => ({
+      beritaList: state.beritaList.map((b) =>
+        b.id === id ? { ...b, ...item } : b
+      ),
+    }));
+  },
+  deleteBerita: (id) => {
+    set((state) => ({
+      beritaList: state.beritaList.filter((b) => b.id !== id),
+    }));
+    // Hapus dari Supabase
+    fetch(`/api/cms?id=${id}`, {
+      method: "DELETE",
+    }).catch(console.error);
+  },
+}));

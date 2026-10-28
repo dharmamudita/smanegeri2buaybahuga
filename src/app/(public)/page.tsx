@@ -116,12 +116,17 @@ const EXTENDED_HERO_SLIDES = [
 ];
 
 export default function HomePage() {
-  const { beranda } = useCMSStore();
-  const beritaList = useBeritaStore((state) => state.beritaList);
+  const { beranda, fetchFromSupabase } = useCMSStore();
+  const { beritaList, fetchBerita } = useBeritaStore();
   const beritaTerbaru = beritaList.slice(0, 3);
   const [bannerTrackIdx, setBannerTrackIdx] = useState<number>(1);
   const [isBannerTransitioning, setIsBannerTransitioning] = useState<boolean>(true);
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchFromSupabase();
+    fetchBerita();
+  }, [fetchFromSupabase, fetchBerita]);
 
   const realBannerIdx =
     (bannerTrackIdx - 1 + HERO_SLIDES.length) % HERO_SLIDES.length;

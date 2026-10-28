@@ -252,3 +252,12 @@ model PPDB {
   @@index([nisn])
   @@index([status])
 }
+
+model CmsSection {
+  id        String   @id // "beranda", "profil", "akademik", "kesiswaan"
+  data      Json
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+
+  @@index([id])
+}

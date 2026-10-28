@@ -49,7 +49,7 @@ function getBeritaGaleri(berita: BeritaItem): string[] {
 }
 
 export default function InformasiPage() {
-  const beritaList = useBeritaStore((state) => state.beritaList);
+  const { beritaList, fetchBerita } = useBeritaStore();
   const [selectedKategori, setSelectedKategori] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -57,6 +57,10 @@ export default function InformasiPage() {
   const [slideTrackIdx, setSlideTrackIdx] = useState<number>(1);
   const [isSlideTransitioning, setIsSlideTransitioning] = useState<boolean>(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchBerita();
+  }, [fetchBerita]);
 
   const modalPhotos = activeModalBerita ? getBeritaGaleri(activeModalBerita) : [];
   const extendedModalPhotos =

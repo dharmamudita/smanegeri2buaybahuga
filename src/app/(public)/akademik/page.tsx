@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   BookOpen,
@@ -802,7 +802,11 @@ function AkademikContent() {
       : "KALENDER"
   );
 
-  const { akademik: cmsAkademik } = useCMSStore();
+  const { akademik: cmsAkademik, fetchFromSupabase } = useCMSStore();
+
+  useEffect(() => {
+    fetchFromSupabase();
+  }, [fetchFromSupabase]);
 
   // State Filter Kalender Akademik
   const [filterSemester, setFilterSemester] = useState<"SEMUA" | "GANJIL" | "GENAP">("SEMUA");

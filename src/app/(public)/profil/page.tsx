@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Building2,
@@ -50,7 +50,11 @@ function ProfilContent() {
   ];
 
   const [fasilitasPage, setFasilitasPage] = useState<number>(1);
-  const { profil, beranda } = useCMSStore();
+  const { profil, beranda, fetchFromSupabase } = useCMSStore();
+
+  useEffect(() => {
+    fetchFromSupabase();
+  }, [fetchFromSupabase]);
   const guruList = profil.guruStaff && profil.guruStaff.length > 0
     ? profil.guruStaff
     : MOCK_USERS.filter((u) => u.role === "GURU");

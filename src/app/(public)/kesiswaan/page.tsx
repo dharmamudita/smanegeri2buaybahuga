@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Users,
@@ -384,7 +384,11 @@ function KesiswaanContent() {
     },
   ];
 
-  const { kesiswaan } = useCMSStore();
+  const { kesiswaan, fetchFromSupabase } = useCMSStore();
+
+  useEffect(() => {
+    fetchFromSupabase();
+  }, [fetchFromSupabase]);
   const cmsPrestasiMapped = (kesiswaan?.prestasiList || []).map((p) => ({
     kegiatan: p.judul,
     jenisLomba: p.bidang,

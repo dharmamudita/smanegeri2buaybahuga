@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Home,
@@ -76,9 +76,17 @@ export default function AdminCMSManager() {
     updateEkskul,
     deleteEkskul,
     resetAllToDefault,
+    fetchFromSupabase,
+    isLoading: isCMSLoading,
+    lastSavedAt,
   } = useCMSStore();
 
-  const { beritaList, addBerita, updateBerita, deleteBerita } = useBeritaStore();
+  const { beritaList, addBerita, updateBerita, deleteBerita, fetchBerita } = useBeritaStore();
+
+  useEffect(() => {
+    fetchFromSupabase();
+    fetchBerita();
+  }, [fetchFromSupabase, fetchBerita]);
 
   const showToast = (msg: string) => {
     setNotification(msg);
@@ -271,9 +279,20 @@ export default function AdminCMSManager() {
       {/* CMS Header Banner */}
       <div className="p-6 sm:p-8 bg-gradient-to-r from-[#2A2C5E] to-[#1F2147] text-white flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#1F2147]">
         <div className="space-y-1.5 max-w-2xl">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-white/15 text-blue-100 text-[11px] font-semibold backdrop-blur-xs">
-            <Sparkles className="w-3.5 h-3.5 text-blue-300" />
-            <span>Pusat Pengelolaan Konten Website (CMS Portal Sekolah)</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-white/15 text-blue-100 text-[11px] font-semibold backdrop-blur-xs">
+              <Sparkles className="w-3.5 h-3.5 text-blue-300" />
+              <span>Pusat Pengelolaan Konten Website (CMS Portal Sekolah)</span>
+            </div>
+            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-200 text-[11px] font-medium border border-emerald-400/30">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Basis Data Supabase Aktif</span>
+            </div>
+            {lastSavedAt && (
+              <span className="text-[11px] text-blue-200/80">
+                Tersimpan: {lastSavedAt}
+              </span>
+            )}
           </div>
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
             Kelola Halaman Publik SMAN 2 Buay Bahuga

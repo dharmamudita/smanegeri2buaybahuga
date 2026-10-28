@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import {
   INITIAL_BERANDA_CMS,
   INITIAL_PROFIL_CMS,
@@ -7,7 +6,28 @@ import {
   INITIAL_KESISWAAN_CMS,
 } from "./cmsData";
 
+// Helper untuk mengirim perubahan langsung ke basis data Supabase PostgreSQL
+async function syncToSupabase(section: "beranda" | "profil" | "akademik" | "kesiswaan", data: any) {
+  try {
+    const res = await fetch("/api/cms", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ section, data }),
+    });
+    if (!res.ok) {
+      console.warn(`Sinkronisasi Supabase (${section}) merespons status:`, res.status);
+    }
+  } catch (err) {
+    console.error(`Gagal sinkronisasi ke Supabase untuk bagian ${section}:`, err);
+  }
+}
+
 export interface CMSState {
+  isLoading: boolean;
+  isSaving: boolean;
+  isLoaded: boolean;
+  lastSavedAt: string | null;
+
   // 1. Beranda
   beranda: typeof INITIAL_BERANDA_CMS;
   updateBerandaInfo: (data: Partial<typeof INITIAL_BERANDA_CMS>) => void;
@@ -50,275 +70,332 @@ export interface CMSState {
   deleteEkskul: (id: string) => void;
 
   // Utility
+  fetchFromSupabase: () => Promise<void>;
   resetAllToDefault: () => void;
 }
 
-export const useCMSStore = create<CMSState>()(
-  persist(
-    (set) => ({
+export const useCMSStore = create<CMSState>((set, get) => ({
+  isLoading: false,
+  isSaving: false,
+  isLoaded: false,
+  lastSavedAt: null,
+
+  beranda: INITIAL_BERANDA_CMS,
+  profil: INITIAL_PROFIL_CMS,
+  akademik: INITIAL_AKADEMIK_CMS,
+  kesiswaan: INITIAL_KESISWAAN_CMS,
+
+  // Fetch dari Supabase PostgreSQL (Tanpa Local Storage)
+  fetchFromSupabase: async () => {
+    set({ isLoading: true });
+    try {
+      const res = await fetch("/api/cms");
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) {
+          set({
+            beranda: json.data.beranda || INITIAL_BERANDA_CMS,
+            profil: json.data.profil || INITIAL_PROFIL_CMS,
+            akademik: json.data.akademik || INITIAL_AKADEMIK_CMS,
+            kesiswaan: json.data.kesiswaan || INITIAL_KESISWAAN_CMS,
+            isLoaded: true,
+          });
+        }
+      }
+    } catch (err) {
+      console.warn("Gagal memuat data awal dari Supabase:", err);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  // --- 1. Beranda Actions (Langsung Simpan ke Supabase) ---
+  updateBerandaInfo: (data) => {
+    const updated = { ...get().beranda, ...data };
+    set({ beranda: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("beranda", updated);
+  },
+
+  updateKepsek: (data) => {
+    const updated = {
+      ...get().beranda,
+      kepsek: { ...get().beranda.kepsek, ...data },
+    };
+    set({ beranda: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("beranda", updated);
+  },
+
+  updateStatistik: (data) => {
+    const updated = {
+      ...get().beranda,
+      statistik: { ...get().beranda.statistik, ...data },
+    };
+    set({ beranda: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("beranda", updated);
+  },
+
+  addVideoPanduan: (video) => {
+    const updated = {
+      ...get().beranda,
+      videoPanduan: [video, ...get().beranda.videoPanduan],
+    };
+    set({ beranda: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("beranda", updated);
+  },
+
+  updateVideoPanduan: (id, video) => {
+    const updated = {
+      ...get().beranda,
+      videoPanduan: get().beranda.videoPanduan.map((v) =>
+        v.id === id ? { ...v, ...video } : v
+      ),
+    };
+    set({ beranda: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("beranda", updated);
+  },
+
+  deleteVideoPanduan: (id) => {
+    const updated = {
+      ...get().beranda,
+      videoPanduan: get().beranda.videoPanduan.filter((v) => v.id !== id),
+    };
+    set({ beranda: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("beranda", updated);
+  },
+
+  // --- 2. Profil Actions (Langsung Simpan ke Supabase) ---
+  updateProfilVisiMisi: (visi, misi) => {
+    const updated = { ...get().profil, visi, misi };
+    set({ profil: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("profil", updated);
+  },
+
+  addStrukturOrganisasi: (item) => {
+    const updated = {
+      ...get().profil,
+      strukturOrganisasi: [...get().profil.strukturOrganisasi, item],
+    };
+    set({ profil: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("profil", updated);
+  },
+
+  updateStrukturOrganisasi: (id, item) => {
+    const updated = {
+      ...get().profil,
+      strukturOrganisasi: get().profil.strukturOrganisasi.map((s) =>
+        s.id === id ? { ...s, ...item } : s
+      ),
+    };
+    set({ profil: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("profil", updated);
+  },
+
+  deleteStrukturOrganisasi: (id) => {
+    const updated = {
+      ...get().profil,
+      strukturOrganisasi: get().profil.strukturOrganisasi.filter((s) => s.id !== id),
+    };
+    set({ profil: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("profil", updated);
+  },
+
+  addGuruStaff: (guru) => {
+    const updated = {
+      ...get().profil,
+      guruStaff: [...get().profil.guruStaff, guru],
+    };
+    set({ profil: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("profil", updated);
+  },
+
+  updateGuruStaff: (id, guru) => {
+    const updated = {
+      ...get().profil,
+      guruStaff: get().profil.guruStaff.map((g) =>
+        g.id === id ? { ...g, ...guru } : g
+      ),
+    };
+    set({ profil: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("profil", updated);
+  },
+
+  deleteGuruStaff: (id) => {
+    const updated = {
+      ...get().profil,
+      guruStaff: get().profil.guruStaff.filter((g) => g.id !== id),
+    };
+    set({ profil: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("profil", updated);
+  },
+
+  // --- 3. Akademik Actions (Langsung Simpan ke Supabase) ---
+  addAgendaKalender: (agenda) => {
+    const updated = {
+      ...get().akademik,
+      agendaList: [agenda, ...get().akademik.agendaList],
+    };
+    set({ akademik: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("akademik", updated);
+  },
+
+  updateAgendaKalender: (id, agenda) => {
+    const updated = {
+      ...get().akademik,
+      agendaList: get().akademik.agendaList.map((a) =>
+        a.id === id ? { ...a, ...agenda } : a
+      ),
+    };
+    set({ akademik: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("akademik", updated);
+  },
+
+  deleteAgendaKalender: (id) => {
+    const updated = {
+      ...get().akademik,
+      agendaList: get().akademik.agendaList.filter((a) => a.id !== id),
+    };
+    set({ akademik: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("akademik", updated);
+  },
+
+  addJadwalUjian: (ujian) => {
+    const updated = {
+      ...get().akademik,
+      jadwalUjianList: [ujian, ...get().akademik.jadwalUjianList],
+    };
+    set({ akademik: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("akademik", updated);
+  },
+
+  updateJadwalUjian: (id, ujian) => {
+    const updated = {
+      ...get().akademik,
+      jadwalUjianList: get().akademik.jadwalUjianList.map((u) =>
+        u.id === id ? { ...u, ...ujian } : u
+      ),
+    };
+    set({ akademik: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("akademik", updated);
+  },
+
+  deleteJadwalUjian: (id) => {
+    const updated = {
+      ...get().akademik,
+      jadwalUjianList: get().akademik.jadwalUjianList.filter((u) => u.id !== id),
+    };
+    set({ akademik: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("akademik", updated);
+  },
+
+  addSlotPelajaran: (slot) => {
+    const updated = {
+      ...get().akademik,
+      jadwalPelajaranList: [...get().akademik.jadwalPelajaranList, slot],
+    };
+    set({ akademik: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("akademik", updated);
+  },
+
+  updateSlotPelajaran: (id, slot) => {
+    const updated = {
+      ...get().akademik,
+      jadwalPelajaranList: get().akademik.jadwalPelajaranList.map((s) =>
+        s.id === id ? { ...s, ...slot } : s
+      ),
+    };
+    set({ akademik: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("akademik", updated);
+  },
+
+  deleteSlotPelajaran: (id) => {
+    const updated = {
+      ...get().akademik,
+      jadwalPelajaranList: get().akademik.jadwalPelajaranList.filter((s) => s.id !== id),
+    };
+    set({ akademik: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("akademik", updated);
+  },
+
+  // --- 4. Kesiswaan Actions (Langsung Simpan ke Supabase) ---
+  addPrestasi: (prestasi) => {
+    const updated = {
+      ...get().kesiswaan,
+      prestasiList: [prestasi, ...get().kesiswaan.prestasiList],
+    };
+    set({ kesiswaan: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("kesiswaan", updated);
+  },
+
+  updatePrestasi: (id, prestasi) => {
+    const updated = {
+      ...get().kesiswaan,
+      prestasiList: get().kesiswaan.prestasiList.map((p) =>
+        p.id === id ? { ...p, ...prestasi } : p
+      ),
+    };
+    set({ kesiswaan: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("kesiswaan", updated);
+  },
+
+  deletePrestasi: (id) => {
+    const updated = {
+      ...get().kesiswaan,
+      prestasiList: get().kesiswaan.prestasiList.filter((p) => p.id !== id),
+    };
+    set({ kesiswaan: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("kesiswaan", updated);
+  },
+
+  updateOsis: (data) => {
+    const updated = {
+      ...get().kesiswaan,
+      osis: { ...get().kesiswaan.osis, ...data },
+    };
+    set({ kesiswaan: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("kesiswaan", updated);
+  },
+
+  addEkskul: (ekskul) => {
+    const updated = {
+      ...get().kesiswaan,
+      ekskulList: [...get().kesiswaan.ekskulList, ekskul],
+    };
+    set({ kesiswaan: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("kesiswaan", updated);
+  },
+
+  updateEkskul: (id, ekskul) => {
+    const updated = {
+      ...get().kesiswaan,
+      ekskulList: get().kesiswaan.ekskulList.map((e) =>
+        e.id === id ? { ...e, ...ekskul } : e
+      ),
+    };
+    set({ kesiswaan: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("kesiswaan", updated);
+  },
+
+  deleteEkskul: (id) => {
+    const updated = {
+      ...get().kesiswaan,
+      ekskulList: get().kesiswaan.ekskulList.filter((e) => e.id !== id),
+    };
+    set({ kesiswaan: updated, lastSavedAt: new Date().toLocaleTimeString("id-ID") });
+    syncToSupabase("kesiswaan", updated);
+  },
+
+  // Reset semua kembali ke nilai bawaan dan sinkronkan ke Supabase
+  resetAllToDefault: () => {
+    set({
       beranda: INITIAL_BERANDA_CMS,
       profil: INITIAL_PROFIL_CMS,
       akademik: INITIAL_AKADEMIK_CMS,
       kesiswaan: INITIAL_KESISWAAN_CMS,
-
-      // --- 1. Beranda Actions ---
-      updateBerandaInfo: (data) =>
-        set((state) => ({
-          beranda: { ...state.beranda, ...data },
-        })),
-
-      updateKepsek: (data) =>
-        set((state) => ({
-          beranda: {
-            ...state.beranda,
-            kepsek: { ...state.beranda.kepsek, ...data },
-          },
-        })),
-
-      updateStatistik: (data) =>
-        set((state) => ({
-          beranda: {
-            ...state.beranda,
-            statistik: { ...state.beranda.statistik, ...data },
-          },
-        })),
-
-      addVideoPanduan: (video) =>
-        set((state) => ({
-          beranda: {
-            ...state.beranda,
-            videoPanduan: [video, ...state.beranda.videoPanduan],
-          },
-        })),
-
-      updateVideoPanduan: (id, video) =>
-        set((state) => ({
-          beranda: {
-            ...state.beranda,
-            videoPanduan: state.beranda.videoPanduan.map((v) =>
-              v.id === id ? { ...v, ...video } : v
-            ),
-          },
-        })),
-
-      deleteVideoPanduan: (id) =>
-        set((state) => ({
-          beranda: {
-            ...state.beranda,
-            videoPanduan: state.beranda.videoPanduan.filter((v) => v.id !== id),
-          },
-        })),
-
-      // --- 2. Profil Actions ---
-      updateProfilVisiMisi: (visi, misi) =>
-        set((state) => ({
-          profil: { ...state.profil, visi, misi },
-        })),
-
-      addStrukturOrganisasi: (item) =>
-        set((state) => ({
-          profil: {
-            ...state.profil,
-            strukturOrganisasi: [...state.profil.strukturOrganisasi, item],
-          },
-        })),
-
-      updateStrukturOrganisasi: (id, item) =>
-        set((state) => ({
-          profil: {
-            ...state.profil,
-            strukturOrganisasi: state.profil.strukturOrganisasi.map((s) =>
-              s.id === id ? { ...s, ...item } : s
-            ),
-          },
-        })),
-
-      deleteStrukturOrganisasi: (id) =>
-        set((state) => ({
-          profil: {
-            ...state.profil,
-            strukturOrganisasi: state.profil.strukturOrganisasi.filter((s) => s.id !== id),
-          },
-        })),
-
-      addGuruStaff: (guru) =>
-        set((state) => ({
-          profil: {
-            ...state.profil,
-            guruStaff: [guru, ...state.profil.guruStaff],
-          },
-        })),
-
-      updateGuruStaff: (id, guru) =>
-        set((state) => ({
-          profil: {
-            ...state.profil,
-            guruStaff: state.profil.guruStaff.map((g) =>
-              g.id === id ? { ...g, ...guru } : g
-            ),
-          },
-        })),
-
-      deleteGuruStaff: (id) =>
-        set((state) => ({
-          profil: {
-            ...state.profil,
-            guruStaff: state.profil.guruStaff.filter((g) => g.id !== id),
-          },
-        })),
-
-      // --- 3. Akademik Actions ---
-      addAgendaKalender: (agenda) =>
-        set((state) => ({
-          akademik: {
-            ...state.akademik,
-            agendaList: [agenda, ...state.akademik.agendaList],
-          },
-        })),
-
-      updateAgendaKalender: (id, agenda) =>
-        set((state) => ({
-          akademik: {
-            ...state.akademik,
-            agendaList: state.akademik.agendaList.map((a) =>
-              a.id === id ? { ...a, ...agenda } : a
-            ),
-          },
-        })),
-
-      deleteAgendaKalender: (id) =>
-        set((state) => ({
-          akademik: {
-            ...state.akademik,
-            agendaList: state.akademik.agendaList.filter((a) => a.id !== id),
-          },
-        })),
-
-      addJadwalUjian: (ujian) =>
-        set((state) => ({
-          akademik: {
-            ...state.akademik,
-            jadwalUjianList: [...state.akademik.jadwalUjianList, ujian],
-          },
-        })),
-
-      updateJadwalUjian: (id, ujian) =>
-        set((state) => ({
-          akademik: {
-            ...state.akademik,
-            jadwalUjianList: state.akademik.jadwalUjianList.map((u) =>
-              u.id === id ? { ...u, ...ujian } : u
-            ),
-          },
-        })),
-
-      deleteJadwalUjian: (id) =>
-        set((state) => ({
-          akademik: {
-            ...state.akademik,
-            jadwalUjianList: state.akademik.jadwalUjianList.filter((u) => u.id !== id),
-          },
-        })),
-
-      addSlotPelajaran: (slot) =>
-        set((state) => ({
-          akademik: {
-            ...state.akademik,
-            jadwalPelajaranList: [...(state.akademik.jadwalPelajaranList || []), slot],
-          },
-        })),
-
-      updateSlotPelajaran: (id, slot) =>
-        set((state) => ({
-          akademik: {
-            ...state.akademik,
-            jadwalPelajaranList: (state.akademik.jadwalPelajaranList || []).map((s) =>
-              s.id === id ? { ...s, ...slot } : s
-            ),
-          },
-        })),
-
-      deleteSlotPelajaran: (id) =>
-        set((state) => ({
-          akademik: {
-            ...state.akademik,
-            jadwalPelajaranList: (state.akademik.jadwalPelajaranList || []).filter((s) => s.id !== id),
-          },
-        })),
-
-      // --- 4. Kesiswaan Actions ---
-      addPrestasi: (prestasi) =>
-        set((state) => ({
-          kesiswaan: {
-            ...state.kesiswaan,
-            prestasiList: [prestasi, ...state.kesiswaan.prestasiList],
-          },
-        })),
-
-      updatePrestasi: (id, prestasi) =>
-        set((state) => ({
-          kesiswaan: {
-            ...state.kesiswaan,
-            prestasiList: state.kesiswaan.prestasiList.map((p) =>
-              p.id === id ? { ...p, ...prestasi } : p
-            ),
-          },
-        })),
-
-      deletePrestasi: (id) =>
-        set((state) => ({
-          kesiswaan: {
-            ...state.kesiswaan,
-            prestasiList: state.kesiswaan.prestasiList.filter((p) => p.id !== id),
-          },
-        })),
-
-      updateOsis: (data) =>
-        set((state) => ({
-          kesiswaan: {
-            ...state.kesiswaan,
-            osis: { ...state.kesiswaan.osis, ...data },
-          },
-        })),
-
-      addEkskul: (ekskul) =>
-        set((state) => ({
-          kesiswaan: {
-            ...state.kesiswaan,
-            ekskulList: [...state.kesiswaan.ekskulList, ekskul],
-          },
-        })),
-
-      updateEkskul: (id, ekskul) =>
-        set((state) => ({
-          kesiswaan: {
-            ...state.kesiswaan,
-            ekskulList: state.kesiswaan.ekskulList.map((e) =>
-              e.id === id ? { ...e, ...ekskul } : e
-            ),
-          },
-        })),
-
-      deleteEkskul: (id) =>
-        set((state) => ({
-          kesiswaan: {
-            ...state.kesiswaan,
-            ekskulList: state.kesiswaan.ekskulList.filter((e) => e.id !== id),
-          },
-        })),
-
-      // Reset
-      resetAllToDefault: () =>
-        set({
-          beranda: INITIAL_BERANDA_CMS,
-          profil: INITIAL_PROFIL_CMS,
-          akademik: INITIAL_AKADEMIK_CMS,
-          kesiswaan: INITIAL_KESISWAAN_CMS,
-        }),
-    }),
-    {
-      name: "sman2buba_cms_store_v1",
-    }
-  )
-);
-
+      lastSavedAt: new Date().toLocaleTimeString("id-ID"),
+    });
+    syncToSupabase("beranda", INITIAL_BERANDA_CMS);
+    syncToSupabase("profil", INITIAL_PROFIL_CMS);
+    syncToSupabase("akademik", INITIAL_AKADEMIK_CMS);
+    syncToSupabase("kesiswaan", INITIAL_KESISWAAN_CMS);
+  },
+}));

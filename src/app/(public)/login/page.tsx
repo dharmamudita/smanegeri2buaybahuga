@@ -11,7 +11,6 @@ import {
   Lock,
   ArrowRight,
   AlertCircle,
-  HelpCircle,
   ChevronLeft,
 } from "lucide-react";
 import { useAuthStore } from "@/lib/store";
@@ -31,9 +30,6 @@ const ROLE_CONFIG: Record<
     idLabel: string;
     idPlaceholder: string;
     btnLabel: string;
-    demoId: string;
-    demoPass: string;
-    demoName: string;
   }
 > = {
   SISWA: {
@@ -48,9 +44,6 @@ const ROLE_CONFIG: Record<
     idLabel: "Nomor Induk Siswa Nasional (NISN)",
     idPlaceholder: "10 Digit Angka NISN Siswa",
     btnLabel: "Masuk ke Ruang Siswa",
-    demoId: "0078129341",
-    demoPass: "siswa12345",
-    demoName: "Nabila Dijayanti (XII MIPA 1)",
   },
   GURU: {
     title: "Portal Masuk Dewan Guru",
@@ -64,9 +57,6 @@ const ROLE_CONFIG: Record<
     idLabel: "Nomor Unik Pendidik dan Tenaga Kependidikan (NUPTK)",
     idPlaceholder: "16 Digit NUPTK Guru",
     btnLabel: "Masuk ke Portal Dewan Guru",
-    demoId: "197805122005011003",
-    demoPass: "guru12345",
-    demoName: "Tumijo, S.Pd. (Biologi)",
   },
   ADMIN: {
     title: "Portal Masuk Administrator",
@@ -80,9 +70,6 @@ const ROLE_CONFIG: Record<
     idLabel: "ID Akses Administrator",
     idPlaceholder: "ID Administrator Resmi",
     btnLabel: "Masuk ke Panel Administrator",
-    demoId: "SMAN2BUBA",
-    demoPass: "SMANegeri2buba",
-    demoName: "Abu Yasid (Operator Dapodik & Sistem)",
   },
 };
 
@@ -103,17 +90,17 @@ function LoginForm() {
   const config = ROLE_CONFIG[currentRole];
   const Icon = config.icon;
 
-  const [username, setUsername] = useState(config.demoId);
-  const [password, setPassword] = useState("password123");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Perbarui isian default saat query param berganti
+  // Bersihkan isian saat query param berganti
   useEffect(() => {
-    setUsername(config.demoId);
-    setPassword("password123");
+    setUsername("");
+    setPassword("");
     setErrorMsg("");
-  }, [currentRole, config.demoId]);
+  }, [currentRole]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -250,20 +237,6 @@ function LoginForm() {
             )}
           </button>
         </form>
-
-        {/* Demo Helper Khusus Role Ini Saja */}
-        <div className="p-3 bg-blue-50/60 rounded-lg border border-blue-100 text-[11px] text-gray-600 space-y-1">
-          <div className="flex items-center gap-1.5 font-semibold text-[#2A2C5E]">
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>Kredensial Demo Cepat ({config.badge}):</span>
-          </div>
-          <p>
-            Identitas: <code className="font-bold text-gray-800">{config.demoId}</code> ({config.demoName})
-          </p>
-          <p>
-            Kata Sandi: <code className="font-bold text-gray-800">{config.demoPass}</code>
-          </p>
-        </div>
       </div>
 
       {/* Navigasi Berpindah ke Portal Lain jika Salah Akses */}

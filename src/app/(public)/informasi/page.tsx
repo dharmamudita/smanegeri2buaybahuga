@@ -12,8 +12,6 @@ import {
   Share2,
   Check,
   MapPin,
-  ShieldCheck,
-  Camera,
 } from "lucide-react";
 import { MOCK_BERITA } from "@/lib/mockData";
 import { BeritaItem } from "@/lib/types";
@@ -72,8 +70,8 @@ export default function InformasiPage() {
           liputan prestasi siswa-siswi SMA Negeri 2 Buay Bahuga.
         </p>
 
-        {/* Tab Kategori & Search Bar: Rapi dan pas penuh di dalam kotak baik di Mobile maupun Desktop */}
-        <div className="pt-1.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        {/* Tab Kategori & Search Bar: Sejajar Presisi di Mobile maupun Desktop */}
+        <div className="pt-1.5 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div className="flex flex-wrap sm:inline-flex items-center gap-1.5 sm:gap-2 p-1.5 bg-white rounded-xl border border-gray-200 shadow-2xs w-full sm:w-auto">
             {kategoriList.map((kat) => (
               <button
@@ -90,29 +88,29 @@ export default function InformasiPage() {
             ))}
           </div>
 
-          {/* Search Box */}
-          <div className="relative w-full sm:w-64">
-            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          {/* Search Box Presisi */}
+          <div className="relative w-full lg:w-72">
+            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cari warta berita..."
-              className="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E] shadow-2xs"
+              className="w-full h-[46px] pl-9 pr-3.5 text-xs bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E] shadow-2xs"
             />
           </div>
         </div>
       </div>
 
-      {/* Grid Berita (Tetap 3 Kolom Seperti Semula & Sejajar Rapi) */}
+      {/* Grid Berita (3 Kolom Presisi & Sejajar Lurus Antar-Kartu) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
         {filteredBerita.map((berita) => (
           <article
             key={berita.id}
             className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between h-full"
           >
-            <div>
-              <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
+            <div className="flex flex-col">
+              <div className="relative h-48 w-full bg-gray-100 overflow-hidden shrink-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={berita.thumbnailUrl}
@@ -124,8 +122,9 @@ export default function InformasiPage() {
                 </span>
               </div>
 
-              <div className="p-5 space-y-2.5">
-                <div className="flex items-center gap-3 text-[11px] text-gray-400">
+              <div className="p-5 flex flex-col">
+                {/* Baris 1: Tanggal & Waktu Baca (Tinggi Terkunci) */}
+                <div className="flex items-center gap-3 text-[11px] text-gray-400 h-5">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
                     {berita.tanggal}
@@ -137,13 +136,15 @@ export default function InformasiPage() {
                   </span>
                 </div>
 
-                <div className="min-h-[2.75rem] flex items-start">
+                {/* Baris 2: Judul Berita (Tinggi 2 Baris Terkunci Sejajar) */}
+                <div className="mt-2.5 h-11 flex items-start">
                   <h3 className="text-base font-bold text-gray-900 leading-snug line-clamp-2">
                     {berita.judul}
                   </h3>
                 </div>
 
-                <div className="min-h-[3.6rem] flex items-start">
+                {/* Baris 3: Ringkasan Berita (Tinggi 3 Baris Terkunci Sejajar) */}
+                <div className="mt-2 h-[3.75rem] flex items-start">
                   <p className="text-xs text-gray-600 line-clamp-3 leading-relaxed">
                     {berita.ringkasan}
                   </p>
@@ -154,7 +155,7 @@ export default function InformasiPage() {
             <div className="p-5 pt-0">
               <button
                 onClick={() => setActiveModalBerita(berita)}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-semibold text-[#2A2C5E] bg-blue-50 hover:bg-blue-100 rounded-md transition-colors cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold text-[#2A2C5E] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
               >
                 <span>Baca Pengumuman Lengkap</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -164,26 +165,21 @@ export default function InformasiPage() {
         ))}
       </div>
 
-      {/* Detail Article Modal (Tampilan Berita Profesional Ketika Diklik + Medsos di Bawah Pojok Kiri/Kanan) */}
+      {/* Detail Article Modal (Tampilan Berita Rapi & Presisi Ketika Diklik) */}
       {activeModalBerita && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-xs"
           onClick={() => setActiveModalBerita(null)}
         >
           <div
-            className="bg-white rounded-2xl max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-gray-200 flex flex-col justify-between"
+            className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200 flex flex-col justify-between"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Sticky Top Bar Redaksi */}
-            <div className="sticky top-0 bg-white/95 backdrop-blur-xs border-b border-gray-200 px-5 sm:px-7 py-3.5 flex items-center justify-between z-20">
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-white bg-[#2A2C5E] px-2.5 py-1 rounded">
-                  {activeModalBerita.kategori}
-                </span>
-                <span className="text-xs font-semibold text-gray-500 hidden sm:inline">
-                  &bull; Portal Warta Resmi SMAN 2 Buay Bahuga
-                </span>
-              </div>
+            {/* Header Bar Berita */}
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-20">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-white bg-[#2A2C5E] px-3 py-1 rounded-md">
+                {activeModalBerita.kategori}
+              </span>
 
               <div className="flex items-center gap-2">
                 <button
@@ -191,8 +187,7 @@ export default function InformasiPage() {
                   onClick={() =>
                     handleCopyShare(activeModalBerita.id, activeModalBerita.judul)
                   }
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-gray-200 hover:border-[#2A2C5E] text-xs font-semibold text-gray-700 hover:text-[#2A2C5E] transition-colors cursor-pointer"
-                  title="Salin Tautan Berita"
+                  className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-gray-200 hover:border-[#2A2C5E] text-xs font-semibold text-gray-700 hover:text-[#2A2C5E] transition-colors cursor-pointer"
                 >
                   {copiedId === activeModalBerita.id ? (
                     <>
@@ -209,7 +204,7 @@ export default function InformasiPage() {
                 <button
                   type="button"
                   onClick={() => setActiveModalBerita(null)}
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+                  className="w-8 h-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 flex items-center justify-center transition-colors cursor-pointer"
                   aria-label="Tutup"
                 >
                   <X className="w-5 h-5" />
@@ -218,170 +213,121 @@ export default function InformasiPage() {
             </div>
 
             {/* Konten Utama Artikel Berita */}
-            <div className="p-5 sm:p-8 space-y-6">
-              {/* Judul & Info Redaksi */}
-              <div className="space-y-4">
-                <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 leading-snug tracking-tight">
-                  {activeModalBerita.judul}
-                </h2>
+            <div className="p-6 sm:p-8 space-y-5">
+              {/* Judul Berita */}
+              <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 leading-snug tracking-tight">
+                {activeModalBerita.judul}
+              </h2>
 
-                {/* Baris Penulis, Tanggal, Lokasi, & Waktu Baca */}
-                <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-200/80 text-xs">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-full bg-[#2A2C5E] text-white flex items-center justify-center font-bold text-xs shrink-0">
-                      <User className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-900 leading-tight">
-                        {activeModalBerita.penulis}
-                      </p>
-                      <p className="text-[11px] text-gray-500">
-                        Redaksi Humas & Publikasi Sekolah
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-3 text-[11px] text-gray-600">
-                    <span className="inline-flex items-center gap-1 font-medium">
-                      <Calendar className="w-3.5 h-3.5 text-[#2A2C5E]" />
-                      {activeModalBerita.tanggal}
-                    </span>
-                    <span>&bull;</span>
-                    <span className="inline-flex items-center gap-1 font-medium">
-                      <Clock className="w-3.5 h-3.5 text-[#2A2C5E]" />
-                      {activeModalBerita.bacaMenit} Menit Baca
-                    </span>
-                    <span>&bull;</span>
-                    <span className="inline-flex items-center gap-1 font-medium">
-                      <MapPin className="w-3.5 h-3.5 text-[#2A2C5E]" />
-                      Buay Bahuga, Way Kanan
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Foto Liputan Utama + Caption Jurnalistik */}
-              <figure className="space-y-2">
-                <div className="relative h-60 sm:h-80 w-full rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={activeModalBerita.thumbnailUrl}
-                    alt={activeModalBerita.judul}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <figcaption className="flex items-center gap-1.5 text-[11px] text-gray-500 italic px-1">
-                  <Camera className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                  <span>
-                    Dokumentasi Humas SMAN 2 Buay Bahuga — {activeModalBerita.judul}.
-                  </span>
-                </figcaption>
-              </figure>
-
-              {/* Ringkasan Sorotan (Lead Paragraph) */}
-              <div className="p-4 rounded-xl bg-blue-50/60 border-l-4 border-[#2A2C5E] text-xs sm:text-sm font-medium text-gray-800 leading-relaxed">
-                {activeModalBerita.ringkasan}
-              </div>
-
-              {/* Batang Tubuh Berita */}
-              <div className="text-sm text-gray-700 whitespace-pre-line leading-relaxed space-y-3">
-                <span className="font-extrabold text-[#2A2C5E]">
-                  BUAY BAHUGA, SMANDABUBA —{" "}
+              {/* Baris Informasi Penulis, Tanggal, Waktu Baca, & Lokasi */}
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500 border-b border-gray-100 pb-4">
+                <span className="inline-flex items-center gap-1.5 font-semibold text-[#2A2C5E]">
+                  <User className="w-3.5 h-3.5" />
+                  {activeModalBerita.penulis}
                 </span>
-                {activeModalBerita.konten}
+                <span>&bull;</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                  {activeModalBerita.tanggal}
+                </span>
+                <span>&bull;</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-gray-400" />
+                  {activeModalBerita.bacaMenit} Menit Baca
+                </span>
+                <span>&bull;</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-gray-400" />
+                  SMAN 2 Buay Bahuga
+                </span>
               </div>
 
-              {/* Kotak Verifikasi Informasi Resmi */}
-              <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 flex items-start gap-3 text-xs text-gray-600">
-                <ShieldCheck className="w-5 h-5 text-[#2A2C5E] shrink-0 mt-0.5" />
-                <div className="space-y-0.5">
-                  <p className="font-bold text-gray-900">
-                    Informasi Resmi Terverifikasi — SMA Negeri 2 Buay Bahuga (NPSN: 10810192)
-                  </p>
-                  <p className="text-[11px] text-gray-500 leading-relaxed">
-                    Diterbitkan melalui Pusat Informasi & Kehumasan SMAN 2 Buay Bahuga di bawah koordinasi Kepala Sekolah, Ibu Apriyani, S.Si., M.M.Pd.
-                  </p>
-                </div>
+              {/* Foto Berita */}
+              <div className="relative h-60 sm:h-80 w-full rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={activeModalBerita.thumbnailUrl}
+                  alt={activeModalBerita.judul}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Isi Berita Lengkap */}
+              <div className="text-sm text-gray-700 whitespace-pre-line leading-relaxed pt-1">
+                {activeModalBerita.konten}
               </div>
             </div>
 
-            {/* Footer Artikel Berita: Medsos Resmi di Pojok Kiri Bawah & Tombol Aksi di Pojok Kanan Bawah */}
-            <div className="bg-gray-50 border-t border-gray-200 px-5 sm:px-7 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              {/* Pojok Kiri Bawah: Kanal Media Sosial Resmi Sekolah */}
-              <div className="space-y-1.5">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                  Ikuti Media Sosial Resmi SMAN 2 Buay Bahuga
-                </p>
-                <div className="flex flex-wrap items-center gap-2">
-                  <a
-                    href="https://instagram.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-pink-500 text-[11px] font-semibold text-gray-700 hover:text-pink-600 transition-colors shadow-2xs"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="w-3.5 h-3.5 text-pink-600"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                    </svg>
-                    <span>@sman2buaybahuga</span>
-                  </a>
-
-                  <a
-                    href="https://youtube.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-red-500 text-[11px] font-semibold text-gray-700 hover:text-red-600 transition-colors shadow-2xs"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="w-3.5 h-3.5 text-red-600"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
-                      <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
-                    </svg>
-                    <span>SMAN 2 Buay Bahuga TV</span>
-                  </a>
-
-                  <a
-                    href="https://facebook.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-[#2A2C5E] text-[11px] font-semibold text-gray-700 hover:text-[#2A2C5E] transition-colors shadow-2xs"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="w-3.5 h-3.5 text-[#2A2C5E]"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                    </svg>
-                    <span>SMAN 2 Buay Bahuga</span>
-                  </a>
-                </div>
-              </div>
-
-              {/* Pojok Kanan Bawah: Tombol Tutup Berita */}
-              <div className="flex items-center justify-end gap-2 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setActiveModalBerita(null)}
-                  className="px-5 py-2 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1f2147] rounded-lg transition-colors cursor-pointer"
+            {/* Footer Berita: Media Sosial Resmi di Pojok Kiri & Tombol Tutup di Pojok Kanan */}
+            <div className="bg-gray-50 border-t border-gray-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              {/* Pojok Kiri Bawah: Media Sosial Resmi */}
+              <div className="flex flex-wrap items-center gap-2">
+                <a
+                  href="https://instagram.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-white border border-gray-200 hover:border-pink-500 text-xs font-semibold text-gray-700 hover:text-pink-600 transition-colors"
                 >
-                  Tutup Berita
-                </button>
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="w-3.5 h-3.5 text-pink-600 shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                  </svg>
+                  <span>@sman2buaybahuga</span>
+                </a>
+
+                <a
+                  href="https://youtube.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-white border border-gray-200 hover:border-red-500 text-xs font-semibold text-gray-700 hover:text-red-600 transition-colors"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="w-3.5 h-3.5 text-red-600 shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
+                    <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+                  </svg>
+                  <span>SMAN 2 Buay Bahuga</span>
+                </a>
+
+                <a
+                  href="https://facebook.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-white border border-gray-200 hover:border-[#2A2C5E] text-xs font-semibold text-gray-700 hover:text-[#2A2C5E] transition-colors"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="w-3.5 h-3.5 text-[#2A2C5E] shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                  </svg>
+                  <span>SMAN 2 Buay Bahuga</span>
+                </a>
               </div>
+
+              {/* Pojok Kanan Bawah: Tombol Tutup */}
+              <button
+                type="button"
+                onClick={() => setActiveModalBerita(null)}
+                className="h-9 px-5 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1f2147] rounded-lg transition-colors cursor-pointer self-end sm:self-auto"
+              >
+                Tutup
+              </button>
             </div>
           </div>
         </div>

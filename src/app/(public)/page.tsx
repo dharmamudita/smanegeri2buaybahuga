@@ -62,9 +62,9 @@ export default function HomePage() {
 
   return (
     <div className="space-y-6 sm:space-y-8 pb-12">
-      {/* 0. Banner Foto Utama 16:9 Landscape di Paling Atas Beranda (Tanpa Teks, Geser Manual & Otomatis) */}
+      {/* 0. Banner Foto Utama 12:5 (1920x800 px / 1200x500 px) di Paling Atas Beranda (Tanpa Teks, Geser Manual & Otomatis) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-5 sm:pt-7">
-        <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-gray-100">
+        <div className="relative w-full aspect-[12/5] rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-gray-100">
           {/* Track Slide Horizontal */}
           <div
             className="flex w-full h-full transition-transform duration-700 ease-out"

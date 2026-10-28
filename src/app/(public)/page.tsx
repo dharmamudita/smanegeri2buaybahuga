@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   GraduationCap,
   Award,
@@ -20,6 +21,7 @@ import {
   Video,
   Clock,
   ExternalLink,
+  X,
 } from "lucide-react";
 import { SCHOOL_INFO } from "@/lib/constants";
 import { useBeritaStore } from "@/lib/store";
@@ -123,6 +125,25 @@ export default function HomePage() {
   const [bannerTrackIdx, setBannerTrackIdx] = useState<number>(1);
   const [isBannerTransitioning, setIsBannerTransitioning] = useState<boolean>(true);
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
+  const pathname = usePathname();
+
+  // 1. Otomatis jeda / pause video saat pengguna berpindah ke halaman lain di website
+  useEffect(() => {
+    setPlayingVideoId(null);
+  }, [pathname]);
+
+  // 2. Otomatis jeda / pause video saat pengguna berpindah tab peramban atau meminimize jendela
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setPlayingVideoId(null);
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
 
   useEffect(() => {
     fetchFromSupabase();
@@ -514,14 +535,25 @@ export default function HomePage() {
                   {/* Layar Video 16:9 */}
                   <div className="relative aspect-video w-full bg-gray-900 overflow-hidden shrink-0">
                     {isPlaying ? (
-                      <iframe
-                        src={embedUrl}
-                        title={vid.judul}
-                        className="w-full h-full border-0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerPolicy="strict-origin-when-cross-origin"
-                        allowFullScreen
-                      />
+                      <div className="relative w-full h-full">
+                        <iframe
+                          src={embedUrl}
+                          title={vid.judul}
+                          className="w-full h-full border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          allowFullScreen
+                        />
+                        {/* Tombol Tutup / Jeda Video */}
+                        <button
+                          onClick={() => setPlayingVideoId(null)}
+                          className="absolute top-2 right-2 z-20 px-2.5 py-1 bg-black/75 hover:bg-black text-white text-[10px] font-semibold rounded-lg backdrop-blur-xs flex items-center gap-1 transition-all cursor-pointer shadow-md"
+                          title="Jeda dan tutup pemutar video"
+                        >
+                          <X className="w-3 h-3 text-red-300" />
+                          <span>Jeda Video</span>
+                        </button>
+                      </div>
                     ) : (
                       <div
                         onClick={() => setPlayingVideoId(vid.id)}

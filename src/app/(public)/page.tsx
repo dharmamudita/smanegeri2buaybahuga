@@ -24,6 +24,7 @@ import {
 import { SCHOOL_INFO } from "@/lib/constants";
 import { useBeritaStore } from "@/lib/store";
 import { useCMSStore } from "@/lib/cmsStore";
+import { formatYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 
 const VIDEO_PANDUAN_LIST = [
   {
@@ -502,10 +503,8 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
           {beranda.videoPanduan.map((vid, idx) => {
             const isPlaying = playingVideoId === vid.id;
-            const embedUrl = vid.youtubeUrl?.includes("embed")
-              ? vid.youtubeUrl
-              : vid.youtubeUrl?.replace("watch?v=", "embed/") || "https://www.youtube.com/embed/dQw4w9WgXcQ";
-            const thumbnail = (vid as any).thumbnailUrl || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80";
+            const embedUrl = formatYouTubeEmbedUrl(vid.youtubeUrl, true);
+            const thumbnail = (vid as any).thumbnailUrl || getYouTubeThumbnailUrl(vid.youtubeUrl);
             return (
               <div
                 key={vid.id}
@@ -516,10 +515,11 @@ export default function HomePage() {
                   <div className="relative aspect-video w-full bg-gray-900 overflow-hidden shrink-0">
                     {isPlaying ? (
                       <iframe
-                        src={`${embedUrl}?autoplay=1&rel=0`}
+                        src={embedUrl}
                         title={vid.judul}
                         className="w-full h-full border-0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
                         allowFullScreen
                       />
                     ) : (

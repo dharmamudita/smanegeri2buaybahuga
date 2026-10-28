@@ -34,6 +34,7 @@ import { useCMSStore } from "@/lib/cmsStore";
 import { useBeritaStore } from "@/lib/store";
 import PaginationBar from "@/components/common/PaginationBar";
 import ImageCropUploadModal from "@/components/common/ImageCropUploadModal";
+import { formatYouTubeWatchUrl, getYouTubeThumbnailUrl, extractYouTubeId } from "@/lib/youtube";
 
 type CMSTab = "BERANDA" | "PROFIL" | "AKADEMIK" | "KESISWAAN" | "INFORMASI";
 
@@ -759,15 +760,25 @@ export default function AdminCMSManager() {
                     </div>
                     <div>
                       <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                        URL YouTube
+                        Tautan Video YouTube
                       </label>
                       <input
                         type="text"
                         value={videoForm.youtubeUrl}
                         onChange={(e) => setVideoForm({ ...videoForm, youtubeUrl: e.target.value })}
-                        placeholder="https://www.youtube.com/watch?v=..."
-                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                        placeholder="https://youtu.be/... atau https://www.youtube.com/watch?v=..."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-hidden focus:border-[#2A2C5E]"
                       />
+                      {extractYouTubeId(videoForm.youtubeUrl) ? (
+                        <p className="text-[10px] text-emerald-600 font-semibold mt-1 flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3" />
+                          <span>Tautan valid (ID: {extractYouTubeId(videoForm.youtubeUrl)})</span>
+                        </p>
+                      ) : videoForm.youtubeUrl && (
+                        <p className="text-[10px] text-amber-600 mt-1">
+                          Contoh format: https://youtu.be/dQw4w9WgXcQ
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-[11px] font-semibold text-gray-700 mb-1">
@@ -838,51 +849,68 @@ export default function AdminCMSManager() {
                     .map((v) => (
                       <div
                         key={v.id}
-                        className="p-3.5 rounded-xl border border-gray-200 bg-gray-50 flex flex-col justify-between space-y-2 shadow-2xs"
+                        className="p-3.5 rounded-xl border border-gray-200 bg-gray-50 flex flex-col justify-between space-y-2.5 shadow-2xs"
                       >
-                        <div className="space-y-1">
-                          <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
-                              {v.kategori}
-                            </span>
-                            <div className="flex items-center gap-1">
-                              <button
-                                onClick={() => setEditingItem({ type: "VIDEO", id: v.id, data: { ...v } })}
-                                className="text-[#2A2C5E] hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
-                                title="Edit Video"
-                              >
-                                <Edit3 className="w-3.5 h-3.5" />
-                              </button>
-                              <button
-                                onClick={() => {
-                                  if (confirm(`Hapus video "${v.judul}"?`)) {
-                                    deleteVideoPanduan(v.id);
-                                    showToast("Video berhasil dihapus.");
-                                  }
-                                }}
-                                className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition-colors"
-                                title="Hapus Video"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
+                        <div className="space-y-2">
+                          {/* Mini Thumbnail Video */}
+                          <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-gray-900 border border-gray-200">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={getYouTubeThumbnailUrl(v.youtubeUrl)}
+                              alt={v.judul}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute top-2 left-2">
+                              <span className="text-[10px] font-bold text-white bg-[#2A2C5E] px-2 py-0.5 rounded shadow-xs">
+                                {v.kategori}
+                              </span>
                             </div>
                           </div>
-                          <h4 className="text-xs font-bold text-gray-900 line-clamp-2">{v.judul}</h4>
-                          <p className="text-[11px] text-gray-500 line-clamp-2">{v.ringkasan}</p>
+
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] text-gray-500 font-medium">
+                                Highlight: {v.highlight || "Panduan"}
+                              </span>
+                              <div className="flex items-center gap-1">
+                                <button
+                                  onClick={() => setEditingItem({ type: "VIDEO", id: v.id, data: { ...v } })}
+                                  className="text-[#2A2C5E] hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                                  title="Edit Video"
+                                >
+                                  <Edit3 className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    if (confirm(`Hapus video "${v.judul}"?`)) {
+                                      deleteVideoPanduan(v.id);
+                                      showToast("Video berhasil dihapus.");
+                                    }
+                                  }}
+                                  className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition-colors"
+                                  title="Hapus Video"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
+                            <h4 className="text-xs font-bold text-gray-900 line-clamp-2">{v.judul}</h4>
+                            <p className="text-[11px] text-gray-500 line-clamp-2">{v.ringkasan}</p>
+                          </div>
                         </div>
 
                         <div className="pt-2 border-t border-gray-200 flex items-center justify-between text-[10px] text-gray-500">
-                          <span className="flex items-center gap-1">
+                          <span className="flex items-center gap-1 font-medium">
                             <Clock className="w-3 h-3 text-blue-500" />
                             {v.durasi}
                           </span>
                           <a
-                            href={v.youtubeUrl}
+                            href={formatYouTubeWatchUrl(v.youtubeUrl)}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-[#2A2C5E] hover:underline font-semibold flex items-center gap-1"
+                            className="text-[#2A2C5E] hover:underline font-bold flex items-center gap-1"
                           >
-                            Buka YT
+                            Buka di YouTube
                             <ExternalLink className="w-2.5 h-2.5" />
                           </a>
                         </div>
@@ -2781,8 +2809,19 @@ export default function AdminCMSManager() {
                         type="text"
                         value={editingItem.data.youtubeUrl || ""}
                         onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, youtubeUrl: e.target.value } })}
+                        placeholder="https://youtu.be/... atau https://www.youtube.com/watch?v=..."
                         className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
                       />
+                      {extractYouTubeId(editingItem.data.youtubeUrl) ? (
+                        <p className="text-[10px] text-emerald-600 font-semibold mt-0.5 flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3" />
+                          <span>Tautan valid (ID: {extractYouTubeId(editingItem.data.youtubeUrl)})</span>
+                        </p>
+                      ) : editingItem.data.youtubeUrl && (
+                        <p className="text-[10px] text-amber-600 mt-0.5">
+                          Tautan belum valid. Contoh: https://youtu.be/dQw4w9WgXcQ
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-1">
                       <label className="font-semibold text-gray-700">Label Sorotan (Highlight)</label>

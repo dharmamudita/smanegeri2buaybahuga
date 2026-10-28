@@ -187,7 +187,7 @@ export default function ImageCropUploadModal({
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error || "Gagal mengunggah foto ke Cloudinary.");
+        throw new Error(data.error || "Gagal memproses dan menyimpan foto.");
       }
 
       onSuccess(data.url);
@@ -214,7 +214,7 @@ export default function ImageCropUploadModal({
             <div>
               <h3 className="text-sm font-bold text-gray-900">{title}</h3>
               <p className="text-[11px] text-gray-500">
-                Pilih foto dari perangkat, sesuaikan bingkai, lalu simpan ke Cloudinary
+                Pilih foto dari perangkat, sesuaikan bingkai, lalu simpan perubahan
               </p>
             </div>
           </div>
@@ -371,7 +371,7 @@ export default function ImageCropUploadModal({
                   <span>Ganti File Lain</span>
                 </button>
                 <span className="text-[10px] text-gray-400">
-                  Cloud CDN: da14re4p
+                  Penyimpanan Cloud & Server Aktif
                 </span>
               </div>
             </div>
@@ -384,7 +384,7 @@ export default function ImageCropUploadModal({
             type="button"
             onClick={onClose}
             disabled={isUploading}
-            className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-semibold text-xs hover:bg-gray-100 transition-all disabled:opacity-50"
+            className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-semibold text-xs hover:bg-gray-100 transition-all disabled:opacity-50 cursor-pointer"
           >
             Batal
           </button>
@@ -398,12 +398,12 @@ export default function ImageCropUploadModal({
               {isUploading ? (
                 <>
                   <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                  <span>Mengunggah ke Cloudinary...</span>
+                  <span>Menyimpan Foto...</span>
                 </>
               ) : (
                 <>
                   <Check className="w-3.5 h-3.5" />
-                  <span>Potong & Simpan ke Cloudinary</span>
+                  <span>Potong & Simpan Foto</span>
                 </>
               )}
             </button>

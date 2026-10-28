@@ -15,15 +15,16 @@ import {
   AlertTriangle,
   Clock,
   Sparkles,
+  Layers,
 } from "lucide-react";
 
-type KesiswaanTab = "TATA_TERTIB" | "PRESTASI" | "EKSTRAKURIKULER";
+type KesiswaanTab = "TATA_TERTIB" | "PRESTASI" | "OSIS" | "EKSTRAKURIKULER";
 
 function KesiswaanContent() {
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get("tab")?.toUpperCase() as KesiswaanTab) || "TATA_TERTIB";
   const [activeTab, setActiveTab] = useState<KesiswaanTab>(
-    ["TATA_TERTIB", "PRESTASI", "EKSTRAKURIKULER"].includes(initialTab)
+    ["TATA_TERTIB", "PRESTASI", "OSIS", "EKSTRAKURIKULER"].includes(initialTab)
       ? initialTab
       : "TATA_TERTIB"
   );
@@ -31,6 +32,7 @@ function KesiswaanContent() {
   const tabs: { key: KesiswaanTab; label: string }[] = [
     { key: "TATA_TERTIB", label: "Tata Tertib" },
     { key: "PRESTASI", label: "Prestasi" },
+    { key: "OSIS", label: "OSIS" },
     { key: "EKSTRAKURIKULER", label: "Ekstrakurikuler" },
   ];
 
@@ -288,7 +290,293 @@ function KesiswaanContent() {
         </section>
       )}
 
-      {/* TAB 3: EKSTRAKURIKULER */}
+      {/* TAB 3: OSIS (BAGAN STRUKTUR ORGANISASI OSIS & MPK) */}
+      {activeTab === "OSIS" && (
+        <section className="space-y-6">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center shrink-0">
+              <Layers className="w-4 h-4" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">
+                Bagan Struktur Organisasi Siswa Intra Sekolah (OSIS) & MPK
+              </h2>
+              <p className="text-xs text-gray-500">
+                Hierarki kepengurusan OSIS, Majelis Perwakilan Kelas (MPK), dan Koordinator Seksi Bidang SMAN 2 Buay Bahuga
+              </p>
+            </div>
+          </div>
+
+          {/* Container Bagan Hierarki OSIS */}
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-2xs p-4 sm:p-8 lg:p-10">
+            <div className="max-w-5xl mx-auto flex flex-col items-center">
+
+              {/* LEVEL 1 (DESKTOP): PEMBINA KESISWAAN - PELINDUNG (KEPSEK) - KETUA MPK */}
+              <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-0 items-center relative">
+                {/* Kiri Desktop: Pembina Utama OSIS / Waka Kesiswaan */}
+                <div className="hidden lg:flex items-center justify-end">
+                  <div className="w-full max-w-xs bg-blue-50/50 border border-blue-200 rounded-xl p-4 text-center space-y-1">
+                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-100/80 px-2.5 py-0.5 rounded">
+                      Pembina Utama OSIS
+                    </span>
+                    <h4 className="text-sm font-bold text-gray-900">Tumijo, S.Pd.</h4>
+                    <p className="text-[11px] font-mono text-gray-500">
+                      NIP. 19780512 200501 1 003
+                    </p>
+                    <p className="text-[11px] text-gray-600">
+                      Wakil Kepala Sekolah Bidang Kesiswaan
+                    </p>
+                  </div>
+                  <div className="w-8 h-0.5 bg-[#2A2C5E]/40" />
+                </div>
+
+                {/* Tengah Puncak: PELINDUNG / PENANGGUNG JAWAB (KEPALA SEKOLAH) */}
+                <div className="flex flex-col items-center z-10">
+                  <div className="w-full max-w-sm bg-[#2A2C5E] text-white rounded-xl p-4 sm:p-5 text-center shadow-md border-2 border-[#2A2C5E] space-y-1.5">
+                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider bg-white/15 text-blue-100 px-3 py-0.5 rounded-full">
+                      Pelindung & Penanggung Jawab
+                    </span>
+                    <h3 className="text-base sm:text-lg font-extrabold tracking-tight text-white">
+                      Apriyani, S.Si., M.M.Pd.
+                    </h3>
+                    <p className="text-[11px] font-mono text-blue-200">
+                      NIP. 19720405 200501 2 005
+                    </p>
+                    <p className="text-[11px] text-blue-100/90 pt-1.5 border-t border-white/15">
+                      Kepala SMA Negeri 2 Buay Bahuga
+                    </p>
+                  </div>
+                </div>
+
+                {/* Kanan Desktop: Majelis Perwakilan Kelas (MPK) */}
+                <div className="hidden lg:flex items-center justify-start">
+                  <div className="w-8 border-t-2 border-dashed border-[#2A2C5E]/40" />
+                  <div className="w-full max-w-xs bg-gray-50/90 border-2 border-dashed border-gray-300 rounded-xl p-4 text-center space-y-1">
+                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-gray-700 bg-gray-200/80 px-2.5 py-0.5 rounded">
+                      Mitra Legislatif (MPK)
+                    </span>
+                    <h4 className="text-sm font-bold text-gray-900">Nabila Dijayanti</h4>
+                    <p className="text-[11px] text-[#2A2C5E] font-semibold">
+                      Ketua Umum MPK (Kelas XII MIPA 1)
+                    </p>
+                    <p className="text-[11px] text-gray-500">
+                      Pengawas & Penampung Aspirasi 29 Rombel
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* KHUSUS MOBILE & TABLET (< lg): CABANG PEMBINA OSIS & KETUA MPK BERDAMPINGAN */}
+              <div className="lg:hidden w-full flex flex-col items-center">
+                <div className="w-0.5 h-5 bg-[#2A2C5E]/40" />
+                <div className="w-1/2 h-0.5 bg-[#2A2C5E]/40 relative">
+                  <div className="absolute left-0 top-0 w-0.5 h-3 bg-[#2A2C5E]/40" />
+                  <div className="absolute right-0 top-0 w-0.5 h-3 bg-[#2A2C5E]/40" />
+                </div>
+                <div className="w-full grid grid-cols-2 gap-2.5 pt-3">
+                  <div className="bg-blue-50/50 border border-blue-200 rounded-xl p-3 text-center space-y-1 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <span className="inline-block text-[9px] font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-100/80 px-2 py-0.5 rounded">
+                        Pembina OSIS
+                      </span>
+                      <h4 className="text-xs sm:text-sm font-bold text-gray-900">Tumijo, S.Pd.</h4>
+                    </div>
+                    <p className="text-[10px] sm:text-[11px] text-gray-600 leading-snug pt-1 border-t border-blue-100">
+                      Waka Bidang Kesiswaan
+                    </p>
+                  </div>
+                  <div className="bg-gray-50/90 border-2 border-dashed border-gray-300 rounded-xl p-3 text-center space-y-1 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <span className="inline-block text-[9px] font-bold uppercase tracking-wider text-gray-700 bg-gray-200/80 px-2 py-0.5 rounded">
+                        Ketua MPK
+                      </span>
+                      <h4 className="text-xs sm:text-sm font-bold text-gray-900">Nabila Dijayanti</h4>
+                    </div>
+                    <p className="text-[10px] sm:text-[11px] text-gray-500 leading-snug pt-1 border-t border-gray-200/70">
+                      Kelas XII MIPA 1
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* GARIS VERTIKAL MENUJU KETUA & WAKIL KETUA UMUM OSIS */}
+              <div className="w-0.5 h-7 sm:h-9 bg-[#2A2C5E]/40 relative flex items-center justify-center">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#2A2C5E] ring-4 ring-blue-50" />
+              </div>
+
+              {/* LEVEL 2: KETUA UMUM & WAKIL KETUA OSIS */}
+              <div className="w-full max-w-2xl relative grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
+                <div className="sm:hidden absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 bg-[#2A2C5E]/35 z-0" />
+                <div className="hidden sm:block absolute top-1/2 left-0 right-0 h-0.5 bg-[#2A2C5E]/35 z-0" />
+
+                <div className="relative z-10 bg-white rounded-xl border-2 border-[#2A2C5E] p-4 text-center shadow-xs space-y-1.5">
+                  <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-white bg-[#2A2C5E] px-3 py-0.5 rounded-full">
+                    Ketua Umum OSIS
+                  </span>
+                  <h4 className="text-sm sm:text-base font-extrabold text-gray-900">
+                    M. Ziddane Alfaridz
+                  </h4>
+                  <p className="text-xs font-semibold text-[#2A2C5E]">
+                    Kelas XI IPS 1 &bull; NISN. 0081234567
+                  </p>
+                  <p className="text-[11px] text-gray-600 pt-1.5 border-t border-gray-100">
+                    Koordinator Utama Program Kerja Eksekutif Siswa
+                  </p>
+                </div>
+
+                <div className="relative z-10 bg-white rounded-xl border-2 border-[#2A2C5E]/40 p-4 text-center shadow-xs space-y-1.5">
+                  <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-50 px-3 py-0.5 rounded-full">
+                    Wakil Ketua OSIS
+                  </span>
+                  <h4 className="text-sm sm:text-base font-extrabold text-gray-900">
+                    Safety Octa Sushadi
+                  </h4>
+                  <p className="text-xs font-semibold text-[#2A2C5E]">
+                    Kelas XII MIPA 2 &bull; NISN. 0078129342
+                  </p>
+                  <p className="text-[11px] text-gray-600 pt-1.5 border-t border-gray-100">
+                    Koordinasi Internal Seksi Bidang & Ekstrakurikuler
+                  </p>
+                </div>
+              </div>
+
+              {/* GARIS VERTIKAL MENUJU SEKRETARIS & BENDAHARA */}
+              <div className="w-0.5 h-7 sm:h-8 bg-[#2A2C5E]/40 relative flex items-center justify-center">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#2A2C5E] ring-4 ring-blue-50" />
+              </div>
+
+              <div className="hidden sm:block w-1/2 max-w-md h-0.5 bg-[#2A2C5E]/40 relative">
+                <div className="absolute left-0 top-0 w-0.5 h-4 bg-[#2A2C5E]/40" />
+                <div className="absolute right-0 top-0 w-0.5 h-4 bg-[#2A2C5E]/40" />
+              </div>
+
+              {/* LEVEL 3: SEKRETARIS UMUM & BENDAHARA UMUM */}
+              <div className="w-full max-w-2xl relative grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 sm:pt-4">
+                <div className="sm:hidden absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 bg-[#2A2C5E]/35 z-0" />
+
+                <div className="relative z-10 bg-gray-50 rounded-xl border border-gray-200 p-4 text-center space-y-1">
+                  <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-white border border-gray-200 px-2.5 py-0.5 rounded">
+                    Sekretaris Umum OSIS
+                  </span>
+                  <h4 className="text-sm font-bold text-gray-900">Evista Silvy Laudrya</h4>
+                  <p className="text-[11px] font-medium text-[#2A2C5E]">Kelas XI MIPA 1</p>
+                  <p className="text-[11px] text-gray-600 pt-1 border-t border-gray-200/70">
+                    Administrasi Kesekretariatan, Proposal, & Dokumentasi Rapat
+                  </p>
+                </div>
+
+                <div className="relative z-10 bg-gray-50 rounded-xl border border-gray-200 p-4 text-center space-y-1">
+                  <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-white border border-gray-200 px-2.5 py-0.5 rounded">
+                    Bendahara Umum OSIS
+                  </span>
+                  <h4 className="text-sm font-bold text-gray-900">Frita Amelia</h4>
+                  <p className="text-[11px] font-medium text-[#2A2C5E]">Kelas XI IPS 1</p>
+                  <p className="text-[11px] text-gray-600 pt-1 border-t border-gray-200/70">
+                    Pengelolaan Kas Organisasi & Pertanggungjawaban Anggaran
+                  </p>
+                </div>
+              </div>
+
+              {/* GARIS VERTIKAL MENUJU 6 SEKSI BIDANG (SEKBID) */}
+              <div className="w-0.5 h-7 sm:h-9 bg-[#2A2C5E]/40 relative flex items-center justify-center">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#2A2C5E] ring-4 ring-blue-50" />
+              </div>
+
+              {/* GARIS CABANG HORIZONTAL UNTUK SEKSI BIDANG (Desktop) */}
+              <div className="hidden lg:block w-[68%] h-0.5 bg-[#2A2C5E]/40 relative">
+                <div className="absolute left-0 top-0 w-0.5 h-5 bg-[#2A2C5E]/40" />
+                <div className="absolute left-1/2 -translate-x-1/2 top-0 w-0.5 h-5 bg-[#2A2C5E]/40" />
+                <div className="absolute right-0 top-0 w-0.5 h-5 bg-[#2A2C5E]/40" />
+              </div>
+
+              {/* LEVEL 4: 6 SEKSI BIDANG (SEKBID) OSIS */}
+              <div className="w-full relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 lg:pt-5">
+                <div className="sm:hidden absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 bg-[#2A2C5E]/35 z-0" />
+
+                {[
+                  {
+                    sekbid: "Seksi Bidang I",
+                    nama: "Keimanan & Ketakwaan Terhadap Tuhan YME",
+                    koordinator: "Aji Winata Prayoga (XI IPS 2)",
+                    program: "Rohis, Peringatan Hari Besar Keagamaan, & Pembiasaan Ibadah",
+                  },
+                  {
+                    sekbid: "Seksi Bidang II",
+                    nama: "Budi Pekerti Luhur & Bela Negara",
+                    koordinator: "Rizky Pratama (XI MIPA 1)",
+                    program: "Petugas Upacara Senin, Paskibra, Pramuka, & Ketertiban Siswa",
+                  },
+                  {
+                    sekbid: "Seksi Bidang III",
+                    nama: "Prestasi Akademik, Sains & Literasi",
+                    koordinator: "Putri Maharani (XI MIPA 2)",
+                    program: "Kelompok Studi OSN, Mading Sekolah, & Duta Literasi Perpustakaan",
+                  },
+                  {
+                    sekbid: "Seksi Bidang IV",
+                    nama: "Olahraga, Kesehatan & Lingkungan ASRI",
+                    koordinator: "Bagas Adi Saputra (XI IPS 1)",
+                    program: "Turnamen Classmeeting, O2SN, UKS/PMR, & Gerakan Sekolah ASRI",
+                  },
+                  {
+                    sekbid: "Seksi Bidang V",
+                    nama: "Apresiasi Seni & Budaya Daerah Lampung",
+                    koordinator: "Citra Ayu Lestari (XI MIPA 1)",
+                    program: "Sanggar Kriya & Tari FLS2N, Pentas Seni, & Publikasi Kreatif",
+                  },
+                  {
+                    sekbid: "Seksi Bidang VI",
+                    nama: "Kewirausahaan & Kepemimpinan Siswa",
+                    koordinator: "Dimas Arya Wijaya (X Merdeka 1)",
+                    program: "Latihan Dasar Kepemimpinan Siswa (LDKS) & Bazar Karya Siswa",
+                  },
+                ].map((sb) => (
+                  <div
+                    key={sb.sekbid}
+                    className="relative z-10 bg-white rounded-xl border border-gray-200 hover:border-[#2A2C5E] p-4 text-center shadow-2xs transition-all space-y-1.5 flex flex-col justify-between"
+                  >
+                    <div className="space-y-1">
+                      <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-blue-50 px-2.5 py-0.5 rounded">
+                        {sb.sekbid}
+                      </span>
+                      <h4 className="text-xs sm:text-sm font-bold text-gray-900 leading-snug">
+                        {sb.nama}
+                      </h4>
+                      <p className="text-[11px] font-semibold text-[#2A2C5E]">
+                        Koord: {sb.koordinator}
+                      </p>
+                    </div>
+                    <p className="text-[11px] text-gray-600 pt-2 border-t border-gray-100 leading-relaxed">
+                      {sb.program}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {/* GARIS VERTIKAL MENUJU SELURUH ANGGOTA OSIS */}
+              <div className="w-0.5 h-7 sm:h-8 bg-[#2A2C5E]/40 relative flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-[#2A2C5E]" />
+              </div>
+
+              {/* LEVEL 5: SELURUH ANGGOTA OSIS / PESERTA DIDIK */}
+              <div className="w-full max-w-xl bg-emerald-50/80 border-2 border-emerald-600/30 rounded-xl p-4 text-center space-y-1">
+                <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3 py-0.5 rounded-full">
+                  Anggota Organisasi
+                </span>
+                <h4 className="text-sm sm:text-base font-extrabold text-gray-900">
+                  Seluruh Peserta Didik SMA Negeri 2 Buay Bahuga
+                </h4>
+                <p className="text-xs text-emerald-900 font-medium">
+                  983 Siswa Aktif (Kelas X, XI, dan XII &bull; 29 Rombongan Belajar)
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* TAB 4: EKSTRAKURIKULER */}
       {activeTab === "EKSTRAKURIKULER" && (
         <section className="space-y-6">
           <div className="flex items-center gap-2.5">
@@ -336,47 +624,6 @@ function KesiswaanContent() {
                 </div>
               );
             })}
-          </div>
-        </section>
-      )}
-
-      {/* Profil Organisasi Siswa OSIS & MPK */}
-      {activeTab === "TATA_TERTIB" && (
-        <section className="space-y-6 pt-6 border-t border-gray-200">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">
-              <Users className="w-4 h-4" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">Organisasi Siswa Intra Sekolah (OSIS) & MPK</h2>
-              <p className="text-xs text-gray-500">Masa Bakti 2026/2027</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-2xs text-xs space-y-1.5">
-              <span className="font-semibold text-[#2A2C5E] bg-blue-50 px-2 py-0.5 rounded inline-block">
-                Ketua Umum OSIS
-              </span>
-              <h4 className="font-bold text-gray-900 text-sm">M. Ziddane Alfaridz</h4>
-              <p className="text-gray-500">Kelas XI IPS 1 (NISN: 0081234567)</p>
-            </div>
-
-            <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-2xs text-xs space-y-1.5">
-              <span className="font-semibold text-[#2A2C5E] bg-blue-50 px-2 py-0.5 rounded inline-block">
-                Wakil Ketua OSIS
-              </span>
-              <h4 className="font-bold text-gray-900 text-sm">Safety Octa Sushadi</h4>
-              <p className="text-gray-500">Kelas XII MIPA 2 (NISN: 0078129342)</p>
-            </div>
-
-            <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-2xs text-xs space-y-1.5">
-              <span className="font-semibold text-[#2A2C5E] bg-blue-50 px-2 py-0.5 rounded inline-block">
-                Ketua MPK
-              </span>
-              <h4 className="font-bold text-gray-900 text-sm">Nabila Dijayanti</h4>
-              <p className="text-gray-500">Kelas XII MIPA 1 (NISN: 0078129341)</p>
-            </div>
           </div>
         </section>
       )}

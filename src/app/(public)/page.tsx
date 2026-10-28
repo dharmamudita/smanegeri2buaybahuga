@@ -313,8 +313,13 @@ export default function HomePage() {
               <div className="relative mx-auto max-w-md bg-white rounded-2xl shadow-xl border border-gray-200 p-5 sm:p-6 space-y-4 sm:space-y-5">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">
-                      <GraduationCap className="w-6 h-6" />
+                    <div className="w-11 h-11 rounded-xl bg-white p-1 border border-gray-200 flex items-center justify-center shadow-xs shrink-0">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="/logosmanda.png"
+                        alt="Logo SMAN 2 Buay Bahuga"
+                        className="w-full h-full object-contain"
+                      />
                     </div>
                     <div>
                       <h2 className="text-sm font-bold text-gray-900 leading-none">

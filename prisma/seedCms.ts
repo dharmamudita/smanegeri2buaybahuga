@@ -41,3 +41,4 @@ main()
     console.error("Seeding error:", e);
   })
   .finally(() => prisma.$disconnect());
+

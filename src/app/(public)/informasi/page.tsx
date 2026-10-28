@@ -60,7 +60,8 @@ export default function InformasiPage() {
 
   useEffect(() => {
     fetchBerita();
-  }, [fetchBerita]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const modalPhotos = activeModalBerita ? getBeritaGaleri(activeModalBerita) : [];
   const extendedModalPhotos =

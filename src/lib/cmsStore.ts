@@ -70,7 +70,7 @@ export interface CMSState {
   deleteEkskul: (id: string) => void;
 
   // Utility
-  fetchFromSupabase: () => Promise<void>;
+  fetchFromSupabase: (force?: boolean) => Promise<void>;
   resetAllToDefault: () => void;
 }
 
@@ -85,8 +85,9 @@ export const useCMSStore = create<CMSState>((set, get) => ({
   akademik: INITIAL_AKADEMIK_CMS,
   kesiswaan: INITIAL_KESISWAAN_CMS,
 
-  // Fetch dari Supabase PostgreSQL (Tanpa Local Storage)
-  fetchFromSupabase: async () => {
+  // Fetch dari Supabase PostgreSQL (Tanpa Local Storage, dicegah dari loop re-fetch)
+  fetchFromSupabase: async (force = false) => {
+    if (!force && (get().isLoaded || get().isLoading)) return;
     set({ isLoading: true });
     try {
       const res = await fetch("/api/cms");

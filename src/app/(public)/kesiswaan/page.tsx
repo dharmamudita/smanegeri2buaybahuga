@@ -388,7 +388,8 @@ function KesiswaanContent() {
 
   useEffect(() => {
     fetchFromSupabase();
-  }, [fetchFromSupabase]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const cmsPrestasiMapped = (kesiswaan?.prestasiList || []).map((p) => ({
     kegiatan: p.judul,
     jenisLomba: p.bidang,

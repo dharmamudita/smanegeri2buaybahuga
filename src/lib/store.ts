@@ -112,7 +112,7 @@ export const usePresensiStore = create<PresensiState>((set) => ({
 interface BeritaState {
   beritaList: BeritaItem[];
   isLoaded: boolean;
-  fetchBerita: () => Promise<void>;
+  fetchBerita: (force?: boolean) => Promise<void>;
   addBerita: (item: BeritaItem) => void;
   updateBerita: (id: string, item: Partial<BeritaItem>) => void;
   deleteBerita: (id: string) => void;
@@ -121,7 +121,8 @@ interface BeritaState {
 export const useBeritaStore = create<BeritaState>((set, get) => ({
   beritaList: MOCK_BERITA,
   isLoaded: false,
-  fetchBerita: async () => {
+  fetchBerita: async (force = false) => {
+    if (!force && get().isLoaded) return;
     try {
       const res = await fetch("/api/cms");
       if (res.ok) {

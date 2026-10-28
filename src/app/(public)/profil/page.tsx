@@ -54,7 +54,8 @@ function ProfilContent() {
 
   useEffect(() => {
     fetchFromSupabase();
-  }, [fetchFromSupabase]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const guruList = profil.guruStaff && profil.guruStaff.length > 0
     ? profil.guruStaff
     : MOCK_USERS.filter((u) => u.role === "GURU");

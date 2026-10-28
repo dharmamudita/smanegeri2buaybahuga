@@ -126,7 +126,8 @@ export default function HomePage() {
   useEffect(() => {
     fetchFromSupabase();
     fetchBerita();
-  }, [fetchFromSupabase, fetchBerita]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const realBannerIdx =
     (bannerTrackIdx - 1 + HERO_SLIDES.length) % HERO_SLIDES.length;

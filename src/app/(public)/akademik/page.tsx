@@ -806,7 +806,8 @@ function AkademikContent() {
 
   useEffect(() => {
     fetchFromSupabase();
-  }, [fetchFromSupabase]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // State Filter Kalender Akademik
   const [filterSemester, setFilterSemester] = useState<"SEMUA" | "GANJIL" | "GENAP">("SEMUA");

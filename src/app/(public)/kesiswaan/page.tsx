@@ -801,50 +801,54 @@ function KesiswaanContent() {
                     </div>
                   </div>
 
-                  {/* Judul & Jenis Lomba */}
+                  {/* Judul & Jenis Lomba (Tinggi Terkunci Sejajar Antar-Kartu) */}
                   <div className="p-5 pb-4 space-y-1.5">
-                    <h3 className="text-sm sm:text-base font-extrabold text-gray-900 leading-snug">
-                      {pres.kegiatan}
-                    </h3>
-                    <p className="text-xs text-gray-500 leading-relaxed">
-                      {pres.jenisLomba}
-                    </p>
+                    <div className="min-h-[2.75rem] flex items-start">
+                      <h3 className="text-sm sm:text-base font-extrabold text-gray-900 leading-snug line-clamp-2">
+                        {pres.kegiatan}
+                      </h3>
+                    </div>
+                    <div className="min-h-[2.25rem] flex items-start">
+                      <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
+                        {pres.jenisLomba}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
                 {/* Detail Terstruktur: Nama Siswa, Guru Pembimbing, & Tingkat */}
                 <div className="px-5 pb-5 pt-3 border-t border-gray-100 bg-gray-50/50 space-y-2.5 text-xs">
-                  <div className="flex items-start gap-2.5">
+                  <div className="flex items-start gap-2.5 min-h-[2.5rem]">
                     <GraduationCap className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
                     <div className="min-w-0">
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block leading-none mb-0.5">
                         Nama Siswa Peraih
                       </span>
-                      <span className="font-bold text-gray-900 block">
+                      <span className="font-bold text-gray-900 block leading-snug line-clamp-2">
                         {pres.peraih}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2.5">
+                  <div className="flex items-start gap-2.5 min-h-[2.6rem]">
                     <UserCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                     <div className="min-w-0">
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block leading-none mb-0.5">
                         Guru Pembimbing
                       </span>
-                      <span className="font-semibold text-gray-800 block">
+                      <span className="font-semibold text-gray-800 block leading-snug line-clamp-2">
                         {pres.pembimbing}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2.5 pt-2 border-t border-gray-200/70">
+                  <div className="flex items-start gap-2.5 pt-2.5 border-t border-gray-200/70 min-h-[2.5rem]">
                     <MapPin className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                     <div className="min-w-0">
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block leading-none mb-0.5">
                         Tingkat Kejuaraan
                       </span>
-                      <span className="font-bold text-[#2A2C5E] block">
+                      <span className="font-bold text-[#2A2C5E] block leading-snug">
                         {pres.tingkat}
                       </span>
                     </div>
@@ -1178,59 +1182,64 @@ function KesiswaanContent() {
 
           {/* DAFTAR KARTU EKSTRAKURIKULER (TAMPIL SAAT BELUM ADA YANG DIKLIK) */}
           {!selectedEkskul && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
               {ekskulList.map((ekskul) => {
                 return (
                   <button
                     key={ekskul.id}
                     type="button"
                     onClick={() => setSelectedEkskulId(ekskul.id)}
-                    className="group text-left bg-white p-6 rounded-xl border border-gray-200 hover:border-[#2A2C5E] shadow-2xs hover:shadow-md transition-all flex flex-col justify-between space-y-4 cursor-pointer"
+                    className="group text-left bg-white p-6 rounded-xl border border-gray-200 hover:border-[#2A2C5E] shadow-2xs hover:shadow-md transition-all flex flex-col justify-between h-full cursor-pointer"
                   >
-                    <div className="space-y-4 w-full">
-                      <div className="flex items-start justify-between gap-3">
+                    <div className="w-full flex flex-col">
+                      {/* Baris 1: Logo & Badge Kategori (Tinggi Terkunci) */}
+                      <div className="flex items-start justify-between gap-3 h-14">
                         <EkskulLogo id={ekskul.id} size="md" />
-                        <span className="text-[11px] font-semibold text-[#2A2C5E] bg-blue-50/80 px-2.5 py-1 rounded-md border border-blue-100 text-right">
+                        <span className="text-[11px] font-semibold text-[#2A2C5E] bg-blue-50/80 px-2.5 py-1 rounded-md border border-blue-100 text-right leading-tight">
                           {ekskul.kategori}
                         </span>
                       </div>
 
-                      {/* Nama Ekskul */}
-                      <div>
-                        <h3 className="text-base font-bold text-gray-900 group-hover:text-[#2A2C5E] transition-colors leading-snug">
+                      {/* Baris 2: Nama Ekskul (Tinggi 2 Baris Terkunci Agar Garis Bawah Sejajar Lurus) */}
+                      <div className="mt-4 min-h-[2.75rem] flex items-start">
+                        <h3 className="text-base font-bold text-gray-900 group-hover:text-[#2A2C5E] transition-colors leading-snug line-clamp-2">
                           {ekskul.nama}
                         </h3>
                       </div>
 
-                      {/* Pembina & Jam Latihan */}
-                      <div className="space-y-2.5 pt-3 border-t border-gray-100 text-xs">
-                        <div className="flex items-start gap-2.5">
+                      {/* Baris 3-5: Pembina, Jam Latihan, & Capaian (Tinggi Tiap Baris Terkunci Sejajar) */}
+                      <div className="mt-3 pt-3.5 border-t border-gray-100 text-xs flex flex-col gap-3">
+                        <div className="flex items-start gap-2.5 min-h-[2.6rem]">
                           <UserCheck className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
-                          <div>
-                            <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+                          <div className="space-y-0.5">
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 leading-none">
                               Guru Pembina Ekskul
                             </p>
-                            <p className="font-bold text-gray-800">{ekskul.pembina}</p>
+                            <p className="font-bold text-gray-800 leading-snug line-clamp-2">
+                              {ekskul.pembina}
+                            </p>
                           </div>
                         </div>
 
-                        <div className="flex items-start gap-2.5">
+                        <div className="flex items-start gap-2.5 min-h-[2.25rem]">
                           <Clock className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
-                          <div>
-                            <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+                          <div className="space-y-0.5">
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 leading-none">
                               Jadwal & Jam Latihan
                             </p>
-                            <p className="font-semibold text-gray-800">{ekskul.jadwal}</p>
+                            <p className="font-semibold text-gray-800 leading-snug">
+                              {ekskul.jadwal}
+                            </p>
                           </div>
                         </div>
 
-                        <div className="flex items-start gap-2.5">
+                        <div className="flex items-start gap-2.5 min-h-[3.1rem]">
                           <Award className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <div>
-                            <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+                          <div className="space-y-0.5">
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 leading-none">
                               Capaian Unggulan
                             </p>
-                            <p className="font-medium text-emerald-700 leading-snug">
+                            <p className="font-medium text-emerald-700 leading-snug line-clamp-2">
                               {ekskul.prestasi}
                             </p>
                           </div>
@@ -1238,8 +1247,8 @@ function KesiswaanContent() {
                       </div>
                     </div>
 
-                    {/* Footer Action */}
-                    <div className="w-full pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-[#2A2C5E]">
+                    {/* Baris 6: Footer Action */}
+                    <div className="w-full mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-[#2A2C5E]">
                       <span>Lihat Struktur Ekstrakurikuler</span>
                       <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </div>

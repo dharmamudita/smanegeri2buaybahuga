@@ -7,13 +7,12 @@ import {
   User,
   Clock,
   Search,
+  ArrowLeft,
   ArrowRight,
   X,
   Share2,
   Check,
   MapPin,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 import { useBeritaStore } from "@/lib/store";
 import { BeritaItem } from "@/lib/types";
@@ -345,11 +344,11 @@ export default function InformasiPage() {
                 </div>
 
                 {/* Indikator Nomor Foto (Pojok Kanan Atas) */}
-                <span className="absolute top-3 right-3 bg-black/55 backdrop-blur-xs text-white text-[11px] font-bold px-2.5 py-1 rounded-md">
+                <span className="absolute top-3 right-3 bg-black/45 backdrop-blur-md border border-white/20 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm">
                   {activeSlideIndex + 1} / {modalPhotos.length}
                 </span>
 
-                {/* Tombol Geser Kiri */}
+                {/* Tombol Geser Kiri Modern Glassmorphism */}
                 <button
                   type="button"
                   onClick={() =>
@@ -357,26 +356,32 @@ export default function InformasiPage() {
                       (prev) => (prev - 1 + modalPhotos.length) % modalPhotos.length
                     )
                   }
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white text-gray-800 hover:text-[#2A2C5E] shadow-md flex items-center justify-center transition-all cursor-pointer"
+                  className="group/btn absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-black/35 hover:bg-[#2A2C5E] backdrop-blur-md border border-white/25 hover:border-white/50 text-white shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
                   aria-label="Foto Sebelumnya"
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ArrowLeft
+                    strokeWidth={2.25}
+                    className="w-4 h-4 sm:w-4.5 sm:h-4.5 transition-transform duration-200 group-hover/btn:-translate-x-0.5"
+                  />
                 </button>
 
-                {/* Tombol Geser Kanan */}
+                {/* Tombol Geser Kanan Modern Glassmorphism */}
                 <button
                   type="button"
                   onClick={() =>
                     setActiveSlideIndex((prev) => (prev + 1) % modalPhotos.length)
                   }
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white text-gray-800 hover:text-[#2A2C5E] shadow-md flex items-center justify-center transition-all cursor-pointer"
+                  className="group/btn absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-black/35 hover:bg-[#2A2C5E] backdrop-blur-md border border-white/25 hover:border-white/50 text-white shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
                   aria-label="Foto Berikutnya"
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  <ArrowRight
+                    strokeWidth={2.25}
+                    className="w-4 h-4 sm:w-4.5 sm:h-4.5 transition-transform duration-200 group-hover/btn:translate-x-0.5"
+                  />
                 </button>
 
                 {/* Indikator Titik Slide di Bawah Tengah */}
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/35 backdrop-blur-xs px-2.5 py-1.5 rounded-full">
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-black/40 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-full shadow-md">
                   {modalPhotos.map((_, idx) => {
                     const isCurrent = idx === activeSlideIndex;
                     return (
@@ -384,8 +389,8 @@ export default function InformasiPage() {
                         key={idx}
                         type="button"
                         onClick={() => setActiveSlideIndex(idx)}
-                        className={`h-2 rounded-full transition-all cursor-pointer ${
-                          isCurrent ? "w-6 bg-white" : "w-2 bg-white/55 hover:bg-white/80"
+                        className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                          isCurrent ? "w-6 bg-white shadow-xs" : "w-2 bg-white/50 hover:bg-white/85"
                         }`}
                         aria-label={`Pilih Foto ${idx + 1}`}
                       />

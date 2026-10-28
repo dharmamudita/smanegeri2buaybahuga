@@ -8,11 +8,11 @@ import {
   BookOpen,
   Users,
   CheckCircle2,
+  ArrowLeft,
   ArrowRight,
+  ChevronRight,
   ShieldCheck,
   Calendar,
-  ChevronLeft,
-  ChevronRight,
   MapPin,
   Building2,
   Lock,
@@ -82,7 +82,7 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Tombol Geser Kiri */}
+          {/* Tombol Geser Kiri Modern Glassmorphism */}
           <button
             type="button"
             onClick={() =>
@@ -90,26 +90,32 @@ export default function HomePage() {
                 (prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length
               )
             }
-            className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-gray-900 hover:text-[#2A2C5E] shadow-md flex items-center justify-center transition-all cursor-pointer"
+            className="group/btn absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-black/35 hover:bg-[#2A2C5E] backdrop-blur-md border border-white/25 hover:border-white/50 text-white shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
             aria-label="Foto Sebelumnya"
           >
-            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            <ArrowLeft
+              strokeWidth={2.25}
+              className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 group-hover/btn:-translate-x-0.5"
+            />
           </button>
 
-          {/* Tombol Geser Kanan */}
+          {/* Tombol Geser Kanan Modern Glassmorphism */}
           <button
             type="button"
             onClick={() =>
               setActiveBannerIdx((prev) => (prev + 1) % HERO_SLIDES.length)
             }
-            className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-gray-900 hover:text-[#2A2C5E] shadow-md flex items-center justify-center transition-all cursor-pointer"
+            className="group/btn absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-black/35 hover:bg-[#2A2C5E] backdrop-blur-md border border-white/25 hover:border-white/50 text-white shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
             aria-label="Foto Berikutnya"
           >
-            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+            <ArrowRight
+              strokeWidth={2.25}
+              className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 group-hover/btn:translate-x-0.5"
+            />
           </button>
 
           {/* Indikator Titik Slide di Bawah Tengah */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/35 backdrop-blur-xs px-3 py-1.5 rounded-full">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-black/40 backdrop-blur-md border border-white/20 px-3.5 py-2 rounded-full shadow-md">
             {HERO_SLIDES.map((s, idx) => {
               const isCurrent = idx === activeBannerIdx;
               return (
@@ -117,10 +123,10 @@ export default function HomePage() {
                   key={s.id}
                   type="button"
                   onClick={() => setActiveBannerIdx(idx)}
-                  className={`h-2 rounded-full transition-all cursor-pointer ${
+                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                     isCurrent
-                      ? "w-7 bg-white"
-                      : "w-2 bg-white/55 hover:bg-white/85"
+                      ? "w-7 bg-white shadow-xs"
+                      : "w-2 bg-white/50 hover:bg-white/85"
                   }`}
                   aria-label={`Pilih Foto ${idx + 1}`}
                 />

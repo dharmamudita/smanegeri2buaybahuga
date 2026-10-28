@@ -270,46 +270,50 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {MOCK_BERITA.map((berita) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+          {MOCK_BERITA.slice(0, 6).map((berita) => (
             <article
               key={berita.id}
-              className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-2xs hover:shadow-md transition-shadow flex flex-col"
+              className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-2xs hover:shadow-md transition-shadow flex flex-col justify-between h-full"
             >
-              <div className="relative h-44 w-full bg-gray-100 overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={berita.thumbnailUrl}
-                  alt={berita.judul}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <span className="absolute top-3 left-3 bg-[#2A2C5E] text-white text-[11px] font-semibold px-2 py-0.5 rounded shadow-xs capitalize">
-                  {berita.kategori.toLowerCase()}
-                </span>
-              </div>
-              <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                <div className="space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-[11px] text-gray-400">
+              <div className="flex flex-col">
+                <div className="relative h-48 w-full bg-gray-100 overflow-hidden shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={berita.thumbnailUrl}
+                    alt={berita.judul}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <span className="absolute top-3 left-3 bg-[#2A2C5E] text-white text-[11px] font-semibold px-2.5 py-0.5 rounded shadow-xs capitalize">
+                    {berita.kategori.toLowerCase()}
+                  </span>
+                </div>
+                <div className="p-5 flex flex-col">
+                  <div className="flex items-center gap-1.5 text-[11px] text-gray-400 h-5">
                     <Calendar className="w-3 h-3" />
                     <span>{berita.tanggal}</span>
                   </div>
-                  <h3 className="text-sm font-bold text-gray-900 leading-snug line-clamp-2">
-                    {berita.judul}
-                  </h3>
-                  <p className="text-xs text-gray-600 line-clamp-3 leading-relaxed">
-                    {berita.ringkasan}
-                  </p>
+                  <div className="mt-2 h-11 flex items-start">
+                    <h3 className="text-base font-bold text-gray-900 leading-snug line-clamp-2">
+                      {berita.judul}
+                    </h3>
+                  </div>
+                  <div className="mt-2 h-[3.75rem] flex items-start">
+                    <p className="text-xs text-gray-600 line-clamp-3 leading-relaxed">
+                      {berita.ringkasan}
+                    </p>
+                  </div>
                 </div>
+              </div>
 
-                <div className="pt-2 border-t border-gray-100">
-                  <Link
-                    href="/informasi"
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#2A2C5E] hover:underline"
-                  >
-                    <span>Baca Selengkapnya</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </Link>
-                </div>
+              <div className="px-5 pb-5 pt-3 border-t border-gray-100">
+                <Link
+                  href="/informasi"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-[#2A2C5E] hover:underline"
+                >
+                  <span>Baca Selengkapnya</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
             </article>
           ))}

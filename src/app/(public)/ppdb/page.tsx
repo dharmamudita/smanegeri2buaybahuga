@@ -43,6 +43,14 @@ export default function PPDBPage() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 space-y-10">
       {/* Header */}
       <div className="text-center space-y-3">
+        <div className="w-16 h-16 mx-auto rounded-2xl bg-white p-2 border border-gray-200 shadow-xs flex items-center justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logosmanda.png"
+            alt="Logo SMAN 2 Buay Bahuga"
+            className="w-full h-full object-contain"
+          />
+        </div>
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-[#2A2C5E] text-xs font-semibold">
           <ShieldCheck className="w-3.5 h-3.5" />
           <span>Penerimaan Peserta Didik Baru (PPDB) 2026/2027</span>

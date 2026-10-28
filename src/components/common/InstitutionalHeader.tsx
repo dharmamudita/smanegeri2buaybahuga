@@ -34,8 +34,13 @@ export default function InstitutionalHeader() {
         <div className="flex items-center justify-between">
           {/* Logo & Nama Sekolah (Kiri) */}
           <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white text-[#2A2C5E] flex items-center justify-center shadow-xs group-hover:bg-blue-50 transition-colors">
-              <GraduationCap className="w-5 h-5" />
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white p-1 flex items-center justify-center shadow-xs group-hover:bg-blue-50 transition-all shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logosmanda.png"
+                alt="Logo SMAN 2 Buay Bahuga"
+                className="w-full h-full object-contain"
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-sm sm:text-base font-extrabold text-white tracking-tight leading-none whitespace-nowrap">

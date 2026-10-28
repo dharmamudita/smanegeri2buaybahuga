@@ -165,8 +165,13 @@ function LoginForm() {
     <div className="max-w-md w-full space-y-6">
       {/* Header Portal Mandiri (Tanpa Tab Bercampur) */}
       <div className="text-center space-y-3">
-        <div className="w-14 h-14 mx-auto rounded-xl bg-[#2A2C5E] text-white flex items-center justify-center shadow-xs">
-          <Icon className="w-7 h-7" />
+        <div className="w-16 h-16 mx-auto rounded-2xl bg-white p-2 border border-gray-200 shadow-xs flex items-center justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logosmanda.png"
+            alt="Logo SMAN 2 Buay Bahuga"
+            className="w-full h-full object-contain"
+          />
         </div>
         <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-semibold border border-gray-200 bg-white text-gray-700 shadow-2xs">
           <span>{config.badge}</span>

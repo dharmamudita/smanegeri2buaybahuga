@@ -20,8 +20,13 @@ export default function InstitutionalFooter() {
           {/* Kolom 1: Profil & Identitas Institusi */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[#2A2C5E] flex items-center justify-center text-white shrink-0">
-                <GraduationCap className="w-6 h-6" />
+              <div className="w-11 h-11 rounded-xl bg-white p-1 flex items-center justify-center shadow-xs shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/logosmanda.png"
+                  alt="Logo SMAN 2 Buay Bahuga"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
                 <h3 className="font-bold text-white text-base leading-tight">

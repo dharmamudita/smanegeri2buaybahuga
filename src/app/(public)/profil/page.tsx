@@ -555,6 +555,29 @@ function ProfilContent() {
             </div>
           </div>
 
+          {/* Card Lambang Resmi SMAN 2 Buay Bahuga */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-2xs flex flex-col sm:flex-row items-center gap-6">
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white p-2 border border-gray-200 shadow-xs flex items-center justify-center shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logosmanda.png"
+                alt="Lambang Resmi SMAN 2 Buay Bahuga"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div className="space-y-1.5 text-center sm:text-left">
+              <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-50 px-2.5 py-0.5 rounded">
+                Lambang Resmi Lembaga
+              </span>
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900">
+                {SCHOOL_INFO.nama}
+              </h3>
+              <p className="text-xs text-gray-600 leading-relaxed max-w-xl">
+                Lambang resmi satuan pendidikan SMA Negeri 2 Buay Bahuga melambangkan integritas moral, keunggulan sains & teknologi, semangat kebersamaan, serta komitmen pengabdian pendidikan di Kabupaten Way Kanan.
+              </p>
+            </div>
+          </div>
+
           <div className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden">
             <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100 text-xs">
               <div className="p-4 sm:p-6 space-y-3">

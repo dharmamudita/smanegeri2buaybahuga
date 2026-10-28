@@ -16,9 +16,70 @@ import {
   MapPin,
   Building2,
   Lock,
+  Play,
+  Video,
+  Clock,
+  ExternalLink,
 } from "lucide-react";
 import { SCHOOL_INFO } from "@/lib/constants";
 import { useBeritaStore } from "@/lib/store";
+
+const VIDEO_PANDUAN_LIST = [
+  {
+    id: "vid-ppdb",
+    kategori: "Panduan PPDB Online",
+    judul:
+      "Cara Daftar PPDB Online SMAN 2 Buay Bahuga Tahun Ajaran 2026/2027",
+    durasi: "05:24",
+    tanggal: "Panduan Calon Peserta Didik Baru",
+    ringkasan:
+      "Langkah demi langkah pengisian formulir pendaftaran peserta didik baru melalui jalur Domisili, Afirmasi, Prestasi, dan Mutasi beserta ketentuan unggah berkas.",
+    poinPanduan: [
+      "Buka menu PPDB Online dan siapkan NISN serta Nomor Kartu Keluarga.",
+      "Pilih jalur seleksi (Domisili, Afirmasi, Prestasi, atau Perpindahan Tugas).",
+      "Lengkapi biodata, koordinat alamat rumah, lalu simpan bukti pendaftaran.",
+    ],
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80",
+    youtubeEmbedUrl: "https://www.youtube.com/embed/M7lc1UVf-VE",
+  },
+  {
+    id: "vid-lms-siswa",
+    kategori: "Panduan Portal Siswa",
+    judul:
+      "Cara Menggunakan Website & Portal E-Learning (LMS) untuk Siswa",
+    durasi: "06:15",
+    tanggal: "Panduan Peserta Didik Aktif",
+    ringkasan:
+      "Tutorial masuk ke Portal Siswa menggunakan NISN, mengakses materi mata pelajaran, mengumpulkan tugas guru, serta melakukan presensi kehadiran harian.",
+    poinPanduan: [
+      "Masuk melalui tautan Portal Siswa di bagian bawah halaman menggunakan NISN.",
+      "Buka menu Mata Pelajaran & Tugas untuk mengunduh modul atau mengerjakan evaluasi.",
+      "Gunakan menu Presensi Harian saat berada di lingkungan sekolah pada jam belajar.",
+    ],
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&auto=format&fit=crop&q=80",
+    youtubeEmbedUrl: "https://www.youtube.com/embed/M7lc1UVf-VE",
+  },
+  {
+    id: "vid-profil",
+    kategori: "Profil & Fasilitas Sekolah",
+    judul:
+      "Profil Lingkungan Belajar & Fasilitas SMA Negeri 2 Buay Bahuga",
+    durasi: "04:40",
+    tanggal: "Dokumentasi Resmi Sekolah",
+    ringkasan:
+      "Mengenal lebih dekat lingkungan SMAN 2 Buay Bahuga yang dilengkapi 28 ruang kelas, 9 laboratorium sains & komputer, perpustakaan, serta pembinaan ekstrakurikuler.",
+    poinPanduan: [
+      "Pengenalan sarana akademik 28 ruang belajar dan 9 laboratorium.",
+      "Kegiatan pembinaan karakter, OSN, O2SN, FLS2N, dan 12 ekstrakurikuler aktif.",
+      "Layanan informasi publik terpadu bagi orang tua/wali dan masyarakat.",
+    ],
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop&q=80",
+    youtubeEmbedUrl: "https://www.youtube.com/embed/M7lc1UVf-VE",
+  },
+];
 
 const HERO_SLIDES = [
   {
@@ -55,9 +116,14 @@ const EXTENDED_HERO_SLIDES = [
 
 export default function HomePage() {
   const beritaList = useBeritaStore((state) => state.beritaList);
-  const beritaTerbaru = beritaList.slice(0, 6);
+  const beritaTerbaru = beritaList.slice(0, 3);
   const [bannerTrackIdx, setBannerTrackIdx] = useState<number>(1);
   const [isBannerTransitioning, setIsBannerTransitioning] = useState<boolean>(true);
+  const [activeVideoId, setActiveVideoId] = useState<string>(VIDEO_PANDUAN_LIST[0].id);
+  const [isPlayingVideo, setIsPlayingVideo] = useState<boolean>(false);
+
+  const activeVideo =
+    VIDEO_PANDUAN_LIST.find((v) => v.id === activeVideoId) || VIDEO_PANDUAN_LIST[0];
 
   const realBannerIdx =
     (bannerTrackIdx - 1 + HERO_SLIDES.length) % HERO_SLIDES.length;
@@ -419,7 +485,228 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. Berita & Informasi Resmi */}
+      {/* 4. Panduan Video & Tutorial Layanan Sekolah (YouTube) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-4">
+          <div>
+            <div className="text-xs font-bold text-[#2A2C5E]">
+              Panduan Visual & Layanan Digital
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mt-1">
+              Video Panduan Pendaftaran & Penggunaan Website Siswa
+            </h2>
+          </div>
+          <a
+            href="https://www.youtube.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#2A2C5E] hover:text-[#1F2147]"
+          >
+            <span>Kanal YouTube SMAN 2 Buay Bahuga</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          {/* Pemutar Utama Video YouTube (Kiri - 7 Kolom) */}
+          <div className="lg:col-span-7 bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-2xs flex flex-col justify-between">
+            <div>
+              {/* Layar Video 16:9 */}
+              <div className="relative aspect-video w-full bg-gray-900 overflow-hidden">
+                {isPlayingVideo ? (
+                  <iframe
+                    src={`${activeVideo.youtubeEmbedUrl}?autoplay=1&rel=0`}
+                    title={activeVideo.judul}
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <div
+                    onClick={() => setIsPlayingVideo(true)}
+                    className="group relative w-full h-full cursor-pointer"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={activeVideo.thumbnailUrl}
+                      alt={activeVideo.judul}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-gray-900/25 to-transparent" />
+
+                    {/* Badge Kategori & Durasi di Atas Video */}
+                    <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between gap-2">
+                      <span className="inline-flex items-center gap-1.5 bg-[#2A2C5E] text-white text-[11px] font-semibold px-3 py-1 rounded-md shadow-xs">
+                        <Video className="w-3.5 h-3.5" />
+                        <span>{activeVideo.kategori}</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1 bg-black/65 backdrop-blur-xs text-white text-[11px] font-bold px-2.5 py-1 rounded-md">
+                        <Clock className="w-3 h-3" />
+                        <span>{activeVideo.durasi}</span>
+                      </span>
+                    </div>
+
+                    {/* Tombol Play YouTube di Tengah */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-[#2A2C5E]/90 group-hover:bg-[#2A2C5E] backdrop-blur-md border-2 border-white/40 text-white shadow-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                        <Play className="w-7 h-7 fill-white ml-0.5" />
+                      </div>
+                    </div>
+
+                    {/* Keterangan Putar di Bawah Layar */}
+                    <div className="absolute bottom-3.5 left-3.5 right-3.5 flex items-center justify-between text-white/90 text-xs font-medium">
+                      <span>Klik untuk memutar video panduan</span>
+                      <span className="text-[11px] bg-white/20 backdrop-blur-xs px-2.5 py-0.5 rounded">
+                        HD 1080p
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Detail & Langkah Singkat Video Aktif */}
+              <div className="p-5 sm:p-6 space-y-3">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                  <span className="font-bold text-[#2A2C5E]">
+                    {activeVideo.kategori}
+                  </span>
+                  <span>&bull;</span>
+                  <span>{activeVideo.tanggal}</span>
+                </div>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 leading-snug">
+                  {activeVideo.judul}
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                  {activeVideo.ringkasan}
+                </p>
+              </div>
+            </div>
+
+            <div className="px-5 sm:px-6 pb-5 pt-3 border-t border-gray-100 bg-gray-50/60 flex flex-wrap items-center justify-between gap-3">
+              <span className="text-xs font-semibold text-gray-600">
+                Pusat Panduan Layanan Digital SMAN 2 Buay Bahuga
+              </span>
+              {isPlayingVideo ? (
+                <button
+                  type="button"
+                  onClick={() => setIsPlayingVideo(false)}
+                  className="text-xs font-semibold text-[#2A2C5E] hover:underline cursor-pointer"
+                >
+                  Tutup Pemutar Video
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setIsPlayingVideo(true)}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#2A2C5E] hover:underline cursor-pointer"
+                >
+                  <Play className="w-3.5 h-3.5 fill-[#2A2C5E]" />
+                  <span>Putar Video Sekarang</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Daftar Pilihan Video Panduan (Kanan - 5 Kolom) */}
+          <div className="lg:col-span-5 flex flex-col justify-between bg-white rounded-2xl border border-gray-200 p-5 shadow-2xs space-y-4">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900">
+                    Daftar Video Tutorial Resmi
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Pilih topik panduan yang ingin ditonton
+                  </p>
+                </div>
+                <span className="text-[11px] font-bold text-[#2A2C5E] bg-blue-50 px-2.5 py-1 rounded-md">
+                  {VIDEO_PANDUAN_LIST.length} Video
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                {VIDEO_PANDUAN_LIST.map((vid, idx) => {
+                  const isSelected = vid.id === activeVideo.id;
+                  return (
+                    <button
+                      key={vid.id}
+                      type="button"
+                      onClick={() => {
+                        setActiveVideoId(vid.id);
+                        setIsPlayingVideo(false);
+                      }}
+                      className={`w-full text-left p-3 rounded-xl border transition-all flex items-start gap-3.5 cursor-pointer ${
+                        isSelected
+                          ? "border-[#2A2C5E] bg-blue-50/40 shadow-2xs"
+                          : "border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50/60"
+                      }`}
+                    >
+                      {/* Thumbnail Kecil */}
+                      <div className="relative w-28 h-18 rounded-lg overflow-hidden bg-gray-900 shrink-0 border border-gray-200">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={vid.thumbnailUrl}
+                          alt={vid.judul}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                          <div
+                            className={`w-7 h-7 rounded-lg flex items-center justify-center ${
+                              isSelected
+                                ? "bg-[#2A2C5E] text-white"
+                                : "bg-white/90 text-gray-900"
+                            }`}
+                          >
+                            <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                          </div>
+                        </div>
+                        <span className="absolute bottom-1 right-1 bg-black/75 text-white text-[10px] font-semibold px-1.5 py-0.2 rounded">
+                          {vid.durasi}
+                        </span>
+                      </div>
+
+                      {/* Info Video */}
+                      <div className="min-w-0 flex-1 space-y-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-50 px-2 py-0.5 rounded">
+                            0{idx + 1} &bull; {vid.kategori}
+                          </span>
+                        </div>
+                        <h4 className="text-xs sm:text-sm font-bold text-gray-900 line-clamp-2 leading-snug">
+                          {vid.judul}
+                        </h4>
+                        <p className="text-[11px] text-gray-500 line-clamp-1">
+                          {vid.tanggal}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Ringkasan Poin Penting dari Video yang Dipilih */}
+            <div className="rounded-xl bg-gray-50 border border-gray-200 p-4 space-y-2">
+              <div className="text-xs font-bold text-gray-900">
+                Poin Penting pada Video Ini:
+              </div>
+              <ul className="space-y-1.5">
+                {activeVideo.poinPanduan.map((poin, i) => (
+                  <li
+                    key={i}
+                    className="flex items-start gap-2 text-xs text-gray-600 leading-relaxed"
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#2A2C5E] shrink-0 mt-0.5" />
+                    <span>{poin}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Berita & Informasi Resmi (3 Berita Terbaru) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-4">
           <div>

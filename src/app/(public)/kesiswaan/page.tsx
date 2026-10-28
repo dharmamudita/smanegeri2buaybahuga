@@ -19,7 +19,6 @@ import {
   GraduationCap,
   UserCheck,
   MapPin,
-  Search,
   Calendar,
 } from "lucide-react";
 
@@ -33,10 +32,6 @@ function KesiswaanContent() {
       ? initialTab
       : "TATA_TERTIB"
   );
-
-  // State Filter & Pencarian Prestasi
-  const [filterKategoriPrestasi, setFilterKategoriPrestasi] = useState<string>("SEMUA");
-  const [searchPrestasi, setSearchPrestasi] = useState<string>("");
 
   const tabs: { key: KesiswaanTab; label: string }[] = [
     { key: "TATA_TERTIB", label: "Tata Tertib" },
@@ -153,23 +148,6 @@ function KesiswaanContent() {
         "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&auto=format&fit=crop&q=80",
     },
   ];
-
-  const filteredPrestasi = prestasiList.filter((item) => {
-    if (filterKategoriPrestasi !== "SEMUA" && item.kategori !== filterKategoriPrestasi) {
-      return false;
-    }
-    if (searchPrestasi.trim()) {
-      const q = searchPrestasi.toLowerCase();
-      return (
-        item.kegiatan.toLowerCase().includes(q) ||
-        item.jenisLomba.toLowerCase().includes(q) ||
-        item.peraih.toLowerCase().includes(q) ||
-        item.pembimbing.toLowerCase().includes(q) ||
-        item.tingkat.toLowerCase().includes(q)
-      );
-    }
-    return true;
-  });
 
   const ekskulList = [
     {
@@ -323,138 +301,96 @@ function KesiswaanContent() {
             </div>
           </div>
 
-          {/* Filter Kategori & Pencarian Prestasi */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-            <div className="flex flex-wrap sm:inline-flex items-center gap-1.5 p-1.5 bg-white rounded-xl border border-gray-200 shadow-2xs w-full lg:w-auto">
-              {[
-                { key: "SEMUA", label: "Semua Bidang" },
-                { key: "Akademik & Sains", label: "Akademik & Sains" },
-                { key: "Seni Budaya", label: "Seni Budaya" },
-                { key: "Olahraga", label: "Olahraga" },
-                { key: "Kedisiplinan", label: "Kedisiplinan" },
-              ].map((kat) => (
-                <button
-                  key={kat.key}
-                  onClick={() => setFilterKategoriPrestasi(kat.key)}
-                  className={`flex-1 sm:flex-initial text-center justify-center px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                    filterKategoriPrestasi === kat.key
-                      ? "bg-[#2A2C5E] text-white shadow-2xs"
-                      : "bg-gray-100/80 text-gray-700 hover:bg-gray-200/70"
-                  }`}
-                >
-                  {kat.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="relative w-full lg:w-72">
-              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={searchPrestasi}
-                onChange={(e) => setSearchPrestasi(e.target.value)}
-                placeholder="Cari siswa, jenis lomba, atau pembimbing..."
-                className="w-full pl-8 pr-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E] shadow-2xs"
-              />
-            </div>
-          </div>
-
           {/* Grid Kartu Prestasi Berfoto */}
-          {filteredPrestasi.length === 0 ? (
-            <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-xs text-gray-500">
-              Tidak ditemukan data prestasi yang sesuai dengan filter atau pencarian Anda.
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPrestasi.map((pres) => (
-                <div
-                  key={pres.kegiatan}
-                  className="group bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden flex flex-col justify-between hover:shadow-md transition-all"
-                >
-                  <div>
-                    {/* Foto Dokumentasi Prestasi */}
-                    <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={pres.fotoUrl}
-                        alt={pres.kegiatan}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {prestasiList.map((pres) => (
+              <div
+                key={pres.kegiatan}
+                className="group bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden flex flex-col justify-between hover:shadow-md transition-all"
+              >
+                <div>
+                  {/* Foto Dokumentasi Prestasi */}
+                  <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={pres.fotoUrl}
+                      alt={pres.kegiatan}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent" />
 
-                      {/* Badge Predikat Juara (Kiri Atas) */}
-                      <span className="absolute top-3 left-3 inline-flex items-center gap-1 bg-amber-400 text-gray-950 text-[11px] font-extrabold px-2.5 py-1 rounded-md shadow-xs">
-                        <Trophy className="w-3 h-3" />
-                        {pres.predikat}
+                    {/* Badge Predikat Juara (Kiri Atas) */}
+                    <span className="absolute top-3 left-3 inline-flex items-center gap-1 bg-amber-400 text-gray-950 text-[11px] font-extrabold px-2.5 py-1 rounded-md shadow-xs">
+                      <Trophy className="w-3 h-3" />
+                      {pres.predikat}
+                    </span>
+
+                    {/* Badge Tahun (Kanan Atas) */}
+                    <span className="absolute top-3 right-3 inline-flex items-center gap-1 bg-[#2A2C5E]/90 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                      <Calendar className="w-3 h-3 text-blue-200" />
+                      {pres.tahun}
+                    </span>
+
+                    {/* Label Kategori & Jenis Lomba di Bawah Foto */}
+                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2">
+                      <span className="text-[10px] font-bold uppercase tracking-wider bg-white/95 text-[#2A2C5E] px-2.5 py-0.5 rounded shadow-2xs">
+                        {pres.kategori}
                       </span>
-
-                      {/* Badge Tahun (Kanan Atas) */}
-                      <span className="absolute top-3 right-3 inline-flex items-center gap-1 bg-[#2A2C5E]/90 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded">
-                        <Calendar className="w-3 h-3 text-blue-200" />
-                        {pres.tahun}
-                      </span>
-
-                      {/* Label Kategori & Jenis Lomba di Bawah Foto */}
-                      <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider bg-white/95 text-[#2A2C5E] px-2.5 py-0.5 rounded shadow-2xs">
-                          {pres.kategori}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Judul & Jenis Lomba */}
-                    <div className="p-5 pb-4 space-y-1.5">
-                      <h3 className="text-sm sm:text-base font-extrabold text-gray-900 leading-snug">
-                        {pres.kegiatan}
-                      </h3>
-                      <p className="text-xs text-gray-500 leading-relaxed">
-                        {pres.jenisLomba}
-                      </p>
                     </div>
                   </div>
 
-                  {/* Detail Terstruktur: Nama Siswa, Guru Pembimbing, & Tingkat */}
-                  <div className="px-5 pb-5 pt-3 border-t border-gray-100 bg-gray-50/50 space-y-2.5 text-xs">
-                    <div className="flex items-start gap-2.5">
-                      <GraduationCap className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
-                      <div className="min-w-0">
-                        <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block">
-                          Nama Siswa Peraih
-                        </span>
-                        <span className="font-bold text-gray-900 block">
-                          {pres.peraih}
-                        </span>
-                      </div>
-                    </div>
+                  {/* Judul & Jenis Lomba */}
+                  <div className="p-5 pb-4 space-y-1.5">
+                    <h3 className="text-sm sm:text-base font-extrabold text-gray-900 leading-snug">
+                      {pres.kegiatan}
+                    </h3>
+                    <p className="text-xs text-gray-500 leading-relaxed">
+                      {pres.jenisLomba}
+                    </p>
+                  </div>
+                </div>
 
-                    <div className="flex items-start gap-2.5">
-                      <UserCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                      <div className="min-w-0">
-                        <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block">
-                          Guru Pembimbing
-                        </span>
-                        <span className="font-semibold text-gray-800 block">
-                          {pres.pembimbing}
-                        </span>
-                      </div>
+                {/* Detail Terstruktur: Nama Siswa, Guru Pembimbing, & Tingkat */}
+                <div className="px-5 pb-5 pt-3 border-t border-gray-100 bg-gray-50/50 space-y-2.5 text-xs">
+                  <div className="flex items-start gap-2.5">
+                    <GraduationCap className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block">
+                        Nama Siswa Peraih
+                      </span>
+                      <span className="font-bold text-gray-900 block">
+                        {pres.peraih}
+                      </span>
                     </div>
+                  </div>
 
-                    <div className="flex items-start gap-2.5 pt-2 border-t border-gray-200/70">
-                      <MapPin className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                      <div className="min-w-0">
-                        <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block">
-                          Tingkat Kejuaraan
-                        </span>
-                        <span className="font-bold text-[#2A2C5E] block">
-                          {pres.tingkat}
-                        </span>
-                      </div>
+                  <div className="flex items-start gap-2.5">
+                    <UserCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block">
+                        Guru Pembimbing
+                      </span>
+                      <span className="font-semibold text-gray-800 block">
+                        {pres.pembimbing}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2.5 pt-2 border-t border-gray-200/70">
+                    <MapPin className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block">
+                        Tingkat Kejuaraan
+                      </span>
+                      <span className="font-bold text-[#2A2C5E] block">
+                        {pres.tingkat}
+                      </span>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
+            ))}
+          </div>
         </section>
       )}
 

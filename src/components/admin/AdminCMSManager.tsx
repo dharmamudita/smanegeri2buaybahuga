@@ -26,9 +26,14 @@ import {
   MapPin,
   X,
   Search,
+  UploadCloud,
+  Camera,
+  Image as ImageIcon,
 } from "lucide-react";
 import { useCMSStore } from "@/lib/cmsStore";
 import { useBeritaStore } from "@/lib/store";
+import PaginationBar from "@/components/common/PaginationBar";
+import ImageCropUploadModal from "@/components/common/ImageCropUploadModal";
 
 type CMSTab = "BERANDA" | "PROFIL" | "AKADEMIK" | "KESISWAAN" | "INFORMASI";
 
@@ -60,6 +65,9 @@ export default function AdminCMSManager() {
     addJadwalUjian,
     updateJadwalUjian,
     deleteJadwalUjian,
+    addSlotPelajaran,
+    updateSlotPelajaran,
+    deleteSlotPelajaran,
     addPrestasi,
     updatePrestasi,
     deletePrestasi,
@@ -79,8 +87,63 @@ export default function AdminCMSManager() {
     }, 4000);
   };
 
+  // Image Cropper Modal State
+  const [cropModalConfig, setCropModalConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    aspectRatio: "1:1" | "4:3" | "16:9" | "free";
+    onSuccess: (url: string) => void;
+  }>({
+    isOpen: false,
+    title: "",
+    aspectRatio: "1:1",
+    onSuccess: () => {},
+  });
+
+  const openCropper = (
+    title: string,
+    aspectRatio: "1:1" | "4:3" | "16:9" | "free",
+    callback: (url: string) => void
+  ) => {
+    setCropModalConfig({
+      isOpen: true,
+      title,
+      aspectRatio,
+      onSuccess: (url) => {
+        callback(url);
+        showToast("Foto berhasil dipotong dan tersimpan di Cloudinary!");
+      },
+    });
+  };
+
+  // Pagination States (3 kotak per halaman untuk video/org/ekskul/prestasi, 6 untuk agenda/guru, 10 untuk berita)
+  const [pageVideo, setPageVideo] = useState(1);
+  const [pageOrg, setPageOrg] = useState(1);
+  const [pageGuru, setPageGuru] = useState(1);
+  const [pageAgenda, setPageAgenda] = useState(1);
+  const [pageKbm, setPageKbm] = useState(1);
+  const [pageUjian, setPageUjian] = useState(1);
+  const [pagePrestasi, setPagePrestasi] = useState(1);
+  const [pageEkskul, setPageEkskul] = useState(1);
+  const [pageBerita, setPageBerita] = useState(1);
+
+  // Jadwal Pelajaran (KBM) State
+  const [selectedKbmKelas, setSelectedKbmKelas] = useState("XII MIPA 1");
+  const [selectedKbmHari, setSelectedKbmHari] = useState("SEMUA");
+  const [showAddKbm, setShowAddKbm] = useState(false);
+  const [kbmForm, setKbmForm] = useState({
+    kelas: "XII MIPA 1",
+    hari: "Senin" as const,
+    jamKe: "1 - 2",
+    waktu: "07:15 - 08:45",
+    mapel: "",
+    guru: "",
+    ruang: "R.12 MIPA 1",
+    tipe: "KBM" as const,
+  });
+
   const [editingItem, setEditingItem] = useState<{
-    type: "VIDEO" | "ORG" | "GURU" | "AGENDA" | "UJIAN" | "PRESTASI" | "EKSKUL";
+    type: "VIDEO" | "ORG" | "GURU" | "AGENDA" | "UJIAN" | "PRESTASI" | "EKSKUL" | "KBM";
     id: string;
     data: any;
   } | null>(null);
@@ -95,6 +158,7 @@ export default function AdminCMSManager() {
     else if (type === "UJIAN") updateJadwalUjian(id, data);
     else if (type === "PRESTASI") updatePrestasi(id, data);
     else if (type === "EKSKUL") updateEkskul(id, data);
+    else if (type === "KBM") updateSlotPelajaran(id, data);
 
     setEditingItem(null);
     showToast("Perubahan data berhasil disimpan dan langsung tayang!");
@@ -539,15 +603,25 @@ export default function AdminCMSManager() {
 
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 mb-1">
-                      URL Foto Profil Kepala Sekolah
+                      Foto Profil Kepala Sekolah
                     </label>
-                    <input
-                      type="text"
-                      value={beranda.kepsek.fotoUrl}
-                      onChange={(e) => updateKepsek({ fotoUrl: e.target.value })}
-                      placeholder="https://..."
-                      className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
-                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={beranda.kepsek.fotoUrl}
+                        onChange={(e) => updateKepsek({ fotoUrl: e.target.value })}
+                        placeholder="https://..."
+                        className="flex-1 text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => openCropper("Foto Kepala Sekolah", "1:1", (url) => updateKepsek({ fotoUrl: url }))}
+                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#2A2C5E] text-white text-xs font-semibold rounded-lg hover:bg-[#1F2147] transition-all shrink-0 cursor-pointer shadow-xs"
+                      >
+                        <UploadCloud className="w-3.5 h-3.5" />
+                        <span>Unggah & Pas-kan</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -735,61 +809,76 @@ export default function AdminCMSManager() {
                 </div>
               )}
 
-              {/* Daftar Video Saat Ini */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {beranda.videoPanduan.map((v) => (
-                  <div
-                    key={v.id}
-                    className="p-3.5 rounded-xl border border-gray-200 bg-gray-50 flex flex-col justify-between space-y-2"
-                  >
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
-                          {v.kategori}
-                        </span>
-                        <div className="flex items-center gap-1">
-                          <button
-                            onClick={() => setEditingItem({ type: "VIDEO", id: v.id, data: { ...v } })}
-                            className="text-[#2A2C5E] hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
-                            title="Edit Video"
+              {/* Daftar Video Saat Ini (3 Kotak per Halaman) */}
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {beranda.videoPanduan
+                    .slice((pageVideo - 1) * 3, pageVideo * 3)
+                    .map((v) => (
+                      <div
+                        key={v.id}
+                        className="p-3.5 rounded-xl border border-gray-200 bg-gray-50 flex flex-col justify-between space-y-2 shadow-2xs"
+                      >
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
+                              {v.kategori}
+                            </span>
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => setEditingItem({ type: "VIDEO", id: v.id, data: { ...v } })}
+                                className="text-[#2A2C5E] hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                                title="Edit Video"
+                              >
+                                <Edit3 className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (confirm(`Hapus video "${v.judul}"?`)) {
+                                    deleteVideoPanduan(v.id);
+                                    showToast("Video berhasil dihapus.");
+                                  }
+                                }}
+                                className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition-colors"
+                                title="Hapus Video"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                          <h4 className="text-xs font-bold text-gray-900 line-clamp-2">{v.judul}</h4>
+                          <p className="text-[11px] text-gray-500 line-clamp-2">{v.ringkasan}</p>
+                        </div>
+
+                        <div className="pt-2 border-t border-gray-200 flex items-center justify-between text-[10px] text-gray-500">
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3 text-blue-500" />
+                            {v.durasi}
+                          </span>
+                          <a
+                            href={v.youtubeUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[#2A2C5E] hover:underline font-semibold flex items-center gap-1"
                           >
-                            <Edit3 className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            onClick={() => {
-                              if (confirm(`Hapus video "${v.judul}"?`)) {
-                                deleteVideoPanduan(v.id);
-                                showToast("Video berhasil dihapus.");
-                              }
-                            }}
-                            className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition-colors"
-                            title="Hapus Video"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                            Buka YT
+                            <ExternalLink className="w-2.5 h-2.5" />
+                          </a>
                         </div>
                       </div>
-                      <h4 className="text-xs font-bold text-gray-900 line-clamp-2">{v.judul}</h4>
-                      <p className="text-[11px] text-gray-500 line-clamp-2">{v.ringkasan}</p>
-                    </div>
+                    ))}
+                </div>
 
-                    <div className="pt-2 border-t border-gray-200 flex items-center justify-between text-[10px] text-gray-500">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-blue-500" />
-                        {v.durasi}
-                      </span>
-                      <a
-                        href={v.youtubeUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-[#2A2C5E] hover:underline font-semibold flex items-center gap-1"
-                      >
-                        Buka YT
-                        <ExternalLink className="w-2.5 h-2.5" />
-                      </a>
-                    </div>
-                  </div>
-                ))}
+                {beranda.videoPanduan.length > 3 && (
+                  <PaginationBar
+                    currentPage={pageVideo}
+                    totalPages={Math.max(1, Math.ceil(beranda.videoPanduan.length / 3))}
+                    totalItems={beranda.videoPanduan.length}
+                    itemsPerPage={3}
+                    onPageChange={setPageVideo}
+                    itemLabel="video panduan"
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -864,15 +953,25 @@ export default function AdminCMSManager() {
                     </div>
                     <div>
                       <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                        URL Foto Formal
+                        Foto Formal Pejabat
                       </label>
-                      <input
-                        type="text"
-                        value={orgForm.fotoUrl}
-                        onChange={(e) => setOrgForm({ ...orgForm, fotoUrl: e.target.value })}
-                        placeholder="https://..."
-                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
-                      />
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={orgForm.fotoUrl}
+                          onChange={(e) => setOrgForm({ ...orgForm, fotoUrl: e.target.value })}
+                          placeholder="https://..."
+                          className="flex-1 text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => openCropper("Foto Posisi Struktur", "1:1", (url) => setOrgForm({ ...orgForm, fotoUrl: url }))}
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-[#2A2C5E] text-white text-[11px] font-semibold rounded-lg hover:bg-[#1F2147] shrink-0 shadow-xs cursor-pointer"
+                        >
+                          <UploadCloud className="w-3.5 h-3.5" />
+                          <span>Unggah</span>
+                        </button>
+                      </div>
                     </div>
                     <div className="sm:col-span-2">
                       <label className="block text-[11px] font-semibold text-gray-700 mb-1">
@@ -923,49 +1022,64 @@ export default function AdminCMSManager() {
                 </div>
               )}
 
-              {/* Grid Posisi Organisasi */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {profil.strukturOrganisasi.map((item) => (
-                  <div
-                    key={item.id}
-                    className="p-3.5 rounded-xl border border-gray-200 bg-gray-50 flex items-start gap-3 relative group"
-                  >
-                    <img
-                      src={item.fotoUrl}
-                      alt={item.nama}
-                      className="w-12 h-12 rounded-lg object-cover border border-gray-300 shrink-0"
-                    />
-                    <div className="space-y-0.5 min-w-0 flex-1">
-                      <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded truncate max-w-full">
-                        {item.jabatan}
-                      </span>
-                      <h4 className="text-xs font-bold text-gray-900 truncate">{item.nama}</h4>
-                      <p className="text-[10px] font-mono text-gray-500 truncate">{item.nip}</p>
-                    </div>
+              {/* Grid Posisi Organisasi (3 Kotak per Halaman) */}
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {profil.strukturOrganisasi
+                    .slice((pageOrg - 1) * 3, pageOrg * 3)
+                    .map((item) => (
+                      <div
+                        key={item.id}
+                        className="p-3.5 rounded-xl border border-gray-200 bg-gray-50 flex items-start gap-3 relative group shadow-2xs"
+                      >
+                        <img
+                          src={item.fotoUrl}
+                          alt={item.nama}
+                          className="w-12 h-12 rounded-lg object-cover border border-gray-300 shrink-0"
+                        />
+                        <div className="space-y-0.5 min-w-0 flex-1">
+                          <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded truncate max-w-full">
+                            {item.jabatan}
+                          </span>
+                          <h4 className="text-xs font-bold text-gray-900 truncate">{item.nama}</h4>
+                          <p className="text-[10px] font-mono text-gray-500 truncate">{item.nip}</p>
+                        </div>
 
-                    <div className="flex items-center gap-1 shrink-0">
-                      <button
-                        onClick={() => setEditingItem({ type: "ORG", id: item.id, data: { ...item } })}
-                        className="text-[#2A2C5E] hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
-                        title="Edit Posisi"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (confirm(`Hapus jabatan "${item.jabatan}"?`)) {
-                            deleteStrukturOrganisasi(item.id);
-                            showToast("Posisi berhasil dihapus.");
-                          }
-                        }}
-                        className="text-gray-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition-colors"
-                        title="Hapus Posisi"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button
+                            onClick={() => setEditingItem({ type: "ORG", id: item.id, data: { ...item } })}
+                            className="text-[#2A2C5E] hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                            title="Edit Posisi"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (confirm(`Hapus jabatan "${item.jabatan}"?`)) {
+                                deleteStrukturOrganisasi(item.id);
+                                showToast("Posisi berhasil dihapus.");
+                              }
+                            }}
+                            className="text-gray-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition-colors"
+                            title="Hapus Posisi"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                {profil.strukturOrganisasi.length > 3 && (
+                  <PaginationBar
+                    currentPage={pageOrg}
+                    totalPages={Math.max(1, Math.ceil(profil.strukturOrganisasi.length / 3))}
+                    totalItems={profil.strukturOrganisasi.length}
+                    itemsPerPage={3}
+                    onPageChange={setPageOrg}
+                    itemLabel="posisi organisasi"
+                  />
+                )}
               </div>
             </div>
 
@@ -1057,15 +1171,25 @@ export default function AdminCMSManager() {
                     </div>
                     <div>
                       <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                        URL Foto Profil (PP)
+                        Foto Profil Guru (PP)
                       </label>
-                      <input
-                        type="text"
-                        value={guruForm.fotoUrl}
-                        onChange={(e) => setGuruForm({ ...guruForm, fotoUrl: e.target.value })}
-                        placeholder="https://..."
-                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
-                      />
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={guruForm.fotoUrl}
+                          onChange={(e) => setGuruForm({ ...guruForm, fotoUrl: e.target.value })}
+                          placeholder="https://..."
+                          className="flex-1 text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => openCropper("Foto Profil Guru", "1:1", (url) => setGuruForm({ ...guruForm, fotoUrl: url }))}
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-[#2A2C5E] text-white text-[11px] font-semibold rounded-lg hover:bg-[#1F2147] shrink-0 shadow-xs cursor-pointer"
+                        >
+                          <UploadCloud className="w-3.5 h-3.5" />
+                          <span>Unggah</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div className="flex justify-end gap-2 pt-2">
@@ -1105,53 +1229,68 @@ export default function AdminCMSManager() {
                 </div>
               )}
 
-              {/* Grid Daftar Guru */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                {profil.guruStaff.map((g) => (
-                  <div
-                    key={g.id}
-                    className="p-3 bg-gray-50 rounded-xl border border-gray-200 flex flex-col justify-between space-y-2 relative"
-                  >
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={g.fotoUrl}
-                        alt={g.nama}
-                        className="w-11 h-11 rounded-lg object-cover border border-gray-300 shrink-0"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <h4 className="text-xs font-bold text-gray-900 truncate">{g.nama}</h4>
-                        <p className="text-[10px] text-gray-500 font-mono truncate">NUPTK: {g.nuptk}</p>
-                      </div>
-                    </div>
+              {/* Grid Daftar Guru (6 per Halaman) */}
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {profil.guruStaff
+                    .slice((pageGuru - 1) * 6, pageGuru * 6)
+                    .map((g) => (
+                      <div
+                        key={g.id}
+                        className="p-3 bg-gray-50 rounded-xl border border-gray-200 flex flex-col justify-between space-y-2 relative shadow-2xs"
+                      >
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={g.fotoUrl}
+                            alt={g.nama}
+                            className="w-11 h-11 rounded-lg object-cover border border-gray-300 shrink-0"
+                          />
+                          <div className="min-w-0 flex-1">
+                            <h4 className="text-xs font-bold text-gray-900 truncate">{g.nama}</h4>
+                            <p className="text-[10px] text-gray-500 font-mono truncate">NUPTK: {g.nuptk}</p>
+                          </div>
+                        </div>
 
-                    <div className="pt-2 border-t border-gray-200 flex items-center justify-between text-[10px]">
-                      <span className="text-[#2A2C5E] font-semibold truncate max-w-[150px]">
-                        {g.mapel}
-                      </span>
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => setEditingItem({ type: "GURU", id: g.id, data: { ...g } })}
-                          className="text-[#2A2C5E] hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
-                          title="Edit Guru"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (confirm(`Hapus guru "${g.nama}"?`)) {
-                              deleteGuruStaff(g.id);
-                              showToast("Guru berhasil dihapus.");
-                            }
-                          }}
-                          className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition-colors"
-                          title="Hapus Guru"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        <div className="pt-2 border-t border-gray-200 flex items-center justify-between text-[10px]">
+                          <span className="text-[#2A2C5E] font-semibold truncate max-w-[150px]">
+                            {g.mapel}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => setEditingItem({ type: "GURU", id: g.id, data: { ...g } })}
+                              className="text-[#2A2C5E] hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                              title="Edit Guru"
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => {
+                                if (confirm(`Hapus guru "${g.nama}"?`)) {
+                                  deleteGuruStaff(g.id);
+                                  showToast("Guru berhasil dihapus.");
+                                }
+                              }}
+                              className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition-colors"
+                              title="Hapus Guru"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                ))}
+                    ))}
+                </div>
+
+                {profil.guruStaff.length > 6 && (
+                  <PaginationBar
+                    currentPage={pageGuru}
+                    totalPages={Math.max(1, Math.ceil(profil.guruStaff.length / 6))}
+                    totalItems={profil.guruStaff.length}
+                    itemsPerPage={6}
+                    onPageChange={setPageGuru}
+                    itemLabel="pendidik & staf"
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -1278,49 +1417,351 @@ export default function AdminCMSManager() {
               )}
 
               {/* Tabel Daftar Agenda */}
-              <div className="divide-y divide-gray-100 border border-gray-200 rounded-xl overflow-hidden">
-                {akademik.agendaList.map((ag) => (
-                  <div key={ag.id} className="p-3.5 flex items-center justify-between gap-4 hover:bg-gray-50 transition-colors">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <span className="w-16 px-2 py-1 text-center text-[10px] font-bold text-[#2A2C5E] bg-blue-50 border border-blue-200 rounded shrink-0">
-                        {ag.tanggal}
-                      </span>
-                      <div className="min-w-0">
-                        <h4 className="text-xs font-bold text-gray-900 truncate">{ag.kegiatan}</h4>
-                        <p className="text-[11px] text-gray-500 truncate">{ag.keterangan}</p>
-                      </div>
-                    </div>
+              {/* Tabel Daftar Agenda (6 per Halaman) */}
+              <div className="space-y-3">
+                <div className="divide-y divide-gray-100 border border-gray-200 rounded-xl overflow-hidden">
+                  {akademik.agendaList
+                    .slice((pageAgenda - 1) * 6, pageAgenda * 6)
+                    .map((ag) => (
+                      <div key={ag.id} className="p-3.5 flex items-center justify-between gap-4 hover:bg-gray-50 transition-colors">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span className="w-16 px-2 py-1 text-center text-[10px] font-bold text-[#2A2C5E] bg-blue-50 border border-blue-200 rounded shrink-0">
+                            {ag.tanggal}
+                          </span>
+                          <div className="min-w-0">
+                            <h4 className="text-xs font-bold text-gray-900 truncate">{ag.kegiatan}</h4>
+                            <p className="text-[11px] text-gray-500 truncate">{ag.keterangan}</p>
+                          </div>
+                        </div>
 
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[10px] font-semibold text-gray-600 bg-gray-100 px-2 py-0.5 rounded">
-                        {ag.kategori}
-                      </span>
-                      <button
-                        onClick={() => setEditingItem({ type: "AGENDA", id: ag.id, data: { ...ag } })}
-                        className="text-blue-600 hover:text-blue-800 p-1"
-                        title="Edit Agenda"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (confirm(`Hapus agenda "${ag.kegiatan}"?`)) {
-                            deleteAgendaKalender(ag.id);
-                            showToast("Agenda berhasil dihapus.");
-                          }
-                        }}
-                        className="text-red-500 hover:text-red-700 p-1"
-                        title="Hapus Agenda"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-[10px] font-semibold text-gray-600 bg-gray-100 px-2 py-0.5 rounded">
+                            {ag.kategori}
+                          </span>
+                          <button
+                            onClick={() => setEditingItem({ type: "AGENDA", id: ag.id, data: { ...ag } })}
+                            className="text-blue-600 hover:text-blue-800 p-1"
+                            title="Edit Agenda"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (confirm(`Hapus agenda "${ag.kegiatan}"?`)) {
+                                deleteAgendaKalender(ag.id);
+                                showToast("Agenda berhasil dihapus.");
+                              }
+                            }}
+                            className="text-red-500 hover:text-red-700 p-1"
+                            title="Hapus Agenda"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                {akademik.agendaList.length > 6 && (
+                  <PaginationBar
+                    currentPage={pageAgenda}
+                    totalPages={Math.max(1, Math.ceil(akademik.agendaList.length / 6))}
+                    totalItems={akademik.agendaList.length}
+                    itemsPerPage={6}
+                    onPageChange={setPageAgenda}
+                    itemLabel="agenda kalender"
+                  />
+                )}
               </div>
             </div>
 
-            {/* 3.2 Jadwal Ujian Sekolah (CBT) */}
+            {/* 3.2 Jadwal Pelajaran Rutin (KBM Mingguan per Kelas) */}
+            <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-white space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 pb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-[#2A2C5E]" />
+                    <span>Jadwal Pelajaran Rutin Mingguan (KBM)</span>
+                  </h3>
+                  <p className="text-[11px] text-gray-500">
+                    Atur roster jam pelajaran, mata pelajaran, guru pengampu, dan ruang kelas
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowAddKbm(!showAddKbm)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2A2C5E] text-white text-xs font-semibold hover:bg-[#1F2147] transition-all shadow-xs cursor-pointer self-start sm:self-auto"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Tambah Slot KBM</span>
+                </button>
+              </div>
+
+              {/* Form Tambah Slot KBM */}
+              {showAddKbm && (
+                <div className="p-4 bg-blue-50/70 border border-blue-200 rounded-xl space-y-3">
+                  <h4 className="text-xs font-bold text-[#2A2C5E]">Tambah Slot Jadwal Pelajaran Baru</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Pilih Rombel / Kelas
+                      </label>
+                      <select
+                        value={kbmForm.kelas}
+                        onChange={(e) => setKbmForm({ ...kbmForm, kelas: e.target.value })}
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      >
+                        <option value="XII MIPA 1">Kelas XII MIPA 1</option>
+                        <option value="XII MIPA 2">Kelas XII MIPA 2</option>
+                        <option value="XII IPS 1">Kelas XII IPS 1</option>
+                        <option value="XI MIPA 1">Kelas XI MIPA 1</option>
+                        <option value="X MERDEKA 1">Kelas X Merdeka 1</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Hari Belajar
+                      </label>
+                      <select
+                        value={kbmForm.hari}
+                        onChange={(e) => setKbmForm({ ...kbmForm, hari: e.target.value as any })}
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      >
+                        <option value="Senin">Senin</option>
+                        <option value="Selasa">Selasa</option>
+                        <option value="Rabu">Rabu</option>
+                        <option value="Kamis">Kamis</option>
+                        <option value="Jumat">Jumat</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Jam Pelajaran Ke-
+                      </label>
+                      <input
+                        type="text"
+                        value={kbmForm.jamKe}
+                        onChange={(e) => setKbmForm({ ...kbmForm, jamKe: e.target.value })}
+                        placeholder="Contoh: 1 - 2"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Rentang Waktu
+                      </label>
+                      <input
+                        type="text"
+                        value={kbmForm.waktu}
+                        onChange={(e) => setKbmForm({ ...kbmForm, waktu: e.target.value })}
+                        placeholder="Contoh: 07:15 - 08:45"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Mata Pelajaran
+                      </label>
+                      <input
+                        type="text"
+                        value={kbmForm.mapel}
+                        onChange={(e) => setKbmForm({ ...kbmForm, mapel: e.target.value })}
+                        placeholder="Contoh: Matematika Peminatan"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Guru Pengampu
+                      </label>
+                      <input
+                        type="text"
+                        value={kbmForm.guru}
+                        onChange={(e) => setKbmForm({ ...kbmForm, guru: e.target.value })}
+                        placeholder="Contoh: Marsono, S.Pd."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Ruang Belajar / Lab
+                      </label>
+                      <input
+                        type="text"
+                        value={kbmForm.ruang}
+                        onChange={(e) => setKbmForm({ ...kbmForm, ruang: e.target.value })}
+                        placeholder="Contoh: R.12 MIPA 1 / Lab IPA"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end gap-2 pt-2">
+                    <button
+                      onClick={() => setShowAddKbm(false)}
+                      className="px-3 py-1.5 rounded-lg border border-gray-300 text-xs text-gray-600 bg-white"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!kbmForm.mapel || !kbmForm.guru) {
+                          alert("Mata pelajaran dan nama guru pengampu wajib diisi!");
+                          return;
+                        }
+                        addSlotPelajaran({
+                          id: `kbm-${Date.now()}`,
+                          ...kbmForm,
+                        });
+                        setShowAddKbm(false);
+                        setKbmForm({
+                          kelas: selectedKbmKelas,
+                          hari: "Senin",
+                          jamKe: "1 - 2",
+                          waktu: "07:15 - 08:45",
+                          mapel: "",
+                          guru: "",
+                          ruang: "R.12 MIPA 1",
+                          tipe: "KBM",
+                        });
+                        showToast("Slot mata pelajaran berhasil ditambahkan ke jadwal KBM!");
+                      }}
+                      className="px-4 py-1.5 rounded-lg bg-[#2A2C5E] text-white text-xs font-semibold"
+                    >
+                      Simpan Slot KBM
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Filter Kelas & Hari */}
+              <div className="flex flex-wrap items-center justify-between gap-3 bg-gray-50 p-3 rounded-xl border border-gray-200">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-gray-700">Rombel:</span>
+                  <select
+                    value={selectedKbmKelas}
+                    onChange={(e) => {
+                      setSelectedKbmKelas(e.target.value);
+                      setPageKbm(1);
+                    }}
+                    className="text-xs font-semibold text-[#2A2C5E] bg-white border border-gray-300 rounded-lg px-2.5 py-1.5 focus:outline-none"
+                  >
+                    <option value="XII MIPA 1">Kelas XII MIPA 1</option>
+                    <option value="XII MIPA 2">Kelas XII MIPA 2</option>
+                    <option value="XII IPS 1">Kelas XII IPS 1</option>
+                    <option value="XI MIPA 1">Kelas XI MIPA 1</option>
+                    <option value="X MERDEKA 1">Kelas X Merdeka 1</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0">
+                  {["SEMUA", "Senin", "Selasa", "Rabu", "Kamis", "Jumat"].map((hari) => (
+                    <button
+                      key={hari}
+                      type="button"
+                      onClick={() => {
+                        setSelectedKbmHari(hari);
+                        setPageKbm(1);
+                      }}
+                      className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all ${
+                        selectedKbmHari === hari
+                          ? "bg-[#2A2C5E] text-white shadow-2xs"
+                          : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-100"
+                      }`}
+                    >
+                      {hari}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Daftar Slot KBM Terjadwal */}
+              {(() => {
+                const kbmList = (akademik.jadwalPelajaranList || []).filter((s) => {
+                  const matchKelas = s.kelas === selectedKbmKelas;
+                  const matchHari = selectedKbmHari === "SEMUA" || s.hari === selectedKbmHari;
+                  return matchKelas && matchHari;
+                });
+
+                if (kbmList.length === 0) {
+                  return (
+                    <div className="text-center py-6 text-xs text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                      Belum ada slot pelajaran khusus untuk {selectedKbmKelas} ({selectedKbmHari}). Silakan klik "Tambah Slot KBM".
+                    </div>
+                  );
+                }
+
+                const totalKbmPages = Math.max(1, Math.ceil(kbmList.length / 6));
+                const paginatedKbm = kbmList.slice((pageKbm - 1) * 6, pageKbm * 6);
+
+                return (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {paginatedKbm.map((slot) => (
+                        <div
+                          key={slot.id}
+                          className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 space-y-2 relative shadow-2xs flex flex-col justify-between"
+                        >
+                          <div>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
+                                {slot.hari} &bull; Jam {slot.jamKe}
+                              </span>
+                              <div className="flex items-center gap-1">
+                                <button
+                                  onClick={() => setEditingItem({ type: "KBM", id: slot.id, data: { ...slot } })}
+                                  className="text-blue-600 hover:text-blue-800 p-1"
+                                  title="Edit Slot Pelajaran"
+                                >
+                                  <Edit3 className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    if (confirm(`Hapus mata pelajaran "${slot.mapel}"?`)) {
+                                      deleteSlotPelajaran(slot.id);
+                                      showToast("Slot pelajaran berhasil dihapus.");
+                                    }
+                                  }}
+                                  className="text-red-500 hover:text-red-700 p-1"
+                                  title="Hapus Slot"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
+                            <h4 className="text-xs font-bold text-gray-900">{slot.mapel}</h4>
+                            <p className="text-[11px] text-gray-600 mt-0.5">Guru: {slot.guru}</p>
+                          </div>
+
+                          <div className="pt-2 border-t border-gray-200 flex items-center justify-between text-[10px] text-gray-500">
+                            <span>{slot.waktu}</span>
+                            <span className="font-medium text-gray-700">{slot.ruang}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {kbmList.length > 6 && (
+                      <PaginationBar
+                        currentPage={pageKbm}
+                        totalPages={totalKbmPages}
+                        totalItems={kbmList.length}
+                        itemsPerPage={6}
+                        onPageChange={setPageKbm}
+                        itemLabel="slot mata pelajaran"
+                      />
+                    )}
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* 3.3 Jadwal Ujian Sekolah (CBT) */}
             <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-white space-y-4">
               <div className="flex items-center justify-between border-b border-gray-200 pb-3">
                 <div>
@@ -1458,41 +1899,56 @@ export default function AdminCMSManager() {
                 </div>
               )}
 
-              {/* Grid Jadwal Ujian */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {akademik.jadwalUjianList.map((uj) => (
-                  <div key={uj.id} className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 space-y-1.5 relative">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
-                        {uj.mataPelajaran}
-                      </span>
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => setEditingItem({ type: "UJIAN", id: uj.id, data: { ...uj } })}
-                          className="text-blue-600 hover:text-blue-800 p-1"
-                          title="Edit Jadwal"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (confirm(`Hapus jadwal "${uj.mataPelajaran}"?`)) {
-                              deleteJadwalUjian(uj.id);
-                              showToast("Jadwal ujian berhasil dihapus.");
-                            }
-                          }}
-                          className="text-red-500 hover:text-red-700 p-1"
-                          title="Hapus Jadwal"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+              {/* Grid Jadwal Ujian (3 Kotak per Halaman) */}
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {akademik.jadwalUjianList
+                    .slice((pageUjian - 1) * 3, pageUjian * 3)
+                    .map((uj) => (
+                      <div key={uj.id} className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 space-y-1.5 relative shadow-2xs">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
+                            {uj.mataPelajaran}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => setEditingItem({ type: "UJIAN", id: uj.id, data: { ...uj } })}
+                              className="text-blue-600 hover:text-blue-800 p-1"
+                              title="Edit Jadwal"
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => {
+                                if (confirm(`Hapus jadwal "${uj.mataPelajaran}"?`)) {
+                                  deleteJadwalUjian(uj.id);
+                                  showToast("Jadwal ujian berhasil dihapus.");
+                                }
+                              }}
+                              className="text-red-500 hover:text-red-700 p-1"
+                              title="Hapus Jadwal"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                        <p className="text-xs font-bold text-gray-900">{uj.hariTanggal}</p>
+                        <p className="text-[11px] text-gray-500">{uj.waktu} &bull; {uj.ruangModa}</p>
+                        <p className="text-[10px] text-gray-400">Koordinator: {uj.koordinator || "-"}</p>
                       </div>
-                    </div>
-                    <p className="text-xs font-bold text-gray-900">{uj.hariTanggal}</p>
-                    <p className="text-[11px] text-gray-500">{uj.waktu} &bull; {uj.ruangModa}</p>
-                    <p className="text-[10px] text-gray-400">Koordinator: {uj.koordinator || "-"}</p>
-                  </div>
-                ))}
+                    ))}
+                </div>
+
+                {akademik.jadwalUjianList.length > 3 && (
+                  <PaginationBar
+                    currentPage={pageUjian}
+                    totalPages={Math.max(1, Math.ceil(akademik.jadwalUjianList.length / 3))}
+                    totalItems={akademik.jadwalUjianList.length}
+                    itemsPerPage={3}
+                    onPageChange={setPageUjian}
+                    itemLabel="jadwal ujian"
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -1600,15 +2056,25 @@ export default function AdminCMSManager() {
                     </div>
                     <div className="sm:col-span-3">
                       <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                        URL Foto Piagam / Dokumentasi Penyerahan Trofi
+                        Foto Piagam / Dokumentasi Prestasi
                       </label>
-                      <input
-                        type="text"
-                        value={prestasiForm.fotoUrl}
-                        onChange={(e) => setPrestasiForm({ ...prestasiForm, fotoUrl: e.target.value })}
-                        placeholder="https://images.unsplash.com/..."
-                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
-                      />
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={prestasiForm.fotoUrl}
+                          onChange={(e) => setPrestasiForm({ ...prestasiForm, fotoUrl: e.target.value })}
+                          placeholder="https://images.unsplash.com/..."
+                          className="flex-1 text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => openCropper("Dokumentasi Prestasi", "4:3", (url) => setPrestasiForm({ ...prestasiForm, fotoUrl: url }))}
+                          className="inline-flex items-center gap-1 px-3 py-2 bg-[#2A2C5E] text-white text-xs font-semibold rounded-lg hover:bg-[#1F2147] shrink-0 shadow-xs cursor-pointer"
+                        >
+                          <UploadCloud className="w-3.5 h-3.5" />
+                          <span>Unggah & Pas-kan</span>
+                        </button>
+                      </div>
                     </div>
                     <div className="sm:col-span-3">
                       <label className="block text-[11px] font-semibold text-gray-700 mb-1">
@@ -1662,53 +2128,68 @@ export default function AdminCMSManager() {
                 </div>
               )}
 
-              {/* Grid Prestasi */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {kesiswaan.prestasiList.map((pres) => (
-                  <div key={pres.id} className="rounded-xl border border-gray-200 overflow-hidden bg-gray-50 flex flex-col justify-between">
-                    <div>
-                      <div className="h-36 overflow-hidden relative">
-                        <img
-                          src={pres.fotoUrl}
-                          alt={pres.judul}
-                          className="w-full h-full object-cover"
-                        />
-                        <span className="absolute top-2 left-2 bg-[#2A2C5E] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-xs">
-                          {pres.juara}
-                        </span>
-                        <div className="absolute top-2 right-2 flex items-center gap-1">
-                          <button
-                            onClick={() => setEditingItem({ type: "PRESTASI", id: pres.id, data: { ...pres } })}
-                            className="bg-white/90 text-blue-700 p-1 rounded-md shadow-xs hover:bg-white"
-                            title="Edit Prestasi"
-                          >
-                            <Edit3 className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            onClick={() => {
-                              if (confirm(`Hapus prestasi "${pres.judul}"?`)) {
-                                deletePrestasi(pres.id);
-                                showToast("Prestasi berhasil dihapus.");
-                              }
-                            }}
-                            className="bg-red-600 text-white p-1 rounded-md shadow-xs hover:bg-red-700"
-                            title="Hapus Prestasi"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+              {/* Grid Prestasi (3 Kotak per Halaman) */}
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {kesiswaan.prestasiList
+                    .slice((pagePrestasi - 1) * 3, pagePrestasi * 3)
+                    .map((pres) => (
+                      <div key={pres.id} className="rounded-xl border border-gray-200 overflow-hidden bg-gray-50 flex flex-col justify-between shadow-2xs">
+                        <div>
+                          <div className="h-36 overflow-hidden relative">
+                            <img
+                              src={pres.fotoUrl}
+                              alt={pres.judul}
+                              className="w-full h-full object-cover"
+                            />
+                            <span className="absolute top-2 left-2 bg-[#2A2C5E] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-xs">
+                              {pres.juara}
+                            </span>
+                            <div className="absolute top-2 right-2 flex items-center gap-1">
+                              <button
+                                onClick={() => setEditingItem({ type: "PRESTASI", id: pres.id, data: { ...pres } })}
+                                className="bg-white/90 text-blue-700 p-1 rounded-md shadow-xs hover:bg-white"
+                                title="Edit Prestasi"
+                              >
+                                <Edit3 className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (confirm(`Hapus prestasi "${pres.judul}"?`)) {
+                                    deletePrestasi(pres.id);
+                                    showToast("Prestasi berhasil dihapus.");
+                                  }
+                                }}
+                                className="bg-red-600 text-white p-1 rounded-md shadow-xs hover:bg-red-700"
+                                title="Hapus Prestasi"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                          <div className="p-3.5 space-y-1">
+                            <span className="text-[10px] text-gray-500 font-medium">
+                              {pres.tingkat} &bull; {pres.tahun}
+                            </span>
+                            <h4 className="text-xs font-bold text-gray-900 line-clamp-2">{pres.judul}</h4>
+                            <p className="text-[11px] font-semibold text-[#2A2C5E]">{pres.peraih}</p>
+                            <p className="text-[10px] text-gray-500 line-clamp-2 mt-1">{pres.deskripsi}</p>
+                          </div>
                         </div>
                       </div>
-                      <div className="p-3.5 space-y-1">
-                        <span className="text-[10px] text-gray-500 font-medium">
-                          {pres.tingkat} &bull; {pres.tahun}
-                        </span>
-                        <h4 className="text-xs font-bold text-gray-900 line-clamp-2">{pres.judul}</h4>
-                        <p className="text-[11px] font-semibold text-[#2A2C5E]">{pres.peraih}</p>
-                        <p className="text-[10px] text-gray-500 line-clamp-2 mt-1">{pres.deskripsi}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                    ))}
+                </div>
+
+                {kesiswaan.prestasiList.length > 3 && (
+                  <PaginationBar
+                    currentPage={pagePrestasi}
+                    totalPages={Math.max(1, Math.ceil(kesiswaan.prestasiList.length / 3))}
+                    totalItems={kesiswaan.prestasiList.length}
+                    itemsPerPage={3}
+                    onPageChange={setPagePrestasi}
+                    itemLabel="prestasi siswa"
+                  />
+                )}
               </div>
             </div>
 
@@ -1945,41 +2426,56 @@ export default function AdminCMSManager() {
                 </div>
               )}
 
-              {/* Grid Daftar Eskul */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {kesiswaan.ekskulList.map((ek) => (
-                  <div key={ek.id} className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 space-y-1.5 relative">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
-                        {ek.kategori}
-                      </span>
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => setEditingItem({ type: "EKSKUL", id: ek.id, data: { ...ek } })}
-                          className="text-blue-600 hover:text-blue-800 p-1"
-                          title="Edit Eskul"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (confirm(`Hapus ekstrakurikuler "${ek.nama}"?`)) {
-                              deleteEkskul(ek.id);
-                              showToast("Ekstrakurikuler berhasil dihapus.");
-                            }
-                          }}
-                          className="text-red-500 hover:text-red-700 p-1"
-                          title="Hapus Eskul"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+              {/* Grid Daftar Eskul (3 Kotak per Halaman) */}
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {kesiswaan.ekskulList
+                    .slice((pageEkskul - 1) * 3, pageEkskul * 3)
+                    .map((ek) => (
+                      <div key={ek.id} className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 space-y-1.5 relative shadow-2xs">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
+                            {ek.kategori}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => setEditingItem({ type: "EKSKUL", id: ek.id, data: { ...ek } })}
+                              className="text-blue-600 hover:text-blue-800 p-1"
+                              title="Edit Eskul"
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => {
+                                if (confirm(`Hapus ekstrakurikuler "${ek.nama}"?`)) {
+                                  deleteEkskul(ek.id);
+                                  showToast("Ekstrakurikuler berhasil dihapus.");
+                                }
+                              }}
+                              className="text-red-500 hover:text-red-700 p-1"
+                              title="Hapus Eskul"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                        <h4 className="text-xs font-bold text-gray-900">{ek.nama}</h4>
+                        <p className="text-[11px] text-gray-600">Pembina: {ek.pembina || "-"}</p>
+                        <p className="text-[10px] text-gray-500">{ek.jadwal} &bull; {ek.lokasi}</p>
                       </div>
-                    </div>
-                    <h4 className="text-xs font-bold text-gray-900">{ek.nama}</h4>
-                    <p className="text-[11px] text-gray-600">Pembina: {ek.pembina || "-"}</p>
-                    <p className="text-[10px] text-gray-500">{ek.jadwal} &bull; {ek.lokasi}</p>
-                  </div>
-                ))}
+                    ))}
+                </div>
+
+                {kesiswaan.ekskulList.length > 3 && (
+                  <PaginationBar
+                    currentPage={pageEkskul}
+                    totalPages={Math.max(1, Math.ceil(kesiswaan.ekskulList.length / 3))}
+                    totalItems={kesiswaan.ekskulList.length}
+                    itemsPerPage={3}
+                    onPageChange={setPageEkskul}
+                    itemLabel="ekstrakurikuler"
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -2044,15 +2540,25 @@ export default function AdminCMSManager() {
 
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 mb-1">
-                    URL Foto Sampul (Thumbnail)
+                    Foto Sampul (Thumbnail)
                   </label>
-                  <input
-                    type="text"
-                    value={beritaForm.thumbnailUrl}
-                    onChange={(e) => setBeritaForm({ ...beritaForm, thumbnailUrl: e.target.value })}
-                    placeholder="https://images.unsplash.com/..."
-                    className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={beritaForm.thumbnailUrl}
+                      onChange={(e) => setBeritaForm({ ...beritaForm, thumbnailUrl: e.target.value })}
+                      placeholder="https://images.unsplash.com/..."
+                      className="flex-1 text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => openCropper("Foto Sampul Berita", "16:9", (url) => setBeritaForm({ ...beritaForm, thumbnailUrl: url }))}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#2A2C5E] text-white text-xs font-semibold rounded-lg hover:bg-[#1F2147] shrink-0 shadow-xs cursor-pointer"
+                    >
+                      <UploadCloud className="w-3.5 h-3.5" />
+                      <span>Unggah & Pas-kan</span>
+                    </button>
+                  </div>
                 </div>
 
                 <div>
@@ -2122,38 +2628,51 @@ export default function AdminCMSManager() {
               </div>
             </div>
 
-            {/* Daftar Artikel Terbit */}
+            {/* Daftar Artikel Terbit (10 per Halaman) */}
             <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-white space-y-3">
               <h4 className="text-xs font-bold text-gray-900">Artikel & Pengumuman yang Sedang Tayang ({beritaList.length})</h4>
               <div className="divide-y divide-gray-100 border border-gray-200 rounded-xl overflow-hidden">
-                {beritaList.slice(0, 6).map((b) => (
-                  <div key={b.id} className="p-3.5 flex items-center justify-between gap-3 hover:bg-gray-50">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <img src={b.thumbnailUrl} alt={b.judul} className="w-12 h-12 rounded-lg object-cover shrink-0 border border-gray-200" />
-                      <div className="min-w-0">
-                        <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
-                          {b.kategori}
-                        </span>
-                        <h5 className="text-xs font-bold text-gray-900 truncate mt-0.5">{b.judul}</h5>
-                        <p className="text-[10px] text-gray-500">{b.tanggal} &bull; Oleh: {b.penulis}</p>
+                {beritaList
+                  .slice((pageBerita - 1) * 10, pageBerita * 10)
+                  .map((b) => (
+                    <div key={b.id} className="p-3.5 flex items-center justify-between gap-3 hover:bg-gray-50">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <img src={b.thumbnailUrl} alt={b.judul} className="w-12 h-12 rounded-lg object-cover shrink-0 border border-gray-200" />
+                        <div className="min-w-0">
+                          <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
+                            {b.kategori}
+                          </span>
+                          <h5 className="text-xs font-bold text-gray-900 truncate mt-0.5">{b.judul}</h5>
+                          <p className="text-[10px] text-gray-500">{b.tanggal} &bull; Oleh: {b.penulis}</p>
+                        </div>
                       </div>
-                    </div>
 
-                    <button
-                      onClick={() => {
-                        if (confirm(`Hapus artikel "${b.judul}"?`)) {
-                          deleteBerita(b.id);
-                          showToast("Artikel berhasil dihapus.");
-                        }
-                      }}
-                      className="text-red-500 hover:text-red-700 p-1 shrink-0"
-                      title="Hapus Artikel"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ))}
+                      <button
+                        onClick={() => {
+                          if (confirm(`Hapus artikel "${b.judul}"?`)) {
+                            deleteBerita(b.id);
+                            showToast("Artikel berhasil dihapus.");
+                          }
+                        }}
+                        className="text-red-500 hover:text-red-700 p-1 shrink-0"
+                        title="Hapus Artikel"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
               </div>
+
+              {beritaList.length > 10 && (
+                <PaginationBar
+                  currentPage={pageBerita}
+                  totalPages={Math.max(1, Math.ceil(beritaList.length / 10))}
+                  totalItems={beritaList.length}
+                  itemsPerPage={10}
+                  onPageChange={setPageBerita}
+                  itemLabel="artikel & pengumuman"
+                />
+              )}
             </div>
           </div>
         )}
@@ -2299,13 +2818,23 @@ export default function AdminCMSManager() {
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <label className="font-semibold text-gray-700">URL Foto Profil</label>
-                    <input
-                      type="text"
-                      value={editingItem.data.fotoUrl || ""}
-                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, fotoUrl: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
-                    />
+                    <label className="font-semibold text-gray-700">Foto Profil Formal</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={editingItem.data.fotoUrl || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, fotoUrl: e.target.value } })}
+                        className="flex-1 px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => openCropper("Foto Posisi Struktur", "1:1", (url) => setEditingItem({ ...editingItem, data: { ...editingItem.data, fotoUrl: url } }))}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-[#2A2C5E] text-white text-[11px] font-semibold rounded-lg hover:bg-[#1F2147] shrink-0"
+                      >
+                        <UploadCloud className="w-3.5 h-3.5" />
+                        <span>Unggah</span>
+                      </button>
+                    </div>
                   </div>
                   <div className="space-y-1">
                     <label className="font-semibold text-gray-700">Keterangan Tambahan</label>
@@ -2372,13 +2901,23 @@ export default function AdminCMSManager() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="font-semibold text-gray-700">URL Foto Profil</label>
-                    <input
-                      type="text"
-                      value={editingItem.data.fotoUrl || ""}
-                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, fotoUrl: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
-                    />
+                    <label className="font-semibold text-gray-700">Foto Profil Formal</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={editingItem.data.fotoUrl || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, fotoUrl: e.target.value } })}
+                        className="flex-1 px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => openCropper("Foto Posisi Struktur", "1:1", (url) => setEditingItem({ ...editingItem, data: { ...editingItem.data, fotoUrl: url } }))}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-[#2A2C5E] text-white text-[11px] font-semibold rounded-lg hover:bg-[#1F2147] shrink-0"
+                      >
+                        <UploadCloud className="w-3.5 h-3.5" />
+                        <span>Unggah</span>
+                      </button>
+                    </div>
                   </div>
                 </>
               )}
@@ -2590,13 +3129,23 @@ export default function AdminCMSManager() {
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <label className="font-semibold text-gray-700">URL Foto Dokumentasi</label>
-                    <input
-                      type="text"
-                      value={editingItem.data.fotoUrl || ""}
-                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, fotoUrl: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
-                    />
+                    <label className="font-semibold text-gray-700">Foto Piagam / Dokumentasi</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={editingItem.data.fotoUrl || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, fotoUrl: e.target.value } })}
+                        className="flex-1 px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => openCropper("Foto Dokumentasi Prestasi", "4:3", (url) => setEditingItem({ ...editingItem, data: { ...editingItem.data, fotoUrl: url } }))}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-[#2A2C5E] text-white text-[11px] font-semibold rounded-lg hover:bg-[#1F2147] shrink-0"
+                      >
+                        <UploadCloud className="w-3.5 h-3.5" />
+                        <span>Unggah</span>
+                      </button>
+                    </div>
                   </div>
                   <div className="space-y-1">
                     <label className="font-semibold text-gray-700">Deskripsi Prestasi</label>
@@ -2684,18 +3233,98 @@ export default function AdminCMSManager() {
                   </div>
                 </>
               )}
+
+              {/* Form KBM */}
+              {editingItem.type === "KBM" && (
+                <>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Rombel / Kelas</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.kelas || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, kelas: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Hari Belajar</label>
+                      <select
+                        value={editingItem.data.hari || "Senin"}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, hari: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E] bg-white"
+                      >
+                        <option value="Senin">Senin</option>
+                        <option value="Selasa">Selasa</option>
+                        <option value="Rabu">Rabu</option>
+                        <option value="Kamis">Kamis</option>
+                        <option value="Jumat">Jumat</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Jam Pelajaran Ke-</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.jamKe || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, jamKe: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Rentang Waktu</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.waktu || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, waktu: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">Mata Pelajaran</label>
+                    <input
+                      type="text"
+                      value={editingItem.data.mapel || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, mapel: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Guru Pengampu</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.guru || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, guru: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Ruang Belajar</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.ruang || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, ruang: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="p-4 bg-gray-50 border-t border-gray-200 flex items-center justify-end gap-2 sticky bottom-0">
               <button
                 onClick={() => setEditingItem(null)}
-                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-semibold text-xs hover:bg-gray-100 transition-all"
+                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-semibold text-xs hover:bg-gray-100 transition-all cursor-pointer"
               >
                 Batal
               </button>
               <button
                 onClick={handleSaveEdit}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#2A2C5E] text-white font-bold text-xs hover:bg-[#1F2147] transition-all shadow-xs"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#2A2C5E] text-white font-bold text-xs hover:bg-[#1F2147] transition-all shadow-xs cursor-pointer"
               >
                 <Save className="w-3.5 h-3.5" />
                 <span>Simpan Perubahan</span>
@@ -2704,6 +3333,15 @@ export default function AdminCMSManager() {
           </div>
         </div>
       )}
+
+      {/* Interactive Cloudinary Image Cropper & Framer Modal */}
+      <ImageCropUploadModal
+        isOpen={cropModalConfig.isOpen}
+        title={cropModalConfig.title}
+        defaultAspectRatio={cropModalConfig.aspectRatio}
+        onClose={() => setCropModalConfig((prev) => ({ ...prev, isOpen: false }))}
+        onSuccess={cropModalConfig.onSuccess}
+      />
     </div>
   );
 }

@@ -12,6 +12,7 @@ import {
   Filter,
 } from "lucide-react";
 import PaginationBar from "@/components/common/PaginationBar";
+import { useCMSStore } from "@/lib/cmsStore";
 
 const KALENDER_PER_PAGE = 6;
 
@@ -801,6 +802,8 @@ function AkademikContent() {
       : "KALENDER"
   );
 
+  const { akademik: cmsAkademik } = useCMSStore();
+
   // State Filter Kalender Akademik
   const [filterSemester, setFilterSemester] = useState<"SEMUA" | "GANJIL" | "GENAP">("SEMUA");
   const [kalenderPage, setKalenderPage] = useState<number>(1);
@@ -831,26 +834,64 @@ function AkademikContent() {
     safeKalenderPage * KALENDER_PER_PAGE
   );
 
-  // Filter Jadwal Pelajaran (Seluruh 1 minggu Senin - Jumat untuk kelas terpilih)
+  // Filter Jadwal Pelajaran (Seluruh 1 minggu Senin - Jumat untuk kelas terpilih, digabung dengan CMS)
   const currentKelasData = DAFTAR_KELAS_INFO[selectedKelas] || DAFTAR_KELAS_INFO["XII MIPA 1"];
   const filteredHariJadwal = currentKelasData.jadwal
-    .map((h) => ({
-      ...h,
-      slots: h.slots.filter((s) => {
-        if (!searchJadwal.trim()) return true;
-        const q = searchJadwal.toLowerCase();
-        return (
-          s.mapel.toLowerCase().includes(q) ||
-          s.guru.toLowerCase().includes(q) ||
-          s.ruang.toLowerCase().includes(q) ||
-          h.hari.toLowerCase().includes(q)
-        );
-      }),
-    }))
+    .map((h) => {
+      const cmsCustomSlots: SlotPelajaran[] = (cmsAkademik?.jadwalPelajaranList || [])
+        .filter((s) => s.kelas === selectedKelas && s.hari === h.hari)
+        .map((s) => ({
+          jamKe: s.jamKe,
+          waktu: s.waktu,
+          mapel: s.mapel,
+          guru: s.guru,
+          ruang: s.ruang,
+          tipe: s.tipe || "KBM",
+        }));
+
+      const combinedSlots = [
+        ...h.slots,
+        ...cmsCustomSlots.filter(
+          (cs) => !h.slots.some((os) => os.mapel === cs.mapel && os.jamKe === cs.jamKe)
+        ),
+      ];
+
+      return {
+        ...h,
+        slots: combinedSlots.filter((s) => {
+          if (!searchJadwal.trim()) return true;
+          const q = searchJadwal.toLowerCase();
+          return (
+            s.mapel.toLowerCase().includes(q) ||
+            s.guru.toLowerCase().includes(q) ||
+            s.ruang.toLowerCase().includes(q) ||
+            h.hari.toLowerCase().includes(q)
+          );
+        }),
+      };
+    })
     .filter((h) => h.slots.length > 0);
 
-  // Filter Jadwal Ujian
-  const filteredJadwalUjian = JADWAL_UJIAN_DATA.filter((u) => {
+  // Filter Jadwal Ujian (Digabung data statis & update CMS)
+  const cmsExamRows: JadwalUjianRow[] = (cmsAkademik?.jadwalUjianList || []).map((u) => ({
+    id: u.id,
+    jenisUjian: (u.jenisUjian as any) || "PAS_GANJIL",
+    hariTanggal: u.hariTanggal,
+    sesi: u.sesi,
+    waktu: u.waktu,
+    mataPelajaran: u.mataPelajaran,
+    tingkat: (u.tingkat as any) || "SEMUA",
+    tingkatLabel: u.tingkatLabel || "Kelas X, XI, XII",
+    ruangModa: u.ruangModa,
+    koordinator: u.koordinator,
+  }));
+
+  const allExams = [
+    ...cmsExamRows.filter((ce) => !JADWAL_UJIAN_DATA.some((je) => je.id === ce.id)),
+    ...JADWAL_UJIAN_DATA,
+  ];
+
+  const filteredJadwalUjian = allExams.filter((u) => {
     if (u.jenisUjian !== selectedJenisUjian) return false;
     if (selectedTingkatUjian !== "SEMUA" && u.tingkat !== "SEMUA" && u.tingkat !== selectedTingkatUjian) {
       return false;

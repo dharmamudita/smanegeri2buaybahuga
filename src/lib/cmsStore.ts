@@ -35,6 +35,9 @@ export interface CMSState {
   addJadwalUjian: (ujian: (typeof INITIAL_AKADEMIK_CMS.jadwalUjianList)[0]) => void;
   updateJadwalUjian: (id: string, ujian: Partial<(typeof INITIAL_AKADEMIK_CMS.jadwalUjianList)[0]>) => void;
   deleteJadwalUjian: (id: string) => void;
+  addSlotPelajaran: (slot: (typeof INITIAL_AKADEMIK_CMS.jadwalPelajaranList)[0]) => void;
+  updateSlotPelajaran: (id: string, slot: Partial<(typeof INITIAL_AKADEMIK_CMS.jadwalPelajaranList)[0]>) => void;
+  deleteSlotPelajaran: (id: string) => void;
 
   // 4. Kesiswaan
   kesiswaan: typeof INITIAL_KESISWAAN_CMS;
@@ -214,6 +217,32 @@ export const useCMSStore = create<CMSState>()(
           akademik: {
             ...state.akademik,
             jadwalUjianList: state.akademik.jadwalUjianList.filter((u) => u.id !== id),
+          },
+        })),
+
+      addSlotPelajaran: (slot) =>
+        set((state) => ({
+          akademik: {
+            ...state.akademik,
+            jadwalPelajaranList: [...(state.akademik.jadwalPelajaranList || []), slot],
+          },
+        })),
+
+      updateSlotPelajaran: (id, slot) =>
+        set((state) => ({
+          akademik: {
+            ...state.akademik,
+            jadwalPelajaranList: (state.akademik.jadwalPelajaranList || []).map((s) =>
+              s.id === id ? { ...s, ...slot } : s
+            ),
+          },
+        })),
+
+      deleteSlotPelajaran: (id) =>
+        set((state) => ({
+          akademik: {
+            ...state.akademik,
+            jadwalPelajaranList: (state.akademik.jadwalPelajaranList || []).filter((s) => s.id !== id),
           },
         })),
 

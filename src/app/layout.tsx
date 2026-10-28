@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://smandabuba.com"),
-  title: "SMAN 2 Buay Bahuga | Smart School & Portal Pembelajaran Terpadu",
+  title: "SMAN 2 Buay Bahuga",
   description:
     "Portal Resmi dan Sistem Pembelajaran Digital Terpadu SMA Negeri 2 Buay Bahuga, Kabupaten Way Kanan, Provinsi Lampung. Mendukung Kurikulum Merdeka, Presensi Harian, dan Evaluasi Akademik Terstruktur.",
   keywords: [
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     apple: "/logosmanda.png",
   },
   openGraph: {
-    title: "SMAN 2 Buay Bahuga | Smart School & Portal Pembelajaran Terpadu",
+    title: "SMAN 2 Buay Bahuga",
     description:
       "Portal Resmi dan Sistem Pembelajaran Digital Terpadu SMA Negeri 2 Buay Bahuga, Kabupaten Way Kanan, Provinsi Lampung.",
     url: "https://smandabuba.com",

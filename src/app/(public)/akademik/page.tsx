@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import PaginationBar from "@/components/common/PaginationBar";
 import { useCMSStore } from "@/lib/cmsStore";
+import { INITIAL_AKADEMIK_CMS } from "@/lib/cmsData";
 
 const KALENDER_PER_PAGE = 6;
 
@@ -828,19 +829,47 @@ function AkademikContent() {
     { key: "JADWAL_UJIAN", label: "Jadwal Ujian" },
   ];
 
-  // Filter Kalender
-  const filteredKalender = KALENDER_DATA.filter((b) =>
-    filterSemester === "SEMUA" ? true : b.semester === filterSemester
+  // Source Kalender dari Supabase CMS (Sinkron 100% dengan Admin)
+  const sourceAgendaList = (cmsAkademik?.agendaList && cmsAkademik.agendaList.length > 0)
+    ? cmsAkademik.agendaList
+    : INITIAL_AKADEMIK_CMS.agendaList;
+
+  const filteredAgendaList = sourceAgendaList.filter((ag: any) =>
+    filterSemester === "SEMUA" ? true : ag.semester === filterSemester
   );
-  const totalKalenderPages = Math.max(1, Math.ceil(filteredKalender.length / KALENDER_PER_PAGE));
+  const totalKalenderPages = Math.max(1, Math.ceil(filteredAgendaList.length / KALENDER_PER_PAGE));
   const safeKalenderPage = Math.min(kalenderPage, totalKalenderPages);
-  const paginatedKalender = filteredKalender.slice(
+  const paginatedAgenda = filteredAgendaList.slice(
     (safeKalenderPage - 1) * KALENDER_PER_PAGE,
     safeKalenderPage * KALENDER_PER_PAGE
   );
 
+  // Daftar Kelas Tersedia (Gabungan Kelas Standar + Kelas Bebas dari CMS)
+  const availableKelasList = Array.from(
+    new Set([
+      "XII MIPA 1",
+      "XII MIPA 2",
+      "XII IPS 1",
+      "XI MIPA 1",
+      "X MERDEKA 1",
+      ...(cmsAkademik?.jadwalPelajaranList || []).map((s) => s.kelas).filter(Boolean),
+    ])
+  );
+
   // Filter Jadwal Pelajaran (Seluruh 1 minggu Senin - Jumat untuk kelas terpilih, digabung dengan CMS)
-  const currentKelasData = DAFTAR_KELAS_INFO[selectedKelas] || DAFTAR_KELAS_INFO["XII MIPA 1"];
+  const defaultJadwalSkeleton = {
+    waliKelas: "Pendidik SMAN 2 Buay Bahuga",
+    nip: "-",
+    ruang: "Gedung Ruang Kelas",
+    jadwal: [
+      { hari: "Senin", totalJp: "8 JP", slots: [] },
+      { hari: "Selasa", totalJp: "8 JP", slots: [] },
+      { hari: "Rabu", totalJp: "8 JP", slots: [] },
+      { hari: "Kamis", totalJp: "8 JP", slots: [] },
+      { hari: "Jumat", totalJp: "6 JP", slots: [] },
+    ],
+  };
+  const currentKelasData = DAFTAR_KELAS_INFO[selectedKelas] || defaultJadwalSkeleton;
   const filteredHariJadwal = currentKelasData.jadwal
     .map((h) => {
       const cmsCustomSlots: SlotPelajaran[] = (cmsAkademik?.jadwalPelajaranList || [])
@@ -1026,83 +1055,78 @@ function AkademikContent() {
             </div>
           </div>
 
-          {/* Grid Kalender Bulanan (Maksimal 6 Kartu Bulan Per Halaman) */}
+          {/* Grid Kalender Akademik Resmi (Sinkron 100% dari Supabase CMS) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-            {paginatedKalender.map((item) => (
-              <div
-                key={item.bulan}
-                className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow"
-              >
-                <div>
-                  {/* Header Bulan Gaya Kalender */}
-                  <div className="bg-[#2A2C5E] text-white px-5 py-3.5 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-blue-200" />
-                      <h3 className="text-sm sm:text-base font-extrabold tracking-wide">
-                        {item.bulan}
-                      </h3>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-semibold bg-white/15 text-blue-100 px-2.5 py-0.5 rounded-full">
-                        {item.hariEfektif} Hari Efektif
+            {paginatedAgenda.map((ag: any) => {
+              const st = getKategoriBadgeStyle(ag.kategori);
+              return (
+                <div
+                  key={ag.id}
+                  className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow"
+                >
+                  <div>
+                    {/* Header Tanggal & Agenda */}
+                    <div className="bg-[#2A2C5E] text-white px-5 py-3.5 flex items-center justify-between">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Calendar className="w-4 h-4 text-blue-200 shrink-0" />
+                        <h3 className="text-xs sm:text-sm font-extrabold tracking-wide truncate">
+                          {ag.tanggal}
+                        </h3>
+                      </div>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${st.badge} shrink-0`}>
+                        {st.label}
                       </span>
                     </div>
+
+                    {/* Detail Isi Agenda */}
+                    <div className="p-4 sm:p-5 flex items-start gap-3.5">
+                      {/* Kotak Tanggal ala Kalender Meja */}
+                      <div
+                        className={`w-14 sm:w-16 shrink-0 rounded-lg border p-1.5 text-center flex flex-col justify-center ${st.box}`}
+                      >
+                        <span className="text-xs sm:text-sm font-extrabold leading-tight">
+                          {ag.bulanSingkat || ag.tanggal.slice(0, 3)}
+                        </span>
+                        <span className="text-[10px] font-bold uppercase opacity-80">
+                          {ag.semester === "GANJIL" ? "Ganjil" : "Genap"}
+                        </span>
+                      </div>
+
+                      {/* Detail Kegiatan */}
+                      <div className="space-y-1 min-w-0 flex-1">
+                        <h4 className="text-xs sm:text-sm font-bold text-gray-900 leading-snug">
+                          {ag.kegiatan}
+                        </h4>
+                        <p className="text-[11px] text-gray-600 leading-relaxed">
+                          {ag.keterangan || "Kegiatan agenda akademik SMAN 2 Buay Bahuga."}
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Daftar Tanggal Agenda di Bulan Tersebut */}
-                  <div className="p-4 sm:p-5 divide-y divide-gray-100">
-                    {item.agenda.map((ag, idx) => {
-                      const st = getKategoriBadgeStyle(ag.kategori);
-                      return (
-                        <div key={idx} className="py-3 first:pt-0 last:pb-0 flex items-start gap-3.5">
-                          {/* Kotak Tanggal ala Kalender Meja */}
-                          <div
-                            className={`w-14 sm:w-16 shrink-0 rounded-lg border p-1.5 text-center flex flex-col justify-center ${st.box}`}
-                          >
-                            <span className="text-xs sm:text-sm font-extrabold leading-tight">
-                              {ag.tanggal}
-                            </span>
-                            <span className="text-[10px] font-bold uppercase opacity-80">
-                              {ag.bulanSingkat}
-                            </span>
-                          </div>
-
-                          {/* Detail Kegiatan */}
-                          <div className="space-y-1 min-w-0 flex-1">
-                            <div className="flex flex-wrap items-center gap-1.5">
-                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${st.badge}`}>
-                                {st.label}
-                              </span>
-                            </div>
-                            <h4 className="text-xs sm:text-sm font-bold text-gray-900 leading-snug">
-                              {ag.kegiatan}
-                            </h4>
-                            <p className="text-[11px] text-gray-600 leading-relaxed">
-                              {ag.keterangan}
-                            </p>
-                          </div>
-                        </div>
-                      );
-                    })}
+                  <div className="bg-gray-50 px-5 py-2.5 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500">
+                    <span>Semester {ag.semester === "GANJIL" ? "Ganjil" : "Genap"}</span>
+                    <span className="font-medium text-[#2A2C5E]">Tahun Pelajaran 2026/2027</span>
                   </div>
                 </div>
-
-                <div className="bg-gray-50 px-5 py-2.5 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500">
-                  <span>Semester {item.semester === "GANJIL" ? "Ganjil" : "Genap"}</span>
-                  <span className="font-medium text-[#2A2C5E]">Tahun Pelajaran 2026/2027</span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          {/* Navigasi Halaman (Pagination) di Bawah 6 Bulan Kalender Akademik */}
+          {paginatedAgenda.length === 0 && (
+            <div className="text-center py-12 bg-white rounded-xl border border-gray-200 text-gray-500 text-xs">
+              Belum ada agenda akademik untuk semester terpilih.
+            </div>
+          )}
+
+          {/* Navigasi Halaman (Pagination) di Bawah Agenda Kalender Akademik */}
           <PaginationBar
             currentPage={safeKalenderPage}
             totalPages={totalKalenderPages}
-            totalItems={filteredKalender.length}
+            totalItems={filteredAgendaList.length}
             itemsPerPage={KALENDER_PER_PAGE}
             onPageChange={setKalenderPage}
-            itemLabel="bulan kalender akademik"
+            itemLabel="agenda kalender akademik"
           />
         </section>
       )}
@@ -1140,11 +1164,11 @@ function AkademikContent() {
                   onChange={(e) => setSelectedKelas(e.target.value)}
                   className="w-full px-3 py-2 text-xs font-bold text-[#2A2C5E] bg-blue-50/50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E] cursor-pointer"
                 >
-                  <option value="XII MIPA 1">Kelas XII MIPA 1</option>
-                  <option value="XII MIPA 2">Kelas XII MIPA 2</option>
-                  <option value="XII IPS 1">Kelas XII IPS 1</option>
-                  <option value="XI MIPA 1">Kelas XI MIPA 1</option>
-                  <option value="X MERDEKA 1">Kelas X Merdeka 1</option>
+                  {availableKelasList.map((kls) => (
+                    <option key={kls} value={kls}>
+                      Kelas {kls}
+                    </option>
+                  ))}
                 </select>
               </div>
 

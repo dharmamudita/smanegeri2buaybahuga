@@ -1524,19 +1524,15 @@ export default function AdminCMSManager() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     <div>
                       <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                        Pilih Rombel / Kelas
+                        Rombel / Kelas (Ketik Bebas)
                       </label>
-                      <select
+                      <input
+                        type="text"
+                        placeholder="Ketik nama kelas (misal: XII MIPA 1, X-A, dll)"
                         value={kbmForm.kelas}
                         onChange={(e) => setKbmForm({ ...kbmForm, kelas: e.target.value })}
-                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
-                      >
-                        <option value="XII MIPA 1">Kelas XII MIPA 1</option>
-                        <option value="XII MIPA 2">Kelas XII MIPA 2</option>
-                        <option value="XII IPS 1">Kelas XII IPS 1</option>
-                        <option value="XI MIPA 1">Kelas XI MIPA 1</option>
-                        <option value="X MERDEKA 1">Kelas X Merdeka 1</option>
-                      </select>
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
                     </div>
 
                     <div>
@@ -1663,20 +1659,30 @@ export default function AdminCMSManager() {
               {/* Filter Kelas & Hari */}
               <div className="flex flex-wrap items-center justify-between gap-3 bg-gray-50 p-3 rounded-xl border border-gray-200">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-gray-700">Rombel:</span>
+                  <span className="text-xs font-bold text-gray-700">Filter Rombel:</span>
                   <select
                     value={selectedKbmKelas}
                     onChange={(e) => {
                       setSelectedKbmKelas(e.target.value);
                       setPageKbm(1);
                     }}
-                    className="text-xs font-semibold text-[#2A2C5E] bg-white border border-gray-300 rounded-lg px-2.5 py-1.5 focus:outline-none"
+                    className="text-xs font-semibold text-[#2A2C5E] bg-white border border-gray-300 rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer"
                   >
-                    <option value="XII MIPA 1">Kelas XII MIPA 1</option>
-                    <option value="XII MIPA 2">Kelas XII MIPA 2</option>
-                    <option value="XII IPS 1">Kelas XII IPS 1</option>
-                    <option value="XI MIPA 1">Kelas XI MIPA 1</option>
-                    <option value="X MERDEKA 1">Kelas X Merdeka 1</option>
+                    <option value="SEMUA">Semua Rombel / Kelas</option>
+                    {Array.from(
+                      new Set([
+                        "XII MIPA 1",
+                        "XII MIPA 2",
+                        "XII IPS 1",
+                        "XI MIPA 1",
+                        "X MERDEKA 1",
+                        ...(akademik.jadwalPelajaranList || []).map((s) => s.kelas).filter(Boolean),
+                      ])
+                    ).map((kls) => (
+                      <option key={kls} value={kls}>
+                        Kelas {kls}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -1704,7 +1710,7 @@ export default function AdminCMSManager() {
               {/* Daftar Slot KBM Terjadwal */}
               {(() => {
                 const kbmList = (akademik.jadwalPelajaranList || []).filter((s) => {
-                  const matchKelas = s.kelas === selectedKbmKelas;
+                  const matchKelas = selectedKbmKelas === "SEMUA" || s.kelas === selectedKbmKelas;
                   const matchHari = selectedKbmHari === "SEMUA" || s.hari === selectedKbmHari;
                   return matchKelas && matchHari;
                 });
@@ -1712,7 +1718,7 @@ export default function AdminCMSManager() {
                 if (kbmList.length === 0) {
                   return (
                     <div className="text-center py-6 text-xs text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-                      Belum ada slot pelajaran khusus untuk {selectedKbmKelas} ({selectedKbmHari}). Silakan klik "Tambah Slot KBM".
+                      Belum ada slot pelajaran khusus untuk {selectedKbmKelas === "SEMUA" ? "seluruh rombel" : selectedKbmKelas} ({selectedKbmHari}). Silakan klik "Tambah Slot KBM".
                     </div>
                   );
                 }

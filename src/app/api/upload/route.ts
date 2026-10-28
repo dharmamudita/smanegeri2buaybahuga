@@ -4,9 +4,9 @@ import fs from "fs";
 import path from "path";
 
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || "da14re4p",
-  api_key: process.env.CLOUDINARY_API_KEY || "457114721252693",
-  api_secret: process.env.CLOUDINARY_API_SECRET || "tR-MG-e7KUHyvFvJgw6IkN_XKaA",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
   secure: true,
 });
 

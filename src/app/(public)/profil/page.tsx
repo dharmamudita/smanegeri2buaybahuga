@@ -146,16 +146,16 @@ function ProfilContent() {
           Mengenal lebih dekat identitas institusi, arah visi misi keunggulan, jajaran dewan guru pendidik, struktur kepemimpinan, dan fasilitas sarana pembelajaran modern.
         </p>
 
-        {/* Sub-Navigation Tabs: Ukuran pas, proporsional, dan seimbang */}
+        {/* Sub-Navigation Tabs: Rapi dan pas penuh di dalam kotak baik di Mobile maupun Desktop */}
         <div className="pt-1.5">
-          <div className="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 bg-white rounded-xl border border-gray-200 shadow-2xs">
+          <div className="flex flex-wrap sm:inline-flex items-center gap-1.5 sm:gap-2 p-1.5 bg-white rounded-xl border border-gray-200 shadow-2xs w-full sm:w-auto">
             {tabs.map((tab) => {
               const isSelected = activeTab === tab.key;
               return (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
-                  className={`px-3.5 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                  className={`flex-1 sm:flex-initial text-center justify-center px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap transition-all cursor-pointer ${
                     isSelected
                       ? "bg-[#2A2C5E] text-white shadow-xs"
                       : "bg-gray-100/90 text-gray-700 hover:bg-gray-200/80 hover:text-gray-900"
@@ -241,14 +241,14 @@ function ProfilContent() {
             </div>
           </div>
 
-          {/* Container Bagan Hierarki */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-2xs p-6 sm:p-10 overflow-x-auto">
-            <div className="min-w-[300px] max-w-5xl mx-auto flex flex-col items-center">
+          {/* Container Bagan Hierarki (Rapi & Terhubung Garis di Mobile maupun Desktop) */}
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-2xs p-4 sm:p-8 lg:p-10">
+            <div className="max-w-5xl mx-auto flex flex-col items-center">
               
-              {/* LEVEL 1: KEPALA SEKOLAH + GARIS KOORDINASI KOMITE & TATA USAHA */}
-              <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-0 items-center relative">
-                {/* Kiri: Komite Sekolah (Garis Koordinasi) */}
-                <div className="order-2 lg:order-1 flex flex-col lg:flex-row items-center justify-end">
+              {/* LEVEL 1 (DESKTOP): KOMITE - KEPALA SEKOLAH - TATA USAHA */}
+              <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-0 items-center relative">
+                {/* Kiri Desktop: Komite Sekolah */}
+                <div className="hidden lg:flex items-center justify-end">
                   <div className="w-full max-w-xs bg-gray-50/90 border-2 border-dashed border-gray-300 rounded-xl p-4 text-center space-y-1">
                     <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-gray-600 bg-gray-200/80 px-2.5 py-0.5 rounded">
                       Mitra Koordinasi
@@ -258,13 +258,12 @@ function ProfilContent() {
                       Perwakilan Orang Tua / Wali Murid & Tokoh Masyarakat Buay Bahuga
                     </p>
                   </div>
-                  {/* Garis Putus-putus Horizontal ke Kepala Sekolah (Desktop) */}
-                  <div className="hidden lg:block w-8 border-t-2 border-dashed border-[#2A2C5E]/40" />
+                  <div className="w-8 border-t-2 border-dashed border-[#2A2C5E]/40" />
                 </div>
 
-                {/* Tengah Puncak: KEPALA SEKOLAH */}
-                <div className="order-1 lg:order-2 flex flex-col items-center z-10">
-                  <div className="w-full max-w-sm bg-[#2A2C5E] text-white rounded-xl p-5 text-center shadow-md border-2 border-[#2A2C5E] space-y-1.5">
+                {/* Puncak: KEPALA SEKOLAH */}
+                <div className="flex flex-col items-center z-10">
+                  <div className="w-full max-w-sm bg-[#2A2C5E] text-white rounded-xl p-4 sm:p-5 text-center shadow-md border-2 border-[#2A2C5E] space-y-1.5">
                     <span className="inline-block text-[10px] font-bold uppercase tracking-wider bg-white/15 text-blue-100 px-3 py-0.5 rounded-full">
                       Kepala Sekolah
                     </span>
@@ -280,10 +279,9 @@ function ProfilContent() {
                   </div>
                 </div>
 
-                {/* Kanan: Kepala Tata Usaha & Operator Dapodik */}
-                <div className="order-3 flex flex-col lg:flex-row items-center justify-start">
-                  {/* Garis Horizontal ke Tata Usaha (Desktop) */}
-                  <div className="hidden lg:block w-8 h-0.5 bg-[#2A2C5E]/40" />
+                {/* Kanan Desktop: Kepala Tata Usaha & Operator Dapodik */}
+                <div className="hidden lg:flex items-center justify-start">
+                  <div className="w-8 h-0.5 bg-[#2A2C5E]/40" />
                   <div className="w-full max-w-xs bg-blue-50/50 border border-blue-200 rounded-xl p-4 text-center space-y-1">
                     <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-100/80 px-2.5 py-0.5 rounded">
                       Tata Usaha & Dapodik
@@ -299,8 +297,41 @@ function ProfilContent() {
                 </div>
               </div>
 
-              {/* GARIS VERTIKAL DARI KEPALA SEKOLAH KE JAJARAN WAKA */}
-              <div className="w-0.5 h-8 sm:h-10 bg-[#2A2C5E]/40 relative flex items-center justify-center">
+              {/* KHUSUS MOBILE & TABLET (< lg): CABANG KOMITE & TATA USAHA BERDAMPINGAN */}
+              <div className="lg:hidden w-full flex flex-col items-center">
+                <div className="w-0.5 h-5 bg-[#2A2C5E]/40" />
+                <div className="w-1/2 h-0.5 bg-[#2A2C5E]/40 relative">
+                  <div className="absolute left-0 top-0 w-0.5 h-3 bg-[#2A2C5E]/40" />
+                  <div className="absolute right-0 top-0 w-0.5 h-3 bg-[#2A2C5E]/40" />
+                </div>
+                <div className="w-full grid grid-cols-2 gap-2.5 pt-3">
+                  <div className="bg-gray-50/90 border-2 border-dashed border-gray-300 rounded-xl p-3 text-center space-y-1 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <span className="inline-block text-[9px] font-bold uppercase tracking-wider text-gray-600 bg-gray-200/80 px-2 py-0.5 rounded">
+                        Koordinasi
+                      </span>
+                      <h4 className="text-xs sm:text-sm font-bold text-gray-900">Komite Sekolah</h4>
+                    </div>
+                    <p className="text-[10px] sm:text-[11px] text-gray-500 leading-snug pt-1 border-t border-gray-200/70">
+                      Perwakilan Wali Murid & Masyarakat
+                    </p>
+                  </div>
+                  <div className="bg-blue-50/50 border border-blue-200 rounded-xl p-3 text-center space-y-1 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <span className="inline-block text-[9px] font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-100/80 px-2 py-0.5 rounded">
+                        Tata Usaha
+                      </span>
+                      <h4 className="text-xs sm:text-sm font-bold text-gray-900">Abu Yasid</h4>
+                    </div>
+                    <p className="text-[10px] sm:text-[11px] text-gray-600 leading-snug pt-1 border-t border-blue-100">
+                      Operator Dapodik & 5 Tendik
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* GARIS VERTIKAL MENUJU JAJARAN WAKIL KEPALA SEKOLAH */}
+              <div className="w-0.5 h-7 sm:h-9 bg-[#2A2C5E]/40 relative flex items-center justify-center">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#2A2C5E] ring-4 ring-blue-50" />
               </div>
 
@@ -313,13 +344,15 @@ function ProfilContent() {
               </div>
 
               {/* LEVEL 2: 4 WAKIL KEPALA SEKOLAH (WAKA) */}
-              <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:pt-5">
+              <div className="w-full relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:pt-5">
+                {/* Garis Vertikal Penghubung Antar-Kartu di Mobile */}
+                <div className="sm:hidden absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 bg-[#2A2C5E]/35 z-0" />
                 {strukturPimpinan.slice(1, 5).map((waka) => (
                   <div
                     key={waka.jabatan}
-                    className="bg-white rounded-xl border-2 border-[#2A2C5E]/20 hover:border-[#2A2C5E] p-4 text-center shadow-2xs transition-all flex flex-col justify-between space-y-2"
+                    className="relative z-10 bg-white rounded-xl border-2 border-[#2A2C5E]/20 hover:border-[#2A2C5E] p-3.5 sm:p-4 text-center shadow-2xs transition-all flex flex-col justify-between space-y-2"
                   >
-                    <div className="space-y-1.5">
+                    <div className="space-y-1">
                       <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-blue-50 px-2.5 py-0.5 rounded">
                         {waka.jabatan.replace("Wakil Kepala Sekolah ", "Waka ")}
                       </span>
@@ -342,7 +375,7 @@ function ProfilContent() {
                 <div className="absolute inset-x-0 bottom-0 h-0.5 bg-[#2A2C5E]/30" />
               </div>
 
-              <div className="w-0.5 h-8 bg-[#2A2C5E]/40 relative flex items-center justify-center">
+              <div className="w-0.5 h-7 sm:h-8 bg-[#2A2C5E]/40 relative flex items-center justify-center">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#2A2C5E] ring-4 ring-blue-50" />
               </div>
 
@@ -354,8 +387,10 @@ function ProfilContent() {
               </div>
 
               {/* LEVEL 3: KOORDINATOR LAB, DEWAN GURU & WALI KELAS, GURU BK & PEMBINA EKSKUL */}
-              <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 md:pt-4">
-                <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 text-center space-y-1.5">
+              <div className="w-full relative grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:pt-4">
+                {/* Garis Vertikal Penghubung Antar-Kartu di Mobile */}
+                <div className="md:hidden absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 bg-[#2A2C5E]/35 z-0" />
+                <div className="relative z-10 bg-gray-50 rounded-xl border border-gray-200 p-3.5 sm:p-4 text-center space-y-1.5">
                   <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-white border border-gray-200 px-2.5 py-0.5 rounded">
                     Unit Penunjang Akademik
                   </span>
@@ -367,7 +402,7 @@ function ProfilContent() {
                   </p>
                 </div>
 
-                <div className="bg-blue-50/60 rounded-xl border-2 border-[#2A2C5E]/30 p-4 text-center space-y-1.5 shadow-2xs">
+                <div className="relative z-10 bg-blue-50 border-2 border-[#2A2C5E]/30 rounded-xl p-3.5 sm:p-4 text-center space-y-1.5 shadow-2xs">
                   <span className="inline-block text-[10px] font-bold text-white bg-[#2A2C5E] px-2.5 py-0.5 rounded">
                     Unsur Pelaksana Pendidik
                   </span>
@@ -379,7 +414,7 @@ function ProfilContent() {
                   </p>
                 </div>
 
-                <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 text-center space-y-1.5">
+                <div className="relative z-10 bg-gray-50 rounded-xl border border-gray-200 p-3.5 sm:p-4 text-center space-y-1.5">
                   <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-white border border-gray-200 px-2.5 py-0.5 rounded">
                     Unit Pembinaan Karakter
                   </span>
@@ -393,7 +428,7 @@ function ProfilContent() {
               </div>
 
               {/* GARIS VERTIKAL MENUJU PESERTA DIDIK */}
-              <div className="w-0.5 h-8 bg-[#2A2C5E]/40 relative flex items-center justify-center">
+              <div className="w-0.5 h-7 sm:h-8 bg-[#2A2C5E]/40 relative flex items-center justify-center">
                 <div className="w-2 h-2 rounded-full bg-[#2A2C5E]" />
               </div>
 
@@ -474,73 +509,73 @@ function ProfilContent() {
 
           <div className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden">
             <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100 text-xs">
-              <div className="p-6 space-y-3.5">
-                <div className="flex justify-between py-1.5 border-b border-gray-100">
+              <div className="p-4 sm:p-6 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-4 py-1.5 border-b border-gray-100">
                   <span className="text-gray-500">Nama Sekolah</span>
-                  <span className="font-bold text-gray-900">{SCHOOL_INFO.nama}</span>
+                  <span className="font-bold text-gray-900 sm:text-right">{SCHOOL_INFO.nama}</span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-gray-100">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-4 py-1.5 border-b border-gray-100">
                   <span className="text-gray-500">NPSN / NSS</span>
-                  <span className="font-bold text-[#2A2C5E] font-mono">
+                  <span className="font-bold text-[#2A2C5E] font-mono sm:text-right">
                     {SCHOOL_INFO.npsn} / {SCHOOL_INFO.nss}
                   </span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-gray-100">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 py-1.5 border-b border-gray-100">
                   <span className="text-gray-500">Peringkat Akreditasi</span>
-                  <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                  <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded self-start sm:self-auto">
                     Terakreditasi {SCHOOL_INFO.akreditasi} (Unggul)
                   </span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-gray-100">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-4 py-1.5 border-b border-gray-100">
                   <span className="text-gray-500">Kepala Sekolah</span>
-                  <span className="font-bold text-gray-900">{SCHOOL_INFO.kepalaSekolah}</span>
+                  <span className="font-bold text-gray-900 sm:text-right">{SCHOOL_INFO.kepalaSekolah}</span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-gray-100">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-4 py-1.5 border-b border-gray-100">
                   <span className="text-gray-500">SK Pendirian Sekolah</span>
-                  <span className="font-medium text-gray-900">{SCHOOL_INFO.skPendirian}</span>
+                  <span className="font-medium text-gray-900 sm:text-right">{SCHOOL_INFO.skPendirian}</span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-gray-100">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-4 py-1.5 border-b border-gray-100">
                   <span className="text-gray-500">SK Izin Operasional</span>
-                  <span className="font-medium text-gray-900">{SCHOOL_INFO.skOperasional}</span>
+                  <span className="font-medium text-gray-900 sm:text-right">{SCHOOL_INFO.skOperasional}</span>
                 </div>
-                <div className="flex justify-between py-1.5">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-4 py-1.5">
                   <span className="text-gray-500">Operator Sekolah / Dapodik</span>
-                  <span className="font-medium text-gray-900">{SCHOOL_INFO.operatorSekolah}</span>
+                  <span className="font-medium text-gray-900 sm:text-right">{SCHOOL_INFO.operatorSekolah}</span>
                 </div>
               </div>
 
-              <div className="p-6 space-y-3.5">
-                <div className="flex justify-between py-1.5 border-b border-gray-100">
-                  <span className="text-gray-500">Alamat Sekolah</span>
-                  <span className="font-medium text-gray-900 text-right max-w-xs">{SCHOOL_INFO.alamat}</span>
+              <div className="p-4 sm:p-6 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-0.5 sm:gap-4 py-1.5 border-b border-gray-100">
+                  <span className="text-gray-500 shrink-0">Alamat Sekolah</span>
+                  <span className="font-medium text-gray-900 sm:text-right sm:max-w-xs">{SCHOOL_INFO.alamat}</span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-gray-100">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-4 py-1.5 border-b border-gray-100">
                   <span className="text-gray-500">Kecamatan / Kabupaten</span>
-                  <span className="font-medium text-gray-900">{SCHOOL_INFO.kecamatan}, {SCHOOL_INFO.kabupaten}</span>
+                  <span className="font-medium text-gray-900 sm:text-right">{SCHOOL_INFO.kecamatan}, {SCHOOL_INFO.kabupaten}</span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-gray-100">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-4 py-1.5 border-b border-gray-100">
                   <span className="text-gray-500">Provinsi / Kode Pos</span>
-                  <span className="font-medium text-gray-900">{SCHOOL_INFO.provinsi} - {SCHOOL_INFO.kodePos}</span>
+                  <span className="font-medium text-gray-900 sm:text-right">{SCHOOL_INFO.provinsi} - {SCHOOL_INFO.kodePos}</span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-gray-100">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-4 py-1.5 border-b border-gray-100">
                   <span className="text-gray-500">Telepon / Email Resmi</span>
-                  <span className="font-medium text-gray-900 text-right">
+                  <span className="font-medium text-gray-900 sm:text-right break-all sm:break-normal">
                     {SCHOOL_INFO.telepon} &bull; {SCHOOL_INFO.email}
                   </span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-gray-100">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-4 py-1.5 border-b border-gray-100">
                   <span className="text-gray-500">Luas Tanah Sekolah</span>
-                  <span className="font-medium text-gray-900">{SCHOOL_INFO.luasTanah}</span>
+                  <span className="font-medium text-gray-900 sm:text-right">{SCHOOL_INFO.luasTanah}</span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-gray-100">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-4 py-1.5 border-b border-gray-100">
                   <span className="text-gray-500">Titik Koordinat Geografis</span>
-                  <span className="font-mono text-gray-900 text-right">
+                  <span className="font-mono text-gray-900 sm:text-right">
                     Lat {SCHOOL_INFO.koordinat.latitude}, Lng {SCHOOL_INFO.koordinat.longitude}
                   </span>
                 </div>
-                <div className="flex justify-between py-1.5">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-4 py-1.5">
                   <span className="text-gray-500">Kurikulum & Waktu KBM</span>
-                  <span className="font-bold text-[#2A2C5E]">Kurikulum Merdeka / Pagi</span>
+                  <span className="font-bold text-[#2A2C5E] sm:text-right">Kurikulum Merdeka / Pagi</span>
                 </div>
               </div>
             </div>

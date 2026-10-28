@@ -57,14 +57,14 @@ export default function InformasiPage() {
           Temukan rilis pengumuman akademik resmi, jadwal kegiatan sekolah, dan
           liputan prestasi siswa-siswi SMA Negeri 2 Buay Bahuga.
         </p>
-        {/* Tab Kategori & Search Bar: Ukuran pas, proporsional, dan seimbang */}
+        {/* Tab Kategori & Search Bar: Rapi dan pas penuh di dalam kotak baik di Mobile maupun Desktop */}
         <div className="pt-1.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 bg-white rounded-xl border border-gray-200 shadow-2xs">
+          <div className="flex flex-wrap sm:inline-flex items-center gap-1.5 sm:gap-2 p-1.5 bg-white rounded-xl border border-gray-200 shadow-2xs w-full sm:w-auto">
             {kategoriList.map((kat) => (
               <button
                 key={kat.key}
                 onClick={() => setSelectedKategori(kat.key)}
-                className={`px-3.5 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                className={`flex-1 sm:flex-initial text-center justify-center px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap transition-all cursor-pointer ${
                   selectedKategori === kat.key
                     ? "bg-[#2A2C5E] text-white shadow-xs"
                     : "bg-gray-100/90 text-gray-700 hover:bg-gray-200/80 hover:text-gray-900"

@@ -175,7 +175,7 @@ Selain cabang tersebut, SMAN 2 Buay Bahuga juga unggul pada tangkai lomba Cipta 
     ringkasan: "Sebanyak 48 pendidik SMAN 2 Buay Bahuga mengikuti In-House Training Kurikulum Merdeka serta penguatan lingkungan sekolah Aman, Sehat, Resik, dan Indah.",
     konten: `Dalam rangka meningkatkan kualitas pembelajaran di 29 rombongan belajar, SMA Negeri 2 Buay Bahuga menyelenggarakan kegiatan In-House Training (IHT) penguatan Kurikulum Merdeka dan pemanfaatan media pembelajaran digital bagi seluruh dewan guru.
 
-Sejalan dengan pembinaan akademik, sekolah juga menggalakkan Gerakan ASRI (Aman, Sehat, Resik, dan Indah) di atas lahan kampus seluas 20.000 m² serta bekerja sama dengan Puskesmas Buay Bahuga dalam menjaga kesehatan warga sekolah.`,
+Sejalan dengan pembinaan akademik, sekolah juga menggalakkan Gerakan ASRI (Aman, Sehat, Resik, dan Indah) di atas lahan sekolah seluas 20.000 m² serta bekerja sama dengan Puskesmas Buay Bahuga dalam menjaga kesehatan warga sekolah.`,
     kategori: "AKADEMIK",
     penulis: "Wakabid Kurikulum",
     tanggal: "10 Oktober 2026",

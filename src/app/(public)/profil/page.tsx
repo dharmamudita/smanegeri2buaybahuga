@@ -70,9 +70,9 @@ function ProfilContent() {
       kapasitas: "1 Gedung Utama",
     },
     {
-      nama: "Lapangan Olahraga & Lahan Kampus 20.000 m²",
+      nama: "Lapangan Olahraga & Lahan Sekolah 20.000 m²",
       deskripsi:
-        "Lingkungan kampus seluas 2 hektar dengan fasilitas lapangan upacara, futsal, bola voli, karate, pencak silat, dan taman sekolah ASRI.",
+        "Lingkungan sekolah seluas 2 hektar dengan fasilitas lapangan upacara, futsal, bola voli, karate, pencak silat, dan taman sekolah ASRI.",
       icon: Trophy,
       kapasitas: "Lahan 20.000 m²",
     },
@@ -357,7 +357,7 @@ function ProfilContent() {
 
               <div className="p-6 space-y-3.5">
                 <div className="flex justify-between py-1.5 border-b border-gray-100">
-                  <span className="text-gray-500">Alamat Kampus</span>
+                  <span className="text-gray-500">Alamat Sekolah</span>
                   <span className="font-medium text-gray-900 text-right max-w-xs">{SCHOOL_INFO.alamat}</span>
                 </div>
                 <div className="flex justify-between py-1.5 border-b border-gray-100">
@@ -375,7 +375,7 @@ function ProfilContent() {
                   </span>
                 </div>
                 <div className="flex justify-between py-1.5 border-b border-gray-100">
-                  <span className="text-gray-500">Luas Tanah Kampus</span>
+                  <span className="text-gray-500">Luas Tanah Sekolah</span>
                   <span className="font-medium text-gray-900">{SCHOOL_INFO.luasTanah}</span>
                 </div>
                 <div className="flex justify-between py-1.5 border-b border-gray-100">
@@ -402,7 +402,7 @@ function ProfilContent() {
               <Building2 className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Fasilitas & Sarana Kampus</h2>
+              <h2 className="text-xl font-bold text-gray-900">Fasilitas & Sarana Sekolah</h2>
               <p className="text-xs text-gray-500">Infrastruktur pendukung kenyamanan belajar dan eksplorasi teknologi</p>
             </div>
           </div>

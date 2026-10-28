@@ -55,7 +55,7 @@ export default function InformasiPage() {
         </h1>
         <p className="text-xs sm:text-sm text-gray-600 max-w-3xl leading-relaxed">
           Temukan rilis pengumuman akademik resmi, jadwal kegiatan sekolah, dan
-          liputan prestasi civitas akademika SMA Negeri 2 Buay Bahuga.
+          liputan prestasi siswa-siswi SMA Negeri 2 Buay Bahuga.
         </p>
         {/* Tab Kategori & Search Bar: Ukuran pas, proporsional, dan seimbang */}
         <div className="pt-1.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">

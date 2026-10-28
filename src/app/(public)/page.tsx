@@ -104,7 +104,7 @@ export default function HomePage() {
                     <Building2 className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
                     <div>
                       <span className="font-semibold text-gray-800">
-                        Lokasi Kampus
+                        Lokasi Sekolah
                       </span>
                       <p className="text-gray-500 mt-0.5 leading-relaxed">
                         {SCHOOL_INFO.alamat}

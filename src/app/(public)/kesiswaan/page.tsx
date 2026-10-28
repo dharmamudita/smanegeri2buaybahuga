@@ -259,7 +259,7 @@ function KesiswaanContent() {
             </div>
             <div>
               <h2 className="text-xl font-bold text-gray-900">Rekam Jejak Prestasi Siswa</h2>
-              <p className="text-xs text-gray-500">Capaian membanggakan civitas akademika di bidang akademik, olahraga, dan seni</p>
+              <p className="text-xs text-gray-500">Capaian membanggakan peserta didik SMAN 2 Buay Bahuga di bidang akademik, olahraga, dan seni</p>
             </div>
           </div>
 

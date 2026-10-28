@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   GraduationCap,
@@ -10,6 +11,7 @@ import {
   ArrowRight,
   ShieldCheck,
   Calendar,
+  ChevronLeft,
   ChevronRight,
   MapPin,
   Building2,
@@ -18,12 +20,170 @@ import {
 import { SCHOOL_INFO } from "@/lib/constants";
 import { useBeritaStore } from "@/lib/store";
 
+const HERO_SLIDES = [
+  {
+    id: "slide-1",
+    badge: "Selamat Datang di Portal Resmi SMAN 2 Buay Bahuga",
+    judul: "Unggul dalam Prestasi, Berkarakter Mulia & Berdaya Saing Global",
+    deskripsi:
+      "SMA Negeri 2 Buay Bahuga (NPSN: 10810192) berkomitmen menghadirkan layanan pendidikan Terakreditasi A (Unggul) berbasis Kurikulum Merdeka di Kabupaten Way Kanan, Provinsi Lampung.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1400&auto=format&fit=crop&q=80",
+    ctaLabel: "Profil Lengkap Sekolah",
+    ctaHref: "/profil",
+  },
+  {
+    id: "slide-2",
+    badge: "Personal Branding & Mutu Akademik",
+    judul: "Dibimbing 48 Pendidik Profesional di 28 Ruang Kelas & 9 Laboratorium",
+    deskripsi:
+      "Sinergi kepemimpinan Kepala Sekolah Ibu Apriyani, S.Si., M.M.Pd. bersama dewan guru bersertifikasi dalam mendampingi 983 peserta didik meraih masa depan gemilang.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1400&auto=format&fit=crop&q=80",
+    ctaLabel: "Program Akademik & Jadwal",
+    ctaHref: "/akademik",
+  },
+  {
+    id: "slide-3",
+    badge: "Tradisi Juara & Kebanggaan Sekolah",
+    judul: "Prestasi Gemilang di Ajang SNBP PTN, Olimpiade OSN, FLS2N & O2SN",
+    deskripsi:
+      "Membina potensi sains, seni kriya budaya Lampung, olahraga bela diri, serta kepemimpinan siswa melalui 12 cabang ekstrakurikuler aktif.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1400&auto=format&fit=crop&q=80",
+    ctaLabel: "Lihat Rekam Jejak Prestasi",
+    ctaHref: "/kesiswaan?tab=PRESTASI",
+  },
+  {
+    id: "slide-4",
+    badge: "Penerimaan Peserta Didik Baru (PPDB)",
+    judul: "Mari Bergabung Menjadi Bagian dari Keluarga Besar Smandabuba",
+    deskripsi:
+      "Lingkungan sekolah seluas 20.000 m² yang Aman, Sehat, Resik, dan Indah (ASRI) siap menyambut generasi penerus bangsa Tahun Pelajaran 2026/2027.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1400&auto=format&fit=crop&q=80",
+    ctaLabel: "Informasi PPDB Online",
+    ctaHref: "/ppdb",
+  },
+];
+
 export default function HomePage() {
   const beritaList = useBeritaStore((state) => state.beritaList);
   const beritaTerbaru = beritaList.slice(0, 6);
+  const [activeBannerIdx, setActiveBannerIdx] = useState<number>(0);
+
+  // Otomatis bergeser setiap 4 detik ketika dibiarkan
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveBannerIdx((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [activeBannerIdx]);
 
   return (
     <div className="space-y-6 sm:space-y-8 pb-12">
+      {/* 0. Banner Utama Personal Branding Sekolah (Slider Geser Kiri/Kanan & Otomatis) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-5 sm:pt-7">
+        <div className="relative w-full aspect-[9/6] sm:aspect-[16/8] lg:h-[440px] rounded-2xl overflow-hidden border border-gray-200 shadow-md bg-gray-900 group">
+          {/* Track Slide Horizontal */}
+          <div
+            className="flex w-full h-full transition-transform duration-700 ease-out"
+            style={{ transform: `translateX(-${activeBannerIdx * 100}%)` }}
+          >
+            {HERO_SLIDES.map((slide) => (
+              <div key={slide.id} className="w-full h-full shrink-0 relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={slide.imageUrl}
+                  alt={slide.judul}
+                  className="w-full h-full object-cover"
+                />
+                {/* Overlay Gradasi Institusional */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#161836]/95 via-[#2A2C5E]/55 to-black/20" />
+
+                {/* Konten Teks Personal Branding di Atas Gambar */}
+                <div className="absolute inset-0 flex flex-col justify-end p-5 sm:p-10 lg:p-12">
+                  <div className="max-w-3xl space-y-2.5 sm:space-y-3.5">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-xs border border-white/25 text-white text-[11px] sm:text-xs font-semibold">
+                      <ShieldCheck className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+                      <span>{slide.badge}</span>
+                    </span>
+
+                    <h2 className="text-lg sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-snug">
+                      {slide.judul}
+                    </h2>
+
+                    <p className="text-xs sm:text-sm text-blue-100/95 leading-relaxed line-clamp-2 sm:line-clamp-3 max-w-2xl">
+                      {slide.deskripsi}
+                    </p>
+
+                    <div className="pt-1 sm:pt-2 flex items-center gap-3">
+                      <Link
+                        href={slide.ctaHref}
+                        className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg bg-white text-[#2A2C5E] hover:bg-blue-50 text-xs sm:text-sm font-bold shadow-xs transition-colors"
+                      >
+                        <span>{slide.ctaLabel}</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Badge Nomor Slide di Pojok Kanan Atas */}
+          <div className="absolute top-4 right-4 bg-black/45 backdrop-blur-xs border border-white/20 text-white text-[11px] font-bold px-3 py-1 rounded-full">
+            {activeBannerIdx + 1} / {HERO_SLIDES.length}
+          </div>
+
+          {/* Tombol Geser Kiri */}
+          <button
+            type="button"
+            onClick={() =>
+              setActiveBannerIdx(
+                (prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length
+              )
+            }
+            className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-gray-900 hover:text-[#2A2C5E] shadow-lg flex items-center justify-center transition-all cursor-pointer"
+            aria-label="Slide Sebelumnya"
+          >
+            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+          </button>
+
+          {/* Tombol Geser Kanan */}
+          <button
+            type="button"
+            onClick={() =>
+              setActiveBannerIdx((prev) => (prev + 1) % HERO_SLIDES.length)
+            }
+            className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-gray-900 hover:text-[#2A2C5E] shadow-lg flex items-center justify-center transition-all cursor-pointer"
+            aria-label="Slide Berikutnya"
+          >
+            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+          </button>
+
+          {/* Indikator Titik Slide di Pojok Kanan Bawah / Tengah Bawah */}
+          <div className="absolute bottom-4 right-5 flex items-center gap-1.5 bg-black/35 backdrop-blur-xs px-3 py-1.5 rounded-full">
+            {HERO_SLIDES.map((s, idx) => {
+              const isCurrent = idx === activeBannerIdx;
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setActiveBannerIdx(idx)}
+                  className={`h-2 rounded-full transition-all cursor-pointer ${
+                    isCurrent
+                      ? "w-7 bg-white"
+                      : "w-2 bg-white/50 hover:bg-white/80"
+                  }`}
+                  aria-label={`Pilih Slide ${idx + 1}`}
+                />
+              );
+            })}
+          </div>
+        </div>
+      </section>
       {/* 1. Hero Section */}
       <section className="relative bg-gradient-to-b from-blue-50/70 via-white to-white border-b border-gray-100 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10 pb-4 sm:pb-6">

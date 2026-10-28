@@ -45,20 +45,27 @@ export default function AdminCMSManager() {
     updateKepsek,
     updateStatistik,
     addVideoPanduan,
+    updateVideoPanduan,
     deleteVideoPanduan,
     updateProfilVisiMisi,
     addStrukturOrganisasi,
+    updateStrukturOrganisasi,
     deleteStrukturOrganisasi,
     addGuruStaff,
+    updateGuruStaff,
     deleteGuruStaff,
     addAgendaKalender,
+    updateAgendaKalender,
     deleteAgendaKalender,
     addJadwalUjian,
+    updateJadwalUjian,
     deleteJadwalUjian,
     addPrestasi,
+    updatePrestasi,
     deletePrestasi,
     updateOsis,
     addEkskul,
+    updateEkskul,
     deleteEkskul,
     resetAllToDefault,
   } = useCMSStore();
@@ -70,6 +77,27 @@ export default function AdminCMSManager() {
     setTimeout(() => {
       setNotification(null);
     }, 4000);
+  };
+
+  const [editingItem, setEditingItem] = useState<{
+    type: "VIDEO" | "ORG" | "GURU" | "AGENDA" | "UJIAN" | "PRESTASI" | "EKSKUL";
+    id: string;
+    data: any;
+  } | null>(null);
+
+  const handleSaveEdit = () => {
+    if (!editingItem) return;
+    const { type, id, data } = editingItem;
+    if (type === "VIDEO") updateVideoPanduan(id, data);
+    else if (type === "ORG") updateStrukturOrganisasi(id, data);
+    else if (type === "GURU") updateGuruStaff(id, data);
+    else if (type === "AGENDA") updateAgendaKalender(id, data);
+    else if (type === "UJIAN") updateJadwalUjian(id, data);
+    else if (type === "PRESTASI") updatePrestasi(id, data);
+    else if (type === "EKSKUL") updateEkskul(id, data);
+
+    setEditingItem(null);
+    showToast("Perubahan data berhasil disimpan dan langsung tayang!");
   };
 
   // --- Form States for Quick Adds ---
@@ -719,18 +747,27 @@ export default function AdminCMSManager() {
                         <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
                           {v.kategori}
                         </span>
-                        <button
-                          onClick={() => {
-                            if (confirm(`Hapus video "${v.judul}"?`)) {
-                              deleteVideoPanduan(v.id);
-                              showToast("Video berhasil dihapus.");
-                            }
-                          }}
-                          className="text-red-500 hover:text-red-700 p-1"
-                          title="Hapus Video"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => setEditingItem({ type: "VIDEO", id: v.id, data: { ...v } })}
+                            className="text-[#2A2C5E] hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                            title="Edit Video"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (confirm(`Hapus video "${v.judul}"?`)) {
+                                deleteVideoPanduan(v.id);
+                                showToast("Video berhasil dihapus.");
+                              }
+                            }}
+                            className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition-colors"
+                            title="Hapus Video"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                       <h4 className="text-xs font-bold text-gray-900 line-clamp-2">{v.judul}</h4>
                       <p className="text-[11px] text-gray-500 line-clamp-2">{v.ringkasan}</p>
@@ -906,18 +943,27 @@ export default function AdminCMSManager() {
                       <p className="text-[10px] font-mono text-gray-500 truncate">{item.nip}</p>
                     </div>
 
-                    <button
-                      onClick={() => {
-                        if (confirm(`Hapus jabatan "${item.jabatan}"?`)) {
-                          deleteStrukturOrganisasi(item.id);
-                          showToast("Posisi berhasil dihapus.");
-                        }
-                      }}
-                      className="text-gray-400 hover:text-red-600 p-1 shrink-0"
-                      title="Hapus Posisi"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        onClick={() => setEditingItem({ type: "ORG", id: item.id, data: { ...item } })}
+                        className="text-[#2A2C5E] hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                        title="Edit Posisi"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Hapus jabatan "${item.jabatan}"?`)) {
+                            deleteStrukturOrganisasi(item.id);
+                            showToast("Posisi berhasil dihapus.");
+                          }
+                        }}
+                        className="text-gray-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition-colors"
+                        title="Hapus Posisi"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1082,18 +1128,27 @@ export default function AdminCMSManager() {
                       <span className="text-[#2A2C5E] font-semibold truncate max-w-[150px]">
                         {g.mapel}
                       </span>
-                      <button
-                        onClick={() => {
-                          if (confirm(`Hapus guru "${g.nama}"?`)) {
-                            deleteGuruStaff(g.id);
-                            showToast("Guru berhasil dihapus.");
-                          }
-                        }}
-                        className="text-red-500 hover:text-red-700 p-1"
-                        title="Hapus Guru"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => setEditingItem({ type: "GURU", id: g.id, data: { ...g } })}
+                          className="text-[#2A2C5E] hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                          title="Edit Guru"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm(`Hapus guru "${g.nama}"?`)) {
+                              deleteGuruStaff(g.id);
+                              showToast("Guru berhasil dihapus.");
+                            }
+                          }}
+                          className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition-colors"
+                          title="Hapus Guru"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -1240,6 +1295,13 @@ export default function AdminCMSManager() {
                       <span className="text-[10px] font-semibold text-gray-600 bg-gray-100 px-2 py-0.5 rounded">
                         {ag.kategori}
                       </span>
+                      <button
+                        onClick={() => setEditingItem({ type: "AGENDA", id: ag.id, data: { ...ag } })}
+                        className="text-blue-600 hover:text-blue-800 p-1"
+                        title="Edit Agenda"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
                       <button
                         onClick={() => {
                           if (confirm(`Hapus agenda "${ag.kegiatan}"?`)) {
@@ -1404,18 +1466,27 @@ export default function AdminCMSManager() {
                       <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
                         {uj.mataPelajaran}
                       </span>
-                      <button
-                        onClick={() => {
-                          if (confirm(`Hapus jadwal "${uj.mataPelajaran}"?`)) {
-                            deleteJadwalUjian(uj.id);
-                            showToast("Jadwal ujian berhasil dihapus.");
-                          }
-                        }}
-                        className="text-red-500 hover:text-red-700 p-1"
-                        title="Hapus Jadwal"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => setEditingItem({ type: "UJIAN", id: uj.id, data: { ...uj } })}
+                          className="text-blue-600 hover:text-blue-800 p-1"
+                          title="Edit Jadwal"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm(`Hapus jadwal "${uj.mataPelajaran}"?`)) {
+                              deleteJadwalUjian(uj.id);
+                              showToast("Jadwal ujian berhasil dihapus.");
+                            }
+                          }}
+                          className="text-red-500 hover:text-red-700 p-1"
+                          title="Hapus Jadwal"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
                     <p className="text-xs font-bold text-gray-900">{uj.hariTanggal}</p>
                     <p className="text-[11px] text-gray-500">{uj.waktu} &bull; {uj.ruangModa}</p>
@@ -1605,18 +1676,27 @@ export default function AdminCMSManager() {
                         <span className="absolute top-2 left-2 bg-[#2A2C5E] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-xs">
                           {pres.juara}
                         </span>
-                        <button
-                          onClick={() => {
-                            if (confirm(`Hapus prestasi "${pres.judul}"?`)) {
-                              deletePrestasi(pres.id);
-                              showToast("Prestasi berhasil dihapus.");
-                            }
-                          }}
-                          className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-md shadow-xs hover:bg-red-700"
-                          title="Hapus Prestasi"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        <div className="absolute top-2 right-2 flex items-center gap-1">
+                          <button
+                            onClick={() => setEditingItem({ type: "PRESTASI", id: pres.id, data: { ...pres } })}
+                            className="bg-white/90 text-blue-700 p-1 rounded-md shadow-xs hover:bg-white"
+                            title="Edit Prestasi"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (confirm(`Hapus prestasi "${pres.judul}"?`)) {
+                                deletePrestasi(pres.id);
+                                showToast("Prestasi berhasil dihapus.");
+                              }
+                            }}
+                            className="bg-red-600 text-white p-1 rounded-md shadow-xs hover:bg-red-700"
+                            title="Hapus Prestasi"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                       <div className="p-3.5 space-y-1">
                         <span className="text-[10px] text-gray-500 font-medium">
@@ -1873,18 +1953,27 @@ export default function AdminCMSManager() {
                       <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
                         {ek.kategori}
                       </span>
-                      <button
-                        onClick={() => {
-                          if (confirm(`Hapus ekstrakurikuler "${ek.nama}"?`)) {
-                            deleteEkskul(ek.id);
-                            showToast("Ekstrakurikuler berhasil dihapus.");
-                          }
-                        }}
-                        className="text-red-500 hover:text-red-700 p-1"
-                        title="Hapus Eskul"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => setEditingItem({ type: "EKSKUL", id: ek.id, data: { ...ek } })}
+                          className="text-blue-600 hover:text-blue-800 p-1"
+                          title="Edit Eskul"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm(`Hapus ekstrakurikuler "${ek.nama}"?`)) {
+                              deleteEkskul(ek.id);
+                              showToast("Ekstrakurikuler berhasil dihapus.");
+                            }
+                          }}
+                          className="text-red-500 hover:text-red-700 p-1"
+                          title="Hapus Eskul"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
                     <h4 className="text-xs font-bold text-gray-900">{ek.nama}</h4>
                     <p className="text-[11px] text-gray-600">Pembina: {ek.pembina || "-"}</p>
@@ -2069,6 +2158,552 @@ export default function AdminCMSManager() {
           </div>
         )}
       </div>
+
+      {/* Universal Modal Edit Dialog */}
+      {editingItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200 flex flex-col">
+            <div className="p-5 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center">
+                  <Edit3 className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900">
+                    Edit {editingItem.type === "VIDEO" ? "Video Panduan Portal" :
+                          editingItem.type === "ORG" ? "Struktur Organisasi" :
+                          editingItem.type === "GURU" ? "Data Pendidik & Staf" :
+                          editingItem.type === "AGENDA" ? "Agenda Kalender Pendidikan" :
+                          editingItem.type === "UJIAN" ? "Jadwal Pelaksanaan Ujian" :
+                          editingItem.type === "PRESTASI" ? "Prestasi Siswa" : "Ekstrakurikuler"}
+                  </h3>
+                  <p className="text-[11px] text-gray-500">
+                    ID: {editingItem.id} &bull; SMAN 2 Buay Bahuga
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setEditingItem(null)}
+                className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-5 sm:p-6 space-y-4 text-xs">
+              {/* Form VIDEO */}
+              {editingItem.type === "VIDEO" && (
+                <>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">Judul Video</label>
+                    <input
+                      type="text"
+                      value={editingItem.data.judul || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, judul: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Kategori</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.kategori || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, kategori: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Durasi</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.durasi || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, durasi: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Tautan YouTube</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.youtubeUrl || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, youtubeUrl: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Label Sorotan (Highlight)</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.highlight || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, highlight: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">Ringkasan</label>
+                    <textarea
+                      rows={2}
+                      value={editingItem.data.ringkasan || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, ringkasan: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Form ORG */}
+              {editingItem.type === "ORG" && (
+                <>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Nama Lengkap & Gelar</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.nama || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, nama: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Jabatan Institusi</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.jabatan || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, jabatan: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">NIP / NUPTK</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.nip || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, nip: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Pangkat / Golongan</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.pangkat || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, pangkat: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">URL Foto Profil</label>
+                    <input
+                      type="text"
+                      value={editingItem.data.fotoUrl || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, fotoUrl: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">Keterangan Tambahan</label>
+                    <textarea
+                      rows={2}
+                      value={editingItem.data.keterangan || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, keterangan: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Form GURU */}
+              {editingItem.type === "GURU" && (
+                <>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Nama Lengkap & Gelar</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.nama || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, nama: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">NUPTK / NIP</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.nuptk || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, nuptk: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Mata Pelajaran Diampu</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.mapel || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, mapel: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Pendidikan Terakhir</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.pendidikan || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, pendidikan: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">Email Resmi</label>
+                    <input
+                      type="email"
+                      value={editingItem.data.email || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, email: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">URL Foto Profil</label>
+                    <input
+                      type="text"
+                      value={editingItem.data.fotoUrl || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, fotoUrl: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Form AGENDA */}
+              {editingItem.type === "AGENDA" && (
+                <>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="col-span-2 space-y-1">
+                      <label className="font-semibold text-gray-700">Tanggal Pelaksanaan</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.tanggal || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, tanggal: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Bulan Singkat</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.bulanSingkat || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, bulanSingkat: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">Nama Kegiatan</label>
+                    <input
+                      type="text"
+                      value={editingItem.data.kegiatan || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, kegiatan: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Kategori</label>
+                      <select
+                        value={editingItem.data.kategori || "AKADEMIK"}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, kategori: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E] bg-white"
+                      >
+                        <option value="AKADEMIK">AKADEMIK</option>
+                        <option value="LIBUR">LIBUR RESMI</option>
+                        <option value="UJIAN">ASESMEN & UJIAN</option>
+                        <option value="KEGIATAN">KEGIATAN SEKOLAH</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Semester</label>
+                      <select
+                        value={editingItem.data.semester || "GANJIL"}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, semester: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E] bg-white"
+                      >
+                        <option value="GANJIL">GANJIL</option>
+                        <option value="GENAP">GENAP</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">Keterangan</label>
+                    <textarea
+                      rows={2}
+                      value={editingItem.data.keterangan || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, keterangan: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Form UJIAN */}
+              {editingItem.type === "UJIAN" && (
+                <>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Mata Pelajaran</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.mataPelajaran || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, mataPelajaran: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Hari & Tanggal</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.hariTanggal || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, hariTanggal: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Sesi Ujian</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.sesi || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, sesi: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Waktu Pelaksanaan</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.waktu || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, waktu: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Tingkat Sasaran</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.tingkatLabel || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, tingkatLabel: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Ruang & Moda</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.ruangModa || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, ruangModa: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">Koordinator Pengawas</label>
+                    <input
+                      type="text"
+                      value={editingItem.data.koordinator || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, koordinator: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Form PRESTASI */}
+              {editingItem.type === "PRESTASI" && (
+                <>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">Judul Prestasi / Kejuaraan</label>
+                    <input
+                      type="text"
+                      value={editingItem.data.judul || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, judul: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Peringkat / Juara</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.juara || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, juara: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Tingkat</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.tingkat || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, tingkat: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Tahun</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.tahun || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, tahun: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Kategori Bidang</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.kategori || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, kategori: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Siswa / Tim Peraih</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.peraih || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, peraih: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">URL Foto Dokumentasi</label>
+                    <input
+                      type="text"
+                      value={editingItem.data.fotoUrl || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, fotoUrl: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">Deskripsi Prestasi</label>
+                    <textarea
+                      rows={2}
+                      value={editingItem.data.deskripsi || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, deskripsi: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Form EKSKUL */}
+              {editingItem.type === "EKSKUL" && (
+                <>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Nama Ekstrakurikuler</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.nama || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, nama: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Kategori</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.kategori || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, kategori: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Guru Pembina</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.pembina || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, pembina: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Jadwal Rutin</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.jadwal || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, jadwal: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Lokasi Latihan</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.lokasi || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, lokasi: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Prestasi Unggulan</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.prestasiUnggulan || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, prestasiUnggulan: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">Deskripsi Singkat</label>
+                    <textarea
+                      rows={2}
+                      value={editingItem.data.deskripsi || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, deskripsi: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="p-4 bg-gray-50 border-t border-gray-200 flex items-center justify-end gap-2 sticky bottom-0">
+              <button
+                onClick={() => setEditingItem(null)}
+                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-semibold text-xs hover:bg-gray-100 transition-all"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleSaveEdit}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#2A2C5E] text-white font-bold text-xs hover:bg-[#1F2147] transition-all shadow-xs"
+              >
+                <Save className="w-3.5 h-3.5" />
+                <span>Simpan Perubahan</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

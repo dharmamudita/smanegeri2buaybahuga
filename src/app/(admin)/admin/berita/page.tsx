@@ -12,11 +12,11 @@ import {
   XCircle,
 } from "lucide-react";
 import DataTable, { Column, DataTableFilter } from "@/components/common/DataTable";
-import { MOCK_BERITA } from "@/lib/mockData";
+import { useBeritaStore } from "@/lib/store";
 import { BeritaItem } from "@/lib/types";
 
 export default function AdminBeritaPage() {
-  const [beritaList, setBeritaList] = useState<BeritaItem[]>(MOCK_BERITA);
+  const { beritaList, addBerita, deleteBerita } = useBeritaStore();
   const [showModal, setShowModal] = useState(false);
   const [judul, setJudul] = useState("");
   const [kategori, setKategori] = useState<"PENGUMUMAN" | "AKADEMIK" | "KESISWAAN" | "PRESTASI">("PENGUMUMAN");
@@ -42,7 +42,7 @@ export default function AdminBeritaPage() {
       thumbnailUrl:
         "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&auto=format&fit=crop&q=80",
     };
-    setBeritaList([item, ...beritaList]);
+    addBerita(item);
     setShowModal(false);
     setJudul("");
     setRingkasan("");
@@ -51,7 +51,7 @@ export default function AdminBeritaPage() {
 
   const handleDelete = (id: string) => {
     if (confirm("Hapus artikel pengumuman ini?")) {
-      setBeritaList(beritaList.filter((b) => b.id !== id));
+      deleteBerita(id);
     }
   };
 

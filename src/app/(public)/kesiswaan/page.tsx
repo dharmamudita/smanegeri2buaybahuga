@@ -23,6 +23,10 @@ import {
   ArrowLeft,
   ChevronRight,
 } from "lucide-react";
+import PaginationBar from "@/components/common/PaginationBar";
+
+const PRESTASI_PER_PAGE = 6;
+const EKSKUL_PER_PAGE = 6;
 
 type KesiswaanTab = "TATA_TERTIB" | "PRESTASI" | "OSIS" | "EKSTRAKURIKULER";
 
@@ -199,6 +203,109 @@ function EkskulLogo({ id, size = "md" }: { id: string; size?: "sm" | "md" | "lg"
         </div>
       );
 
+    case "pmr":
+      return (
+        <div
+          className={`${sizeClass} rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center p-1.5 shrink-0 shadow-2xs`}
+          title="Logo Palang Merah Remaja (PMR)"
+        >
+          <svg viewBox="0 0 64 64" className="w-full h-full" fill="none">
+            <circle cx="32" cy="32" r="27" fill="#FFFFFF" stroke="#E11D48" strokeWidth="3" />
+            <path d="M27 16H37V27H48V37H37V48H27V37H16V27H27V16Z" fill="#E11D48" />
+          </svg>
+        </div>
+      );
+
+    case "english":
+      return (
+        <div
+          className={`${sizeClass} rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center p-1.5 shrink-0 shadow-2xs`}
+          title="Logo English Club & Debat"
+        >
+          <svg viewBox="0 0 64 64" className="w-full h-full" fill="none">
+            <circle cx="32" cy="32" r="27" fill="#1E3A8A" stroke="#38BDF8" strokeWidth="3" />
+            <circle cx="32" cy="32" r="17" stroke="#93C5FD" strokeWidth="2" />
+            <ellipse cx="32" cy="32" rx="9" ry="17" stroke="#93C5FD" strokeWidth="2" />
+            <path d="M15 32H49" stroke="#93C5FD" strokeWidth="2" />
+            <path d="M18 24H46M18 40H46" stroke="#38BDF8" strokeWidth="1.5" />
+          </svg>
+        </div>
+      );
+
+    case "jurnalistik":
+      return (
+        <div
+          className={`${sizeClass} rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-center p-1.5 shrink-0 shadow-2xs`}
+          title="Logo Fotografi, Film & Jurnalistik"
+        >
+          <svg viewBox="0 0 64 64" className="w-full h-full" fill="none">
+            <rect
+              x="8"
+              y="14"
+              width="48"
+              height="38"
+              rx="7"
+              fill="#3B0764"
+              stroke="#C084FC"
+              strokeWidth="3"
+            />
+            <path d="M22 14L26 9H38L42 14H22Z" fill="#C084FC" />
+            <circle cx="32" cy="33" r="10" fill="#FAF5FF" stroke="#A855F7" strokeWidth="2.5" />
+            <circle cx="32" cy="33" r="4.5" fill="#581C87" />
+          </svg>
+        </div>
+      );
+
+    case "voli_futsal":
+      return (
+        <div
+          className={`${sizeClass} rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center p-1.5 shrink-0 shadow-2xs`}
+          title="Logo Klub Bola Voli & Futsal"
+        >
+          <svg viewBox="0 0 64 64" className="w-full h-full" fill="none">
+            <circle cx="32" cy="32" r="27" fill="#9A3412" stroke="#FBBF24" strokeWidth="3" />
+            <circle cx="32" cy="32" r="18" fill="#FFFBEB" stroke="#9A3412" strokeWidth="2" />
+            <path d="M16 26C24 30 40 30 48 26" stroke="#9A3412" strokeWidth="2" />
+            <path d="M16 38C24 34 40 34 48 38" stroke="#9A3412" strokeWidth="2" />
+            <path d="M32 14V50" stroke="#D97706" strokeWidth="2" />
+          </svg>
+        </div>
+      );
+
+    case "teater":
+      return (
+        <div
+          className={`${sizeClass} rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center p-1.5 shrink-0 shadow-2xs`}
+          title="Logo Sastra, Puisi & Teater Monolog"
+        >
+          <svg viewBox="0 0 64 64" className="w-full h-full" fill="none">
+            <circle cx="32" cy="32" r="27" fill="#451A03" stroke="#F59E0B" strokeWidth="3" />
+            <path
+              d="M16 22C16 20 29 20 32 24C35 20 48 20 48 22V42C48 40 35 40 32 44C29 40 16 40 16 42V22Z"
+              fill="#FEF3C7"
+              stroke="#D97706"
+              strokeWidth="2"
+            />
+            <path d="M32 24V44" stroke="#92400E" strokeWidth="2" />
+            <path d="M32 14L36 22L32 20L28 22L32 14Z" fill="#FBBF24" />
+          </svg>
+        </div>
+      );
+
+    case "pecinta_alam":
+      return (
+        <div
+          className={`${sizeClass} rounded-xl bg-teal-50 border border-teal-200 flex items-center justify-center p-1.5 shrink-0 shadow-2xs`}
+          title="Logo Pecinta Alam & Duta Sekolah ASRI"
+        >
+          <svg viewBox="0 0 64 64" className="w-full h-full" fill="none">
+            <circle cx="32" cy="32" r="27" fill="#064E3B" stroke="#34D399" strokeWidth="3" />
+            <path d="M12 46L26 22L36 36L42 28L52 46H12Z" fill="#10B981" />
+            <circle cx="43" cy="20" r="4" fill="#FDE047" />
+          </svg>
+        </div>
+      );
+
     default:
       return (
         <div
@@ -348,6 +455,78 @@ function KesiswaanContent() {
       tahun: "2025/2026",
       fotoUrl:
         "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&auto=format&fit=crop&q=80",
+    },
+    {
+      kegiatan: "Festival & Lomba Seni Siswa Nasional (FLS2N) Cabang Cipta Puisi",
+      jenisLomba: "Lomba Penulisan & Apresiasi Sastra Puisi Pelajar SMA",
+      tingkat: "Tingkat Kabupaten Way Kanan",
+      peraih: "Putri Maharani (Kelas XI MIPA 2)",
+      pembimbing: "Marlita Illiansyah, S.Pd.",
+      predikat: "Juara 1 (Medali Emas)",
+      kategori: "Seni Budaya",
+      tahun: "2026",
+      fotoUrl:
+        "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&auto=format&fit=crop&q=80",
+    },
+    {
+      kegiatan: "Festival & Lomba Seni Siswa Nasional (FLS2N) Cabang Baca Puisi",
+      jenisLomba: "Kompetisi Deklamasi & Penghayatan Puisi Tingkat SMA",
+      tingkat: "Tingkat Kabupaten Way Kanan",
+      peraih: "Citra Ayu Lestari (Kelas XI MIPA 1)",
+      pembimbing: "Marlita Illiansyah, S.Pd.",
+      predikat: "Juara 2 (Medali Perak)",
+      kategori: "Seni Budaya",
+      tahun: "2026",
+      fotoUrl:
+        "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=600&auto=format&fit=crop&q=80",
+    },
+    {
+      kegiatan: "Festival & Lomba Seni Siswa Nasional (FLS2N) Cabang Fotografi",
+      jenisLomba: "Kompetisi Fotografi Jurnalistik & Human Interest Pelajar",
+      tingkat: "Tingkat Kabupaten Way Kanan",
+      peraih: "Rizky Pratama (Kelas XI MIPA 1)",
+      pembimbing: "Marlita Illiansyah, S.Pd.",
+      predikat: "Juara 2 (Medali Perak)",
+      kategori: "Seni Budaya",
+      tahun: "2026",
+      fotoUrl:
+        "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&auto=format&fit=crop&q=80",
+    },
+    {
+      kegiatan: "Festival & Lomba Seni Siswa Nasional (FLS2N) Cabang Film Pendek",
+      jenisLomba: "Sinematografi Film Pendek Edukasi Karakter Pelajar",
+      tingkat: "Tingkat Kabupaten Way Kanan",
+      peraih: "Tim Sinema Kreatif SMAN 2 Buay Bahuga",
+      pembimbing: "Marlita Illiansyah, S.Pd.",
+      predikat: "Juara 2 Tingkat Kabupaten",
+      kategori: "Seni Budaya",
+      tahun: "2026",
+      fotoUrl:
+        "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=600&auto=format&fit=crop&q=80",
+    },
+    {
+      kegiatan: "Festival & Lomba Seni Siswa Nasional (FLS2N) Cabang Komik Digital",
+      jenisLomba: "Ilustrasi & Cerita Komik Digital Kearifan Lokal Nusantara",
+      tingkat: "Tingkat Kabupaten Way Kanan",
+      peraih: "Dimas Arya Wijaya (Kelas X Merdeka 1)",
+      pembimbing: "Marlita Illiansyah, S.Pd.",
+      predikat: "Juara 3 (Medali Perunggu)",
+      kategori: "Seni Budaya",
+      tahun: "2026",
+      fotoUrl:
+        "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80",
+    },
+    {
+      kegiatan: "Festival & Lomba Seni Siswa Nasional (FLS2N) Cabang Monolog",
+      jenisLomba: "Seni Peran Teater Monolog Pelajar Tingkat SMA/MA",
+      tingkat: "Tingkat Kabupaten Way Kanan",
+      peraih: "Bagas Adi Saputra (Kelas XI IPS 1)",
+      pembimbing: "Marlita Illiansyah, S.Pd.",
+      predikat: "Juara Harapan Unggulan",
+      kategori: "Seni Budaya",
+      tahun: "2026",
+      fotoUrl:
+        "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=600&auto=format&fit=crop&q=80",
     },
   ];
 
@@ -652,10 +831,326 @@ function KesiswaanContent() {
         anggotaJumlah: "72 Siswa Aktif (Cabang Karate, Pencak Silat, Voli, & Futsal)",
       },
     },
+    {
+      id: "pmr",
+      nama: "Palang Merah Remaja (PMR Wira) & UKS",
+      namaSingkat: "PMR Wira & UKS",
+      kategori: "Kemanusiaan & Kesehatan Sekolah",
+      icon: HeartHandshake,
+      pembina: "Tumijo, S.Pd.",
+      jabatanPembina: "Pembina PMR Wira & Layanan Kesehatan UKS",
+      jadwal: "Selasa, 15:30 - 17:00 WIB",
+      lokasi: "Ruang UKS & Aula SMAN 2 Buay Bahuga",
+      prestasi: "Mitra Aktif Puskesmas Buay Bahuga & Duta Sekolah Sehat",
+      struktur: {
+        pelindungJabatan: "Pelindung Utama",
+        ketuaJabatan: "Ketua PMR Wira",
+        ketuaNama: "Nabila Dijayanti",
+        ketuaKelas: "Kelas XII MIPA 1",
+        ketuaTugas: "Koordinator Piket UKS Harian & Pertolongan Pertama Upacara",
+        wakilJabatan: "Wakil Ketua PMR Wira",
+        wakilNama: "Putri Maharani",
+        wakilKelas: "Kelas XI MIPA 2",
+        wakilTugas: "Koordinasi Pelatihan Pertolongan Pertama & Edukasi Kesehatan",
+        sekretarisJabatan: "Sekretaris PMR",
+        sekretarisNama: "Citra Ayu Lestari",
+        sekretarisKelas: "Kelas XI MIPA 1",
+        sekretarisTugas: "Pencatatan Rekam Layanan UKS & Jadwal Petugas Kesehatan",
+        bendaharaJabatan: "Bendahara & Logistik Obat",
+        bendaharaNama: "Frita Amelia",
+        bendaharaKelas: "Kelas XI IPS 1",
+        bendaharaTugas: "Inventarisasi Kotak P3K, Obat-Obatan Dasar, & Tandu Medis",
+        divisi: [
+          {
+            bidang: "Bidang I • Pertolongan Pertama (PP)",
+            koordinator: "Evista Silvy Laudrya (Kelas XI MIPA 1)",
+            program: "Siaga Medis Upacara Senin, Penanganan Cedera Olahraga, & Simulasi P3K",
+          },
+          {
+            bidang: "Bidang II • Kesehatan Remaja & UKS",
+            koordinator: "Putri Maharani (Kelas XI MIPA 2)",
+            program: "Pemeriksaan Berkala Bersama Puskesmas Buay Bahuga & Kampanye Gizi",
+          },
+          {
+            bidang: "Bidang III • Bakti Sosial & Kemanusiaan",
+            koordinator: "Aji Winata Prayoga (Kelas XI IPS 2)",
+            program: "Kunjungan Sosial, Kesiapsiagaan Bencana, & Donor Darah Sukarela",
+          },
+        ],
+        anggotaLabel: "Seluruh Anggota Aktif PMR Wira & Kader UKS SMAN 2 Buay Bahuga",
+        anggotaJumlah: "48 Siswa Aktif Kader Kesehatan Remaja",
+      },
+    },
+    {
+      id: "english",
+      nama: "English Club, Speech & Debat Bahasa",
+      namaSingkat: "English Club",
+      kategori: "Kebahasaan & Komunikasi Global",
+      icon: GraduationCap,
+      pembina: "Marlita Illiansyah, S.Pd.",
+      jabatanPembina: "Pembina Rumpun Bahasa & Debat Akademik",
+      jadwal: "Kamis, 15:30 - 17:00 WIB",
+      lokasi: "Laboratorium Bahasa SMAN 2 Buay Bahuga",
+      prestasi: "Finalis Lomba Speech, Storytelling & NSDC Tingkat Kabupaten",
+      struktur: {
+        pelindungJabatan: "Pelindung Akademik",
+        ketuaJabatan: "President of English Club",
+        ketuaNama: "Evista Silvy Laudrya",
+        ketuaKelas: "Kelas XI MIPA 1",
+        ketuaTugas: "Koordinator Latihan Speaking, Debat Parlemen, & English Day",
+        wakilJabatan: "Vice President",
+        wakilNama: "Nabila Dijayanti",
+        wakilKelas: "Kelas XII MIPA 1",
+        wakilTugas: "Pendampingan Materi Storytelling, News Casting, & Vocabulary",
+        sekretarisJabatan: "Secretary",
+        sekretarisNama: "Citra Ayu Lestari",
+        sekretarisKelas: "Kelas XI MIPA 1",
+        sekretarisTugas: "Penyusunan Modul Percakapan & Administrasi Kompetisi Bahasa",
+        bendaharaJabatan: "Treasurer",
+        bendaharaNama: "Putri Maharani",
+        bendaharaKelas: "Kelas XI MIPA 2",
+        bendaharaTugas: "Pengelolaan Kas Klub & Pengadaan Media Audio-Visual Bahasa",
+        divisi: [
+          {
+            bidang: "Divisi I • Public Speaking & Speech",
+            koordinator: "Nabila Dijayanti (Kelas XII MIPA 1)",
+            program: "Pidato Bahasa Inggris, Master of Ceremony (MC), & Presentasi Ilmiah",
+          },
+          {
+            bidang: "Divisi II • Storytelling & News Casting",
+            koordinator: "Citra Ayu Lestari (Kelas XI MIPA 1)",
+            program: "Pembinaan Bercerita Lisan, Pembacaan Berita, & Pelafalan (Pronunciation)",
+          },
+          {
+            bidang: "Divisi III • English Debate (NSDC)",
+            koordinator: "Evista Silvy Laudrya (Kelas XI MIPA 1)",
+            program: "Latihan Debat Bahasa Inggris Berpikir Kritis & Argumentasi Akademik",
+          },
+        ],
+        anggotaLabel: "Seluruh Anggota Aktif English Club SMAN 2 Buay Bahuga",
+        anggotaJumlah: "40 Siswa Aktif Penggerak Literasi Bahasa Inggris",
+      },
+    },
+    {
+      id: "jurnalistik",
+      nama: "Klub Fotografi, Sinematografi & Jurnalistik",
+      namaSingkat: "Jurnalistik & Sinema",
+      kategori: "Media Kreatif, Film Pendek & Komik",
+      icon: Sparkles,
+      pembina: "Marlita Illiansyah, S.Pd.",
+      jabatanPembina: "Pembina Media Kreatif, Fotografi & Film Pendek FLS2N",
+      jadwal: "Sabtu, 13:00 - 15:00 WIB",
+      lokasi: "Laboratorium Multimedia & Ruang Publikasi",
+      prestasi: "Juara FLS2N Cabang Fotografi, Film Pendek, & Komik Digital",
+      struktur: {
+        pelindungJabatan: "Pelindung Utama",
+        ketuaJabatan: "Pemimpin Redaksi Siswa",
+        ketuaNama: "Rizky Pratama",
+        ketuaKelas: "Kelas XI MIPA 1",
+        ketuaTugas: "Koordinator Liputan Kegiatan Sekolah & Produksi Film Pendek",
+        wakilJabatan: "Wakil Pemimpin Redaksi",
+        wakilNama: "Dimas Arya Wijaya",
+        wakilKelas: "Kelas X Merdeka 1",
+        wakilTugas: "Koordinasi Desain Grafis, Komik Digital, & Mading Sekolah",
+        sekretarisJabatan: "Sekretaris Redaksi",
+        sekretarisNama: "Putri Maharani",
+        sekretarisKelas: "Kelas XI MIPA 2",
+        sekretarisTugas: "Penyuntingan Naskah Berita Siswa & Arsip Dokumentasi Foto",
+        bendaharaJabatan: "Bendahara & Peralatan Media",
+        bendaharaNama: "Citra Ayu Lestari",
+        bendaharaKelas: "Kelas XI MIPA 1",
+        bendaharaTugas: "Pemeliharaan Kamera, Tripod, & Kebutuhan Penerbitan Mading",
+        divisi: [
+          {
+            bidang: "Divisi I • Fotografi Jurnalistik & Dokumentasi",
+            koordinator: "Rizky Pratama (Kelas XI MIPA 1)",
+            program: "Liputan Foto Acara Sekolah, Teknik Pencahayaan, & Lomba Fotografi FLS2N",
+          },
+          {
+            bidang: "Divisi II • Sinematografi & Film Pendek",
+            koordinator: "Aji Winata Prayoga (Kelas XI IPS 2)",
+            program: "Penulisan Skenario, Pengambilan Gambar Video, & Editing Film Pendek",
+          },
+          {
+            bidang: "Divisi III • Desain Grafis, Komik Digital & Mading",
+            koordinator: "Dimas Arya Wijaya (Kelas X Merdeka 1)",
+            program: "Ilustrasi Komik Digital, Poster Edukasi, & Buletin Majalah Dinding",
+          },
+        ],
+        anggotaLabel: "Seluruh Kru Jurnalistik, Fotografi & Sinema SMAN 2 Buay Bahuga",
+        anggotaJumlah: "38 Siswa Aktif Tim Dokumentasi & Media Kreatif",
+      },
+    },
+    {
+      id: "voli_futsal",
+      nama: "Klub Bola Voli & Futsal Prestasi Smandabuba",
+      namaSingkat: "Bola Voli & Futsal",
+      kategori: "Olahraga Beregu & Turnamen Pelajar",
+      icon: Trophy,
+      pembina: "Meiliana, S.Pd.",
+      jabatanPembina: "Pembina Klub Olahraga Beregu & Turnamen Antar-SMA",
+      jadwal: "Kamis & Sabtu, 15:30 - 17:30 WIB",
+      lokasi: "Lapangan Voli & Lapangan Futsal SMAN 2 Buay Bahuga",
+      prestasi: "Juara Turnamen Bola Voli & Futsal Antar-Pelajar Way Kanan",
+      struktur: {
+        pelindungJabatan: "Pelindung Utama",
+        ketuaJabatan: "Kapten Utama Tim Beregu",
+        ketuaNama: "Bagas Adi Saputra",
+        ketuaKelas: "Kelas XI IPS 1",
+        ketuaTugas: "Koordinator Latihan Rutin Tim Putra/Putri & Persiapan Turnamen",
+        wakilJabatan: "Wakil Kapten Tim",
+        wakilNama: "M. Ziddane Alfaridz",
+        wakilKelas: "Kelas XI IPS 1",
+        wakilTugas: "Pengaturan Strategi Permainan, Fisik Atlet, & Uji Tanding Persahabatan",
+        sekretarisJabatan: "Sekretaris Klub",
+        sekretarisNama: "Frita Amelia",
+        sekretarisKelas: "Kelas XI IPS 1",
+        sekretarisTugas: "Jadwal Latihan Lapangan, Registrasi Pemain, & Administrasi Lomba",
+        bendaharaJabatan: "Bendahara & Logistik Tim",
+        bendaharaNama: "Safety Octa Sushadi",
+        bendaharaKelas: "Kelas XII MIPA 2",
+        bendaharaTugas: "Pengelolaan Kostum Jersey Tim, Bola Voli/Futsal, & Jaring",
+        divisi: [
+          {
+            bidang: "Skuad I • Tim Bola Voli Putra & Putri",
+            koordinator: "Bagas Adi Saputra & Frita Amelia (XI IPS 1)",
+            program: "Teknik Passing, Smash, Blocking, & Turnamen Voli Pelajar Kabupaten",
+          },
+          {
+            bidang: "Skuad II • Tim Futsal Putra Smandabuba",
+            koordinator: "M. Ziddane Alfaridz (Kelas XI IPS 1)",
+            program: "Taktik Formasi Futsal, Ketahanan Stamina, & Liga Pelajar SMA",
+          },
+          {
+            bidang: "Skuad III • Penyelenggara Liga Classmeeting",
+            koordinator: "Dimas Arya Wijaya (Kelas X Merdeka 1)",
+            program: "Wasit & Panitia Pertandingan Olahraga Antar-Rombel Akhir Semester",
+          },
+        ],
+        anggotaLabel: "Seluruh Atlet Bola Voli & Futsal SMAN 2 Buay Bahuga",
+        anggotaJumlah: "65 Siswa Aktif (Skuad Putra & Skuad Putri)",
+      },
+    },
+    {
+      id: "teater",
+      nama: "Sanggar Sastra, Puisi & Teater Monolog",
+      namaSingkat: "Sastra & Teater",
+      kategori: "Apresiasi Sastra, Puisi & Seni Peran",
+      icon: Award,
+      pembina: "Marlita Illiansyah, S.Pd.",
+      jabatanPembina: "Pembina Bahasa, Sastra Indonesia & Seni Teater",
+      jadwal: "Selasa, 15:30 - 17:00 WIB",
+      lokasi: "Aula & Taman Literasi SMAN 2 Buay Bahuga",
+      prestasi: "Juara FLS2N Cabang Cipta Puisi, Baca Puisi, & Monolog",
+      struktur: {
+        pelindungJabatan: "Pelindung Utama",
+        ketuaJabatan: "Ketua Sanggar Sastra & Teater",
+        ketuaNama: "Putri Maharani",
+        ketuaKelas: "Kelas XI MIPA 2",
+        ketuaTugas: "Koordinator Latihan Olah Vokal, Penulisan Puisi, & Pementasan",
+        wakilJabatan: "Wakil Ketua Sanggar",
+        wakilNama: "Citra Ayu Lestari",
+        wakilKelas: "Kelas XI MIPA 1",
+        wakilTugas: "Pendampingan Deklamasi Puisi, Monolog, & Dramatisasi Sastra",
+        sekretarisJabatan: "Sekretaris & Kurator Naskah",
+        sekretarisNama: "Nabila Dijayanti",
+        sekretarisKelas: "Kelas XII MIPA 1",
+        sekretarisTugas: "Kumpulan Antologi Puisi Siswa, Naskah Drama, & Agenda Pentas",
+        bendaharaJabatan: "Bendahara & Properti Panggung",
+        bendaharaNama: "Safety Octa Sushadi",
+        bendaharaKelas: "Kelas XII MIPA 2",
+        bendaharaTugas: "Pengelolaan Properti Pementasan, Tata Rias, & Kas Sanggar",
+        divisi: [
+          {
+            bidang: "Bidang I • Penulisan Cipta Puisi & Cerpen",
+            koordinator: "Putri Maharani (Kelas XI MIPA 2)",
+            program: "Kelas Menulis Kreatif, Antologi Puisi Sekolah, & Seleksi FLS2N",
+          },
+          {
+            bidang: "Bidang II • Deklamasi Baca Puisi & Musikalisasi",
+            koordinator: "Citra Ayu Lestari (Kelas XI MIPA 1)",
+            program: "Teknik Intonasi, Ekspresi Panggung, & Penampilan Acara Resmi Sekolah",
+          },
+          {
+            bidang: "Bidang III • Seni Peran Teater & Monolog",
+            koordinator: "Bagas Adi Saputra (Kelas XI IPS 1)",
+            program: "Olah Tubuh, Penghayatan Karakter Monolog, & Drama Kolosal",
+          },
+        ],
+        anggotaLabel: "Seluruh Anggota Sanggar Sastra & Teater SMAN 2 Buay Bahuga",
+        anggotaJumlah: "36 Siswa Aktif Pecinta Sastra & Seni Peran",
+      },
+    },
+    {
+      id: "pecinta_alam",
+      nama: "Klub Pecinta Alam & Duta Sekolah ASRI",
+      namaSingkat: "Pecinta Alam & ASRI",
+      kategori: "Kelestarian Lingkungan & Konservasi",
+      icon: CheckCircle2,
+      pembina: "Eva Dwi Kurniawati, S.Pd.",
+      jabatanPembina: "Pembina Geografi, Lingkungan Hidup & Gerakan ASRI",
+      jadwal: "Jumat, 15:30 - 17:00 WIB",
+      lokasi: "Taman Hijau & Kebun Tanaman Obat Sekolah (20.000 m²)",
+      prestasi: "Pelopor Gerakan Sekolah ASRI (Aman, Sehat, Resik, Indah)",
+      struktur: {
+        pelindungJabatan: "Pelindung Utama",
+        ketuaJabatan: "Ketua Duta Lingkungan ASRI",
+        ketuaNama: "Aji Winata Prayoga",
+        ketuaKelas: "Kelas XI IPS 2",
+        ketuaTugas: "Koordinator Penghijauan Lahan 20.000 m² & Kampanye Bebas Sampah Plastik",
+        wakilJabatan: "Wakil Ketua",
+        wakilNama: "Rizky Pratama",
+        wakilKelas: "Kelas XI MIPA 1",
+        wakilTugas: "Pengelolaan Apotek Hidup (TOGA), Kompos Organik, & Taman Kelas",
+        sekretarisJabatan: "Sekretaris Lingkungan",
+        sekretarisNama: "Evista Silvy Laudrya",
+        sekretarisKelas: "Kelas XI MIPA 1",
+        sekretarisTugas: "Pendataan Koleksi Tanaman Sekolah & Penilaian Kebersihan Kelas",
+        bendaharaJabatan: "Bendahara & Bank Sampah",
+        bendaharaNama: "Frita Amelia",
+        bendaharaKelas: "Kelas XI IPS 1",
+        bendaharaTugas: "Pengelolaan Daur Ulang Kreatif & Bibit Tanaman Penghijauan",
+        divisi: [
+          {
+            bidang: "Divisi I • Konservasi Taman & Penghijauan",
+            koordinator: "Aji Winata Prayoga (Kelas XI IPS 2)",
+            program: "Penanaman Pohon Peneduh, Perawatan Taman Rombel, & Kebun TOGA",
+          },
+          {
+            bidang: "Divisi II • Pengolahan Kompos & Daur Ulang",
+            koordinator: "Rizky Pratama (Kelas XI MIPA 1)",
+            program: "Pembuatan Pupuk Kompos Daun & Kerajinan Daur Ulang Ramah Lingkungan",
+          },
+          {
+            bidang: "Divisi III • Edukasi Geosains & Ekspedisi Alam",
+            koordinator: "Dimas Arya Wijaya (Kelas X Merdeka 1)",
+            program: "Pengamatan Ekosistem Lokal, Navigasi Peta Geografi, & Jumat Bersih",
+          },
+        ],
+        anggotaLabel: "Seluruh Anggota Pecinta Alam & Duta ASRI SMAN 2 Buay Bahuga",
+        anggotaJumlah: "44 Siswa Aktif Penggerak Lingkungan Sekolah Hijau",
+      },
+    },
   ];
 
+  const [prestasiPage, setPrestasiPage] = useState<number>(1);
+  const [ekskulPage, setEkskulPage] = useState<number>(1);
   const [selectedEkskulId, setSelectedEkskulId] = useState<string | null>(null);
   const selectedEkskul = ekskulList.find((e) => e.id === selectedEkskulId) || null;
+
+  const totalPrestasiPages = Math.max(1, Math.ceil(prestasiList.length / PRESTASI_PER_PAGE));
+  const safePrestasiPage = Math.min(prestasiPage, totalPrestasiPages);
+  const paginatedPrestasi = prestasiList.slice(
+    (safePrestasiPage - 1) * PRESTASI_PER_PAGE,
+    safePrestasiPage * PRESTASI_PER_PAGE
+  );
+
+  const totalEkskulPages = Math.max(1, Math.ceil(ekskulList.length / EKSKUL_PER_PAGE));
+  const safeEkskulPage = Math.min(ekskulPage, totalEkskulPages);
+  const paginatedEkskul = ekskulList.slice(
+    (safeEkskulPage - 1) * EKSKUL_PER_PAGE,
+    safeEkskulPage * EKSKUL_PER_PAGE
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
@@ -763,9 +1258,9 @@ function KesiswaanContent() {
             </div>
           </div>
 
-          {/* Grid Kartu Prestasi Berfoto */}
+          {/* Grid Kartu Prestasi Berfoto (Maksimal 6 Kartu Per Halaman) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {prestasiList.map((pres) => (
+            {paginatedPrestasi.map((pres) => (
               <div
                 key={pres.kegiatan}
                 className="group bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden flex flex-col justify-between hover:shadow-md transition-all"
@@ -857,6 +1352,16 @@ function KesiswaanContent() {
               </div>
             ))}
           </div>
+
+          {/* Navigasi Halaman (Pagination) di Bawah 6 Kartu Prestasi */}
+          <PaginationBar
+            currentPage={safePrestasiPage}
+            totalPages={totalPrestasiPages}
+            totalItems={prestasiList.length}
+            itemsPerPage={PRESTASI_PER_PAGE}
+            onPageChange={setPrestasiPage}
+            itemLabel="prestasi siswa"
+          />
         </section>
       )}
 
@@ -1180,10 +1685,11 @@ function KesiswaanContent() {
             )}
           </div>
 
-          {/* DAFTAR KARTU EKSTRAKURIKULER (TAMPIL SAAT BELUM ADA YANG DIKLIK) */}
+          {/* DAFTAR KARTU EKSTRAKURIKULER (TAMPIL SAAT BELUM ADA YANG DIKLIK, MAKSIMAL 6 PER HALAMAN) */}
           {!selectedEkskul && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-              {ekskulList.map((ekskul) => {
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+                {paginatedEkskul.map((ekskul) => {
                 return (
                   <button
                     key={ekskul.id}
@@ -1255,6 +1761,17 @@ function KesiswaanContent() {
                   </button>
                 );
               })}
+              </div>
+
+              {/* Navigasi Halaman (Pagination) di Bawah 6 Kartu Ekstrakurikuler */}
+              <PaginationBar
+                currentPage={safeEkskulPage}
+                totalPages={totalEkskulPages}
+                totalItems={ekskulList.length}
+                itemsPerPage={EKSKUL_PER_PAGE}
+                onPageChange={setEkskulPage}
+                itemLabel="cabang ekstrakurikuler"
+              />
             </div>
           )}
 

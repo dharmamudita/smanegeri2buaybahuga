@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { UserSession, UjianLogRecord, PresensiRecord } from "./types";
-import { MOCK_USERS, MOCK_PRESENSI, MOCK_UJIAN_LOGS } from "./mockData";
+import { UserSession, UjianLogRecord, PresensiRecord, BeritaItem } from "./types";
+import { MOCK_USERS, MOCK_PRESENSI, MOCK_UJIAN_LOGS, MOCK_BERITA } from "./mockData";
 
 interface AuthState {
   currentUser: UserSession | null;
@@ -108,3 +108,29 @@ export const usePresensiStore = create<PresensiState>((set) => ({
   addRecord: (record) =>
     set((state) => ({ records: [record, ...state.records] })),
 }));
+
+interface BeritaState {
+  beritaList: BeritaItem[];
+  addBerita: (item: BeritaItem) => void;
+  deleteBerita: (id: string) => void;
+}
+
+export const useBeritaStore = create<BeritaState>()(
+  persist(
+    (set) => ({
+      beritaList: MOCK_BERITA,
+      addBerita: (item) =>
+        set((state) => ({
+          // Pastikan berita terbaru selalu berada di posisi paling atas / paling depan (index 0)
+          beritaList: [item, ...state.beritaList],
+        })),
+      deleteBerita: (id) =>
+        set((state) => ({
+          beritaList: state.beritaList.filter((b) => b.id !== id),
+        })),
+    }),
+    {
+      name: "sman2buba_berita_v2",
+    }
+  )
+);

@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   GraduationCap,
@@ -14,9 +16,12 @@ import {
   Lock,
 } from "lucide-react";
 import { SCHOOL_INFO } from "@/lib/constants";
-import { MOCK_BERITA } from "@/lib/mockData";
+import { useBeritaStore } from "@/lib/store";
 
 export default function HomePage() {
+  const beritaList = useBeritaStore((state) => state.beritaList);
+  const beritaTerbaru = beritaList.slice(0, 6);
+
   return (
     <div className="space-y-6 sm:space-y-8 pb-12">
       {/* 1. Hero Section */}
@@ -271,7 +276,7 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-          {MOCK_BERITA.slice(0, 6).map((berita) => (
+          {beritaTerbaru.map((berita, idx) => (
             <article
               key={berita.id}
               className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-2xs hover:shadow-md transition-shadow flex flex-col justify-between h-full"
@@ -284,9 +289,16 @@ export default function HomePage() {
                     alt={berita.judul}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <span className="absolute top-3 left-3 bg-[#2A2C5E] text-white text-[11px] font-semibold px-2.5 py-0.5 rounded shadow-xs capitalize">
-                    {berita.kategori.toLowerCase()}
-                  </span>
+                  <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                    <span className="bg-[#2A2C5E] text-white text-[11px] font-semibold px-2.5 py-0.5 rounded shadow-xs capitalize">
+                      {berita.kategori.toLowerCase()}
+                    </span>
+                    {idx === 0 && (
+                      <span className="bg-emerald-600 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow-xs">
+                        Terbaru
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="p-5 flex flex-col">
                   <div className="flex items-center gap-1.5 text-[11px] text-gray-400 h-5">

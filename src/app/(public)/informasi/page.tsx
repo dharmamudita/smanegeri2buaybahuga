@@ -13,12 +13,17 @@ import {
   Check,
   MapPin,
 } from "lucide-react";
-import { MOCK_BERITA } from "@/lib/mockData";
+import { useBeritaStore } from "@/lib/store";
 import { BeritaItem } from "@/lib/types";
+import PaginationBar from "@/components/common/PaginationBar";
+
+const ITEMS_PER_PAGE = 6;
 
 export default function InformasiPage() {
+  const beritaList = useBeritaStore((state) => state.beritaList);
   const [selectedKategori, setSelectedKategori] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [activeModalBerita, setActiveModalBerita] = useState<BeritaItem | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -30,7 +35,7 @@ export default function InformasiPage() {
     { key: "PRESTASI", label: "Prestasi" },
   ];
 
-  const filteredBerita = MOCK_BERITA.filter((item) => {
+  const filteredBerita = beritaList.filter((item) => {
     if (selectedKategori !== "ALL" && item.kategori !== selectedKategori) {
       return false;
     }
@@ -43,6 +48,13 @@ export default function InformasiPage() {
     }
     return true;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filteredBerita.length / ITEMS_PER_PAGE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedBerita = filteredBerita.slice(
+    (safePage - 1) * ITEMS_PER_PAGE,
+    safePage * ITEMS_PER_PAGE
+  );
 
   const handleCopyShare = (id: string, judul: string) => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
@@ -76,7 +88,10 @@ export default function InformasiPage() {
             {kategoriList.map((kat) => (
               <button
                 key={kat.key}
-                onClick={() => setSelectedKategori(kat.key)}
+                onClick={() => {
+                  setSelectedKategori(kat.key);
+                  setCurrentPage(1);
+                }}
                 className={`flex-1 sm:flex-initial text-center justify-center px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap transition-all cursor-pointer ${
                   selectedKategori === kat.key
                     ? "bg-[#2A2C5E] text-white shadow-xs"
@@ -94,7 +109,10 @@ export default function InformasiPage() {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
               placeholder="Cari warta berita..."
               className="w-full h-[46px] pl-9 pr-3.5 text-xs bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E] shadow-2xs"
             />
@@ -102,67 +120,86 @@ export default function InformasiPage() {
         </div>
       </div>
 
-      {/* Grid Berita (3 Kolom Presisi & Sejajar Lurus Antar-Kartu) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-        {filteredBerita.map((berita) => (
-          <article
-            key={berita.id}
-            className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between h-full"
-          >
-            <div className="flex flex-col">
-              <div className="relative h-48 w-full bg-gray-100 overflow-hidden shrink-0">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={berita.thumbnailUrl}
-                  alt={berita.judul}
-                  className="w-full h-full object-cover"
-                />
-                <span className="absolute top-3 left-3 bg-[#2A2C5E] text-white text-[11px] font-semibold px-2.5 py-0.5 rounded capitalize">
-                  {berita.kategori.toLowerCase()}
-                </span>
+      {/* Grid Berita (Maksimal 6 Kartu Per Halaman & Sejajar Lurus Antar-Kartu) */}
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+          {paginatedBerita.map((berita, idx) => (
+            <article
+              key={berita.id}
+              className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between h-full"
+            >
+              <div className="flex flex-col">
+                <div className="relative h-48 w-full bg-gray-100 overflow-hidden shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={berita.thumbnailUrl}
+                    alt={berita.judul}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                    <span className="bg-[#2A2C5E] text-white text-[11px] font-semibold px-2.5 py-0.5 rounded capitalize">
+                      {berita.kategori.toLowerCase()}
+                    </span>
+                    {safePage === 1 && idx === 0 && (
+                      <span className="bg-emerald-600 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">
+                        Terbaru
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="p-5 flex flex-col">
+                  {/* Baris 1: Tanggal & Waktu Baca (Tinggi Terkunci) */}
+                  <div className="flex items-center gap-3 text-[11px] text-gray-400 h-5">
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      {berita.tanggal}
+                    </span>
+                    <span>&bull;</span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {berita.bacaMenit} Menit Baca
+                    </span>
+                  </div>
+
+                  {/* Baris 2: Judul Berita (Tinggi 2 Baris Terkunci Sejajar) */}
+                  <div className="mt-2.5 h-11 flex items-start">
+                    <h3 className="text-base font-bold text-gray-900 leading-snug line-clamp-2">
+                      {berita.judul}
+                    </h3>
+                  </div>
+
+                  {/* Baris 3: Ringkasan Berita (Tinggi 3 Baris Terkunci Sejajar) */}
+                  <div className="mt-2 h-[3.75rem] flex items-start">
+                    <p className="text-xs text-gray-600 line-clamp-3 leading-relaxed">
+                      {berita.ringkasan}
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div className="p-5 flex flex-col">
-                {/* Baris 1: Tanggal & Waktu Baca (Tinggi Terkunci) */}
-                <div className="flex items-center gap-3 text-[11px] text-gray-400 h-5">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="w-3 h-3" />
-                    {berita.tanggal}
-                  </span>
-                  <span>&bull;</span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {berita.bacaMenit} Menit Baca
-                  </span>
-                </div>
-
-                {/* Baris 2: Judul Berita (Tinggi 2 Baris Terkunci Sejajar) */}
-                <div className="mt-2.5 h-11 flex items-start">
-                  <h3 className="text-base font-bold text-gray-900 leading-snug line-clamp-2">
-                    {berita.judul}
-                  </h3>
-                </div>
-
-                {/* Baris 3: Ringkasan Berita (Tinggi 3 Baris Terkunci Sejajar) */}
-                <div className="mt-2 h-[3.75rem] flex items-start">
-                  <p className="text-xs text-gray-600 line-clamp-3 leading-relaxed">
-                    {berita.ringkasan}
-                  </p>
-                </div>
+              <div className="p-5 pt-0">
+                <button
+                  onClick={() => setActiveModalBerita(berita)}
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold text-[#2A2C5E] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
+                >
+                  <span>Baca Pengumuman Lengkap</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
               </div>
-            </div>
+            </article>
+          ))}
+        </div>
 
-            <div className="p-5 pt-0">
-              <button
-                onClick={() => setActiveModalBerita(berita)}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold text-[#2A2C5E] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
-              >
-                <span>Baca Pengumuman Lengkap</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </article>
-        ))}
+        {/* Navigasi Halaman (Pagination) di Bawah 6 Kartu Berita */}
+        <PaginationBar
+          currentPage={safePage}
+          totalPages={totalPages}
+          totalItems={filteredBerita.length}
+          itemsPerPage={ITEMS_PER_PAGE}
+          onPageChange={setCurrentPage}
+          itemLabel="informasi"
+        />
       </div>
 
       {/* Detail Article Modal (Tampilan Berita Rapi & Presisi Ketika Diklik) */}

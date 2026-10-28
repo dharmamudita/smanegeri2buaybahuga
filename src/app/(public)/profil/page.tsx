@@ -20,6 +20,9 @@ import {
 } from "lucide-react";
 import { SCHOOL_INFO } from "@/lib/constants";
 import { MOCK_USERS } from "@/lib/mockData";
+import PaginationBar from "@/components/common/PaginationBar";
+
+const FASILITAS_PER_PAGE = 6;
 
 type ProfilTab =
   | "VISI_MISI"
@@ -45,6 +48,7 @@ function ProfilContent() {
     { key: "FASILITAS", label: "Fasilitas" },
   ];
 
+  const [fasilitasPage, setFasilitasPage] = useState<number>(1);
   const guruList = MOCK_USERS.filter((u) => u.role === "GURU");
 
   const fasilitasData = [
@@ -84,13 +88,61 @@ function ProfilContent() {
       kapasitas: "Layanan Medis",
     },
     {
-      nama: "Sarana Ibadah & Pembinaan Karakter",
+      nama: "Mushola Al-Hikmah & Sarana Bina Imtaq",
       deskripsi:
         "Pusat kegiatan keagamaan, ibadah sholat berjamaah, kajian Rohis, dan pembinaan akhlak mulia warga SMA Negeri 2 Buay Bahuga.",
       icon: Compass,
       kapasitas: "Seluruh Warga Sekolah",
     },
+    {
+      nama: "Laboratorium Komputer & Jaringan Terpadu",
+      deskripsi:
+        "Dilengkapi perangkat komputer terkoneksi jaringan lokal berkecepatan tinggi untuk praktikum Informatika dan ujian berbasis komputer.",
+      icon: Monitor,
+      kapasitas: "3 Ruang Lab CBT",
+    },
+    {
+      nama: "Ruang Bimbingan & Konseling (BK) Siswa",
+      deskripsi:
+        "Ruang layanan konsultasi akademik, pendampingan pemilihan program studi SNBP/SNBT, serta pembinaan karakter pribadi siswa.",
+      icon: Users,
+      kapasitas: "Layanan Konseling",
+    },
+    {
+      nama: "Sekretariat OSIS, MPK & Sanggar Pramuka",
+      deskripsi:
+        "Ruang kerja organisasi kesiswaan, penyimpanan atribut Paskibra & Pramuka, serta pusat koordinasi kegiatan ekstrakurikuler.",
+      icon: Layers,
+      kapasitas: "Pusat Kesiswaan",
+    },
+    {
+      nama: "Sanggar Seni Kriya & Budaya Lampung",
+      deskripsi:
+        "Ruang kreasi pembuatan karya seni kriya Nusantara, latihan tari tradisional Lampung, dan pembinaan kontingen FLS2N.",
+      icon: Award,
+      kapasitas: "Sanggar Kesenian",
+    },
+    {
+      nama: "Ruang Dewan Guru & Tata Usaha Terpadu",
+      deskripsi:
+        "Pusat layanan administrasi kesiswaan, pengelolaan Dapodik, ruang kerja 48 pendidik, serta ruang rapat koordinasi akademik.",
+      icon: ShieldCheck,
+      kapasitas: "53 PTK & Staf",
+    },
+    {
+      nama: "Taman Hijau & Area Kantin Sehat ASRI",
+      deskripsi:
+        "Area terbuka hijau yang rindang dengan fasilitas sanitasi bersih dan kantin sehat pendukung program Sekolah ASRI.",
+      icon: CheckCircle2,
+      kapasitas: "Lingkungan ASRI",
+    },
   ];
+
+  const totalFasilitasPages = Math.max(1, Math.ceil(fasilitasData.length / FASILITAS_PER_PAGE));
+  const paginatedFasilitas = fasilitasData.slice(
+    (fasilitasPage - 1) * FASILITAS_PER_PAGE,
+    fasilitasPage * FASILITAS_PER_PAGE
+  );
 
   const strukturPimpinan = [
     {
@@ -596,28 +648,47 @@ function ProfilContent() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {fasilitasData.map((fas) => {
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+            {paginatedFasilitas.map((fas) => {
               const Icon = fas.icon;
               return (
                 <div
                   key={fas.nama}
-                  className="bg-white p-6 rounded-xl border border-gray-200 shadow-2xs space-y-3 hover:shadow-md transition-shadow"
+                  className="bg-white p-6 rounded-xl border border-gray-200 shadow-2xs flex flex-col justify-between h-full hover:shadow-md transition-shadow"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="w-10 h-10 rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center">
-                      <Icon className="w-5 h-5" />
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between h-10">
+                      <div className="w-10 h-10 rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center shrink-0">
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <span className="text-[11px] font-semibold text-[#2A2C5E] bg-blue-50/80 border border-blue-100 px-2.5 py-1 rounded-md">
+                        {fas.kapasitas}
+                      </span>
                     </div>
-                    <span className="text-[11px] font-semibold text-gray-500 bg-gray-100 px-2.5 py-0.5 rounded">
-                      {fas.kapasitas}
-                    </span>
+                    <div className="min-h-[2.75rem] flex items-start pt-1">
+                      <h3 className="text-base font-bold text-gray-900 leading-snug line-clamp-2">
+                        {fas.nama}
+                      </h3>
+                    </div>
+                    <div className="min-h-[3.75rem] flex items-start">
+                      <p className="text-xs text-gray-600 leading-relaxed line-clamp-3">
+                        {fas.deskripsi}
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="text-base font-bold text-gray-900 leading-snug">{fas.nama}</h3>
-                  <p className="text-xs text-gray-600 leading-relaxed">{fas.deskripsi}</p>
                 </div>
               );
             })}
           </div>
+
+          <PaginationBar
+            currentPage={fasilitasPage}
+            totalPages={totalFasilitasPages}
+            totalItems={fasilitasData.length}
+            itemsPerPage={FASILITAS_PER_PAGE}
+            onPageChange={setFasilitasPage}
+            itemLabel="fasilitas sarana"
+          />
         </section>
       )}
     </div>

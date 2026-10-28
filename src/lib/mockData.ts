@@ -217,6 +217,90 @@ Jadwal rincian mata pelajaran per hari dapat diakses secara langsung melalui hal
     bacaMenit: 3,
     thumbnailUrl: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&auto=format&fit=crop&q=80",
   },
+  {
+    id: "berita-7",
+    slug: "peringatan-bulan-bahasa-dan-gelar-karya-p5-sman-2-buay-bahuga",
+    judul: "Semarak Bulan Bahasa & Gelar Karya P5 Kurikulum Merdeka SMAN 2 Buay Bahuga",
+    ringkasan: "Peserta didik menampilkan pameran kriya kearifan lokal Lampung, lomba baca puisi, monolog, serta literasi budaya Nusantara.",
+    konten: `SMA Negeri 2 Buay Bahuga menyelenggarakan Gebyar Bulan Bahasa sekaligus Gelar Karya Projek Penguatan Profil Pelajar Pancasila (P5) yang diikuti oleh seluruh rombongan belajar Kelas X, XI, dan XII.
+
+Di bawah bimbingan Ibu Marlita Illiansyah, S.Pd. beserta tim fasilitator P5, para siswa memamerkan hasil karya seni kriya, mading sastra, pertunjukan tari kreasi Lampung, hingga lomba cipta dan baca puisi antar-kelas.`,
+    kategori: "KESISWAAN",
+    penulis: "Tim Literasi & Kesenian",
+    tanggal: "25 September 2026",
+    bacaMenit: 3,
+    thumbnailUrl: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    id: "berita-8",
+    slug: "pembinaan-intensif-olimpiade-sains-dan-praktikum-laboratorium-ipa",
+    judul: "Optimalisasi 9 Laboratorium Sekolah untuk Pembinaan Olimpiade Sains & Praktikum Siswa",
+    ringkasan: "Tim pembina OSN mengintensifkan jadwal praktikum Biologi, Fisika, Kimia, dan Kebumian bagi siswa binaan SMAN 2 Buay Bahuga.",
+    konten: `Guna mempertahankan tradisi prestasi akademik di tingkat Kabupaten Way Kanan dan Provinsi Lampung, SMA Negeri 2 Buay Bahuga mengoptimalkan pemanfaatan 9 ruang laboratorium sekolah untuk kegiatan praktikum reguler dan pembinaan Klub Olimpiade Sains Nasional (OSN).
+
+Pembinaan dipimpin oleh Bapak Tumijo, S.Pd., Ibu Wida Awanda, S.Pd.Si., Ibu Eva Dwi Kurniawati, S.Pd., serta Bapak Marsono, S.Pd. dengan fokus pendalaman eksperimen dan pemecahan soal analitis.`,
+    kategori: "AKADEMIK",
+    penulis: "Koordinator Laboratorium",
+    tanggal: "18 September 2026",
+    bacaMenit: 4,
+    thumbnailUrl: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    id: "berita-9",
+    slug: "perkemahan-penerimaan-tamu-ambalan-pramuka-gudep-sman-2-buay-bahuga",
+    judul: "Perkemahan Penerimaan Tamu Ambalan (PTA) Gerakan Pramuka Gudep SMAN 2 Buay Bahuga",
+    ringkasan: "Membentuk karakter mandiri, disiplin, dan gotong royong bagi seluruh peserta didik baru Fase E melalui kegiatan kepanduan.",
+    konten: `Gugus Depan Gerakan Pramuka SMA Negeri 2 Buay Bahuga sukses menyelenggarakan kegiatan Perkemahan Penerimaan Tamu Ambalan (PTA) bagi peserta didik Kelas X sebagai bagian dari pembinaan karakter kepanduan Penegak.
+
+Kegiatan dibuka oleh Kamabigus Ibu Apriyani, S.Si., M.M.Pd. dan dibina langsung oleh Bapak Tumijo, S.Pd. mencakup materi teknik kepramukaan, kepemimpinan sangga, api unggun, serta bakti lingkungan sekolah.`,
+    kategori: "KESISWAAN",
+    penulis: "Dewan Ambalan Pramuka",
+    tanggal: "10 September 2026",
+    bacaMenit: 3,
+    thumbnailUrl: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    id: "berita-10",
+    slug: "kerjasama-uks-sman-2-buay-bahuga-dan-puskesmas-pemeriksaan-kesehatan",
+    judul: "Sinergi UKS SMAN 2 Buay Bahuga & Puskesmas dalam Pemeriksaan Kesehatan Berkala Siswa",
+    ringkasan: "Mendukung program Sekolah Sehat dan Gerakan ASRI melalui skrining kesehatan rutin serta edukasi gizi remaja bagi 983 siswa.",
+    konten: `Unit Kesehatan Sekolah (UKS) dan Palang Merah Remaja (PMR) SMA Negeri 2 Buay Bahuga bekerja sama dengan tenaga medis Puskesmas Buay Bahuga melaksanakan pemeriksaan kesehatan berkala bagi peserta didik.
+
+Kegiatan ini merupakan wujud nyata komitmen Gerakan Sekolah ASRI (Aman, Sehat, Resik, dan Indah) agar seluruh siswa dapat mengikuti kegiatan belajar mengajar dalam kondisi prima.`,
+    kategori: "PENGUMUMAN",
+    penulis: "Pembina UKS & Kesiswaan",
+    tanggal: "02 September 2026",
+    bacaMenit: 3,
+    thumbnailUrl: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    id: "berita-11",
+    slug: "paskibra-sman-2-buay-bahuga-sukses-jalankan-tugas-upacara-hut-ri",
+    judul: "Pasukan Paskibra SMAN 2 Buay Bahuga Sukses Mengibarkan Duplikat Bendera Pusaka HUT RI",
+    ringkasan: "Putra-putri terbaik Paskibra binaan Bapak Marsono, S.Pd. tampil gemilang sebagai pasukan pengibar bendera peringatan HUT Kemerdekaan RI.",
+    konten: `Anggota Pasukan Pengibar Bendera (Paskibra) SMA Negeri 2 Buay Bahuga berhasil menunaikan tugas mulia sebagai pasukan pengibar dan penurunan bendera Merah Putih pada upacara peringatan Hari Ulang Tahun Kemerdekaan Republik Indonesia tingkat Kecamatan Buay Bahuga dan Kabupaten Way Kanan.
+
+Keberhasilan ini merupakan buah dari latihan disiplin baris-berbaris dan pembinaan fisik terukur yang dibimbing oleh Bapak Marsono, S.Pd.`,
+    kategori: "PRESTASI",
+    penulis: "Humas SMAN 2 Buay Bahuga",
+    tanggal: "18 Agustus 2026",
+    bacaMenit: 3,
+    thumbnailUrl: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    id: "berita-12",
+    slug: "pembukaan-mpls-peserta-didik-baru-sman-2-buay-bahuga-2026",
+    judul: "Pelaksanaan MPLS Ramah Anak Bagi Peserta Didik Baru Tahun Pelajaran 2026/2027",
+    ringkasan: "Menyambut siswa baru Kelas X dengan pengenalan kurikulum, tata tertib sekolah, fasilitas 9 laboratorium, dan parade ekstrakurikuler.",
+    konten: `Masa Pengenalan Lingkungan Sekolah (MPLS) SMA Negeri 2 Buay Bahuga Tahun Pelajaran 2026/2027 berlangsung tertib, edukatif, dan menyenangkan dengan mengedepankan prinsip sekolah ramah anak.
+
+Selama kegiatan MPLS, peserta didik baru diperkenalkan pada visi-misi sekolah, struktur organisasi, kurikulum pembelajaran, tata tertib kedisiplinan, serta demonstrasi 12 cabang ekstrakurikuler.`,
+    kategori: "AKADEMIK",
+    penulis: "Panitia MPLS Sekolah",
+    tanggal: "15 Juli 2026",
+    bacaMenit: 4,
+    thumbnailUrl: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&auto=format&fit=crop&q=80",
+  },
 ];
 
 export const MOCK_MAPEL: MapelItem[] = [

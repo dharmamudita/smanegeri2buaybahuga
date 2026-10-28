@@ -11,6 +11,9 @@ import {
   Search,
   Filter,
 } from "lucide-react";
+import PaginationBar from "@/components/common/PaginationBar";
+
+const KALENDER_PER_PAGE = 6;
 
 type AkademikTab = "KALENDER" | "JADWAL_PELAJARAN" | "JADWAL_UJIAN";
 
@@ -276,17 +279,52 @@ const KALENDER_DATA: BulanKalender[] = [
     ],
   },
   {
-    bulan: "April - Juni 2027",
+    bulan: "April 2027",
     semester: "GENAP",
-    hariEfektif: 52,
+    hariEfektif: 20,
     agenda: [
       {
-        tanggal: "Mei",
-        bulanSingkat: "2027",
-        kegiatan: "Pengumuman Kelulusan Kelas XII & Seleksi PPDB Siswa Baru",
+        tanggal: "05 - 10",
+        bulanSingkat: "Apr",
+        kegiatan: "Simulasi & Pelaksanaan UTBK-SNBT Siswa Kelas XII",
         kategori: "AKADEMIK",
-        keterangan: "Rapat pleno kelulusan Kelas XII serta pembukaan PPDB Tahun Ajaran baru.",
+        keterangan: "Pendampingan intensif persiapan seleksi masuk Perguruan Tinggi Negeri.",
       },
+      {
+        tanggal: "21",
+        bulanSingkat: "Apr",
+        kegiatan: "Peringatan Hari Kartini & Apresiasi Literasi Siswa",
+        kategori: "KESISWAAN",
+        keterangan: "Kegiatan literasi dan gelar karya budaya peserta didik SMAN 2 Buay Bahuga.",
+      },
+    ],
+  },
+  {
+    bulan: "Mei 2027",
+    semester: "GENAP",
+    hariEfektif: 21,
+    agenda: [
+      {
+        tanggal: "02",
+        bulanSingkat: "Mei",
+        kegiatan: "Upacara Peringatan Hari Pendidikan Nasional (Hardiknas)",
+        kategori: "KESISWAAN",
+        keterangan: "Upacara bendera dan penganugerahan siswa berprestasi akademik & non-akademik.",
+      },
+      {
+        tanggal: "05 - 20",
+        bulanSingkat: "Mei",
+        kegiatan: "Pengumuman Kelulusan Kelas XII & Pembukaan PPDB Siswa Baru",
+        kategori: "AKADEMIK",
+        keterangan: "Rapat pleno kelulusan Kelas XII serta pendaftaran PPDB Tahun Ajaran baru.",
+      },
+    ],
+  },
+  {
+    bulan: "Juni 2027",
+    semester: "GENAP",
+    hariEfektif: 15,
+    agenda: [
       {
         tanggal: "01 - 10",
         bulanSingkat: "Jun",
@@ -765,6 +803,7 @@ function AkademikContent() {
 
   // State Filter Kalender Akademik
   const [filterSemester, setFilterSemester] = useState<"SEMUA" | "GANJIL" | "GENAP">("SEMUA");
+  const [kalenderPage, setKalenderPage] = useState<number>(1);
 
   // State Filter Jadwal Pelajaran (1 Kelas = Otomatis Tampil 1 Minggu Penuh Senin - Jumat)
   const [selectedKelas, setSelectedKelas] = useState<string>("XII MIPA 1");
@@ -784,6 +823,12 @@ function AkademikContent() {
   // Filter Kalender
   const filteredKalender = KALENDER_DATA.filter((b) =>
     filterSemester === "SEMUA" ? true : b.semester === filterSemester
+  );
+  const totalKalenderPages = Math.max(1, Math.ceil(filteredKalender.length / KALENDER_PER_PAGE));
+  const safeKalenderPage = Math.min(kalenderPage, totalKalenderPages);
+  const paginatedKalender = filteredKalender.slice(
+    (safeKalenderPage - 1) * KALENDER_PER_PAGE,
+    safeKalenderPage * KALENDER_PER_PAGE
   );
 
   // Filter Jadwal Pelajaran (Seluruh 1 minggu Senin - Jumat untuk kelas terpilih)
@@ -919,7 +964,10 @@ function AkademikContent() {
               ].map((sem) => (
                 <button
                   key={sem.key}
-                  onClick={() => setFilterSemester(sem.key as "SEMUA" | "GANJIL" | "GENAP")}
+                  onClick={() => {
+                    setFilterSemester(sem.key as "SEMUA" | "GANJIL" | "GENAP");
+                    setKalenderPage(1);
+                  }}
                   className={`flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                     filterSemester === sem.key
                       ? "bg-[#2A2C5E] text-white"
@@ -932,9 +980,9 @@ function AkademikContent() {
             </div>
           </div>
 
-          {/* Grid Kalender Bulanan */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {filteredKalender.map((item) => (
+          {/* Grid Kalender Bulanan (Maksimal 6 Kartu Bulan Per Halaman) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+            {paginatedKalender.map((item) => (
               <div
                 key={item.bulan}
                 className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow"
@@ -1000,6 +1048,16 @@ function AkademikContent() {
               </div>
             ))}
           </div>
+
+          {/* Navigasi Halaman (Pagination) di Bawah 6 Bulan Kalender Akademik */}
+          <PaginationBar
+            currentPage={safeKalenderPage}
+            totalPages={totalKalenderPages}
+            totalItems={filteredKalender.length}
+            itemsPerPage={KALENDER_PER_PAGE}
+            onPageChange={setKalenderPage}
+            itemLabel="bulan kalender akademik"
+          />
         </section>
       )}
 

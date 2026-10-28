@@ -54,21 +54,65 @@ export default function InformasiPage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [activeModalBerita, setActiveModalBerita] = useState<BeritaItem | null>(null);
-  const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
+  const [slideTrackIdx, setSlideTrackIdx] = useState<number>(1);
+  const [isSlideTransitioning, setIsSlideTransitioning] = useState<boolean>(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const modalPhotos = activeModalBerita ? getBeritaGaleri(activeModalBerita) : [];
+  const extendedModalPhotos =
+    modalPhotos.length > 0
+      ? [
+          modalPhotos[modalPhotos.length - 1],
+          ...modalPhotos,
+          modalPhotos[0],
+        ]
+      : [];
+  const realSlideIndex =
+    modalPhotos.length > 0
+      ? (slideTrackIdx - 1 + modalPhotos.length) % modalPhotos.length
+      : 0;
 
-  // Reset slide ke foto pertama setiap kali membuka berita baru & jalankan auto-slide setiap 3.5 detik
+  // Jalankan auto-slide maju setiap 3.5 detik tanpa pernah mundur ke belakang (Seamless Infinite Loop)
   useEffect(() => {
     if (!activeModalBerita || modalPhotos.length <= 1) return;
 
     const timer = setInterval(() => {
-      setActiveSlideIndex((prev) => (prev + 1) % modalPhotos.length);
+      setIsSlideTransitioning(true);
+      setSlideTrackIdx((prev) =>
+        prev >= modalPhotos.length + 1 ? prev : prev + 1
+      );
     }, 3500);
 
     return () => clearInterval(timer);
-  }, [activeModalBerita, modalPhotos.length, activeSlideIndex]);
+  }, [activeModalBerita, modalPhotos.length, slideTrackIdx]);
+
+  // Reset posisi secara tak terlihat saat mencapai slide bayangan di ujung kanan/kiri
+  useEffect(() => {
+    if (modalPhotos.length <= 1) return;
+    if (slideTrackIdx === modalPhotos.length + 1) {
+      const snapTimer = setTimeout(() => {
+        setIsSlideTransitioning(false);
+        setSlideTrackIdx(1);
+      }, 500);
+      return () => clearTimeout(snapTimer);
+    }
+    if (slideTrackIdx === 0) {
+      const snapTimer = setTimeout(() => {
+        setIsSlideTransitioning(false);
+        setSlideTrackIdx(modalPhotos.length);
+      }, 500);
+      return () => clearTimeout(snapTimer);
+    }
+  }, [slideTrackIdx, modalPhotos.length]);
+
+  useEffect(() => {
+    if (!isSlideTransitioning) {
+      const enableTimer = setTimeout(() => {
+        setIsSlideTransitioning(true);
+      }, 50);
+      return () => clearTimeout(enableTimer);
+    }
+  }, [isSlideTransitioning]);
 
   const kategoriList = [
     { key: "ALL", label: "Semua Kategori" },
@@ -224,7 +268,8 @@ export default function InformasiPage() {
               <div className="p-5 pt-0">
                 <button
                   onClick={() => {
-                    setActiveSlideIndex(0);
+                    setIsSlideTransitioning(false);
+                    setSlideTrackIdx(1);
                     setActiveModalBerita(berita);
                   }}
                   className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold text-[#2A2C5E] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
@@ -325,18 +370,22 @@ export default function InformasiPage() {
                 </span>
               </div>
 
-              {/* Slider 3 Foto Berita (Geser Kiri/Kanan Manual & Bergeser Otomatis Tiap 3.5 Detik) */}
+              {/* Slider 3 Foto Berita (Seamless Infinite Loop Tiap 3.5 Detik) */}
               <div className="relative h-60 sm:h-80 w-full rounded-xl overflow-hidden bg-gray-100 border border-gray-200 group">
                 <div
-                  className="flex w-full h-full transition-transform duration-500 ease-out"
-                  style={{ transform: `translateX(-${activeSlideIndex * 100}%)` }}
+                  className={`flex w-full h-full ${
+                    isSlideTransitioning
+                      ? "transition-transform duration-500 ease-out"
+                      : "transition-none"
+                  }`}
+                  style={{ transform: `translateX(-${slideTrackIdx * 100}%)` }}
                 >
-                  {modalPhotos.map((photoUrl, idx) => (
+                  {extendedModalPhotos.map((photoUrl, idx) => (
                     <div key={idx} className="w-full h-full shrink-0 relative">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={photoUrl}
-                        alt={`${activeModalBerita.judul} - Foto ${idx + 1}`}
+                        alt={`${activeModalBerita.judul} - Foto ${idx}`}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -345,17 +394,17 @@ export default function InformasiPage() {
 
                 {/* Indikator Nomor Foto (Pojok Kanan Atas) */}
                 <span className="absolute top-3 right-3 bg-black/45 backdrop-blur-md border border-white/20 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm">
-                  {activeSlideIndex + 1} / {modalPhotos.length}
+                  {realSlideIndex + 1} / {modalPhotos.length}
                 </span>
 
                 {/* Tombol Geser Kiri Modern Glassmorphism */}
                 <button
                   type="button"
-                  onClick={() =>
-                    setActiveSlideIndex(
-                      (prev) => (prev - 1 + modalPhotos.length) % modalPhotos.length
-                    )
-                  }
+                  onClick={() => {
+                    if (slideTrackIdx <= 0) return;
+                    setIsSlideTransitioning(true);
+                    setSlideTrackIdx((prev) => prev - 1);
+                  }}
                   className="group/btn absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-black/35 hover:bg-[#2A2C5E] backdrop-blur-md border border-white/25 hover:border-white/50 text-white shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
                   aria-label="Foto Sebelumnya"
                 >
@@ -368,9 +417,11 @@ export default function InformasiPage() {
                 {/* Tombol Geser Kanan Modern Glassmorphism */}
                 <button
                   type="button"
-                  onClick={() =>
-                    setActiveSlideIndex((prev) => (prev + 1) % modalPhotos.length)
-                  }
+                  onClick={() => {
+                    if (slideTrackIdx >= modalPhotos.length + 1) return;
+                    setIsSlideTransitioning(true);
+                    setSlideTrackIdx((prev) => prev + 1);
+                  }}
                   className="group/btn absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-black/35 hover:bg-[#2A2C5E] backdrop-blur-md border border-white/25 hover:border-white/50 text-white shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
                   aria-label="Foto Berikutnya"
                 >
@@ -383,12 +434,15 @@ export default function InformasiPage() {
                 {/* Indikator Titik Slide di Bawah Tengah */}
                 <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-black/40 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-full shadow-md">
                   {modalPhotos.map((_, idx) => {
-                    const isCurrent = idx === activeSlideIndex;
+                    const isCurrent = idx === realSlideIndex;
                     return (
                       <button
                         key={idx}
                         type="button"
-                        onClick={() => setActiveSlideIndex(idx)}
+                        onClick={() => {
+                          setIsSlideTransitioning(true);
+                          setSlideTrackIdx(idx + 1);
+                        }}
                         className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                           isCurrent ? "w-6 bg-white shadow-xs" : "w-2 bg-white/50 hover:bg-white/85"
                         }`}

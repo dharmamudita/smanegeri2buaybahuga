@@ -47,31 +47,79 @@ const HERO_SLIDES = [
   },
 ];
 
+const EXTENDED_HERO_SLIDES = [
+  HERO_SLIDES[HERO_SLIDES.length - 1],
+  ...HERO_SLIDES,
+  HERO_SLIDES[0],
+];
+
 export default function HomePage() {
   const beritaList = useBeritaStore((state) => state.beritaList);
   const beritaTerbaru = beritaList.slice(0, 6);
-  const [activeBannerIdx, setActiveBannerIdx] = useState<number>(0);
+  const [bannerTrackIdx, setBannerTrackIdx] = useState<number>(1);
+  const [isBannerTransitioning, setIsBannerTransitioning] = useState<boolean>(true);
 
-  // Otomatis bergeser setiap 4 detik ketika dibiarkan
+  const realBannerIdx =
+    (bannerTrackIdx - 1 + HERO_SLIDES.length) % HERO_SLIDES.length;
+
+  // Otomatis bergeser maju setiap 4 detik tanpa pernah mundur ke belakang (Seamless Infinite Loop)
   useEffect(() => {
     const timer = setInterval(() => {
-      setActiveBannerIdx((prev) => (prev + 1) % HERO_SLIDES.length);
+      setIsBannerTransitioning(true);
+      setBannerTrackIdx((prev) =>
+        prev >= HERO_SLIDES.length + 1 ? prev : prev + 1
+      );
     }, 4000);
     return () => clearInterval(timer);
-  }, [activeBannerIdx]);
+  }, [bannerTrackIdx]);
+
+  // Reset posisi secara tak terlihat saat mencapai slide bayangan di ujung kanan/kiri
+  useEffect(() => {
+    if (bannerTrackIdx === HERO_SLIDES.length + 1) {
+      const snapTimer = setTimeout(() => {
+        setIsBannerTransitioning(false);
+        setBannerTrackIdx(1);
+      }, 700);
+      return () => clearTimeout(snapTimer);
+    }
+    if (bannerTrackIdx === 0) {
+      const snapTimer = setTimeout(() => {
+        setIsBannerTransitioning(false);
+        setBannerTrackIdx(HERO_SLIDES.length);
+      }, 700);
+      return () => clearTimeout(snapTimer);
+    }
+  }, [bannerTrackIdx]);
+
+  // Aktifkan kembali transisi setelah snap selesai
+  useEffect(() => {
+    if (!isBannerTransitioning) {
+      const enableTimer = setTimeout(() => {
+        setIsBannerTransitioning(true);
+      }, 50);
+      return () => clearTimeout(enableTimer);
+    }
+  }, [isBannerTransitioning]);
 
   return (
     <div className="space-y-6 sm:space-y-8 pb-12">
-      {/* 0. Banner Foto Utama 12:5 (1920x800 px / 1200x500 px) di Paling Atas Beranda (Tanpa Teks, Geser Manual & Otomatis) */}
+      {/* 0. Banner Foto Utama 12:5 (1920x800 px / 1200x500 px) di Paling Atas Beranda (Seamless Infinite Loop) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-5 sm:pt-7">
         <div className="relative w-full aspect-[12/5] rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-gray-100">
-          {/* Track Slide Horizontal */}
+          {/* Track Slide Horizontal Seamless Infinite Loop */}
           <div
-            className="flex w-full h-full transition-transform duration-700 ease-out"
-            style={{ transform: `translateX(-${activeBannerIdx * 100}%)` }}
+            className={`flex w-full h-full ${
+              isBannerTransitioning
+                ? "transition-transform duration-700 ease-out"
+                : "transition-none"
+            }`}
+            style={{ transform: `translateX(-${bannerTrackIdx * 100}%)` }}
           >
-            {HERO_SLIDES.map((slide) => (
-              <div key={slide.id} className="w-full h-full shrink-0 relative">
+            {EXTENDED_HERO_SLIDES.map((slide, idx) => (
+              <div
+                key={`${slide.id}-clone-${idx}`}
+                className="w-full h-full shrink-0 relative"
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={slide.imageUrl}
@@ -85,11 +133,11 @@ export default function HomePage() {
           {/* Tombol Geser Kiri Modern Glassmorphism */}
           <button
             type="button"
-            onClick={() =>
-              setActiveBannerIdx(
-                (prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length
-              )
-            }
+            onClick={() => {
+              if (bannerTrackIdx <= 0) return;
+              setIsBannerTransitioning(true);
+              setBannerTrackIdx((prev) => prev - 1);
+            }}
             className="group/btn absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-black/35 hover:bg-[#2A2C5E] backdrop-blur-md border border-white/25 hover:border-white/50 text-white shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
             aria-label="Foto Sebelumnya"
           >
@@ -102,9 +150,11 @@ export default function HomePage() {
           {/* Tombol Geser Kanan Modern Glassmorphism */}
           <button
             type="button"
-            onClick={() =>
-              setActiveBannerIdx((prev) => (prev + 1) % HERO_SLIDES.length)
-            }
+            onClick={() => {
+              if (bannerTrackIdx >= HERO_SLIDES.length + 1) return;
+              setIsBannerTransitioning(true);
+              setBannerTrackIdx((prev) => prev + 1);
+            }}
             className="group/btn absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-black/35 hover:bg-[#2A2C5E] backdrop-blur-md border border-white/25 hover:border-white/50 text-white shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
             aria-label="Foto Berikutnya"
           >
@@ -117,12 +167,15 @@ export default function HomePage() {
           {/* Indikator Titik Slide di Bawah Tengah */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-black/40 backdrop-blur-md border border-white/20 px-3.5 py-2 rounded-full shadow-md">
             {HERO_SLIDES.map((s, idx) => {
-              const isCurrent = idx === activeBannerIdx;
+              const isCurrent = idx === realBannerIdx;
               return (
                 <button
                   key={s.id}
                   type="button"
-                  onClick={() => setActiveBannerIdx(idx)}
+                  onClick={() => {
+                    setIsBannerTransitioning(true);
+                    setBannerTrackIdx(idx + 1);
+                  }}
                   className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                     isCurrent
                       ? "w-7 bg-white shadow-xs"

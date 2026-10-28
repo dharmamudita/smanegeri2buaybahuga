@@ -135,7 +135,7 @@ export default function HomePage() {
                     </span>
                   </div>
                   <p className="text-xs text-blue-100 leading-relaxed">
-                    Sistem pembelajaran terpusat untuk 450+ peserta didik dan 32 dewan guru.
+                    Penyelenggaraan pendidikan bagi 983 peserta didik (29 rombel) serta 53 pendidik dan tenaga kependidikan.
                   </p>
                 </div>
               </div>
@@ -151,9 +151,9 @@ export default function HomePage() {
             <div className="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-3">
               <Users className="w-5 h-5" />
             </div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">450+</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">983</div>
             <div className="text-xs font-semibold text-gray-600">
-              Peserta Didik Aktif
+              Peserta Didik Aktif (29 Rombel)
             </div>
           </div>
 
@@ -161,7 +161,7 @@ export default function HomePage() {
             <div className="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-3">
               <GraduationCap className="w-5 h-5" />
             </div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">32</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">53</div>
             <div className="text-xs font-semibold text-gray-600">
               Pendidik & Tenaga Kependidikan
             </div>
@@ -171,9 +171,9 @@ export default function HomePage() {
             <div className="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-3">
               <Award className="w-5 h-5" />
             </div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">18+</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">25+</div>
             <div className="text-xs font-semibold text-gray-600">
-              Prestasi OSN & O2SN
+              Prestasi OSN, O2SN & FLS2N
             </div>
           </div>
 
@@ -181,9 +181,9 @@ export default function HomePage() {
             <div className="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-3">
               <BookOpen className="w-5 h-5" />
             </div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">100%</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">28</div>
             <div className="text-xs font-semibold text-gray-600">
-              Digitalisasi Pembelajaran & CBT
+              Ruang Kelas & 9 Laboratorium
             </div>
           </div>
         </div>
@@ -197,48 +197,52 @@ export default function HomePage() {
               <div className="w-40 h-48 sm:w-48 sm:h-56 rounded-xl overflow-hidden bg-gray-100 border-2 border-gray-200 shadow-xs">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&auto=format&fit=crop&q=80"
-                  alt="Kepala Sekolah SMAN 2 Buay Bahuga"
+                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80"
+                  alt="Apriyani, S.Si., M.M.Pd. - Kepala SMAN 2 Buay Bahuga"
                   className="w-full h-full object-cover object-top"
                 />
               </div>
               <div>
                 <h3 className="font-bold text-gray-900 text-base">
-                  Drs. Hendro Wibowo, M.Pd.
+                  {SCHOOL_INFO.kepalaSekolah}
                 </h3>
                 <p className="text-xs text-[#2A2C5E] font-medium">
                   Kepala SMA Negeri 2 Buay Bahuga
                 </p>
-                <p className="text-[11px] text-gray-400">NIP. 197003181995121002</p>
+                <p className="text-[11px] text-gray-400">
+                  NIP. {SCHOOL_INFO.nipKepalaSekolah} ({SCHOOL_INFO.pangkatKepalaSekolah})
+                </p>
               </div>
             </div>
 
             <div className="lg:col-span-8 space-y-4">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Sambutan Pimpinan Sekolah</span>
+                <span>Sambutan Kepala Sekolah</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
-                Mempersiapkan Generasi Berbudi Pekerti Luhur dan Unggul di Era Digital
+                Mewujudkan Insan Beriman, Berakhlak Mulia, Unggul dalam Prestasi, dan Berdaya Saing Global
               </h2>
               <div className="text-sm text-gray-600 space-y-3 leading-relaxed">
                 <p>
                   Assalamu’alaikum Warahmatullahi Wabarakatuh, Salam Sejahtera bagi
-                  kita semua.
+                  kita semua, Tabik Pun.
                 </p>
                 <p>
-                  Puji syukur kita panjatkan ke hadirat Tuhan Yang Maha Esa atas
-                  terwujudnya portal resmi dan ekosistem Smart School SMA Negeri 2
-                  Buay Bahuga. Melalui integrasi teknologi ini, kami berkomitmen
-                  memberikan layanan pendidikan prima yang transparan, akuntabel,
-                  dan modern bagi seluruh siswa, guru, serta masyarakat Kabupaten
-                  Way Kanan.
+                  Puji syukur kehadirat Tuhan Yang Maha Esa atas hadirnya portal
+                  informasi resmi dan sistem pembelajaran terpadu SMA Negeri 2 Buay
+                  Bahuga (Smandabuba), Kampung Suka Agung, Kecamatan Buay Bahuga,
+                  Kabupaten Way Kanan. Sejak berdiri pada 22 Februari 2008, sekolah
+                  kami terus berkomitmen menghadirkan layanan pendidikan yang
+                  transparan, akuntabel, dan bermutu tinggi.
                 </p>
                 <p>
-                  Dengan penerapan Kurikulum Merdeka yang didukung fasilitas pembelajaran
-                  digital modern, kami memastikan bahwa proses pembelajaran tidak hanya
-                  mengejar penguasaan ilmu pengetahuan, tetapi juga menanamkan kedisiplinan
-                  dan budi pekerti yang kokoh.
+                  Melalui implementasi Kurikulum Merdeka, pembinaan prestasi akademik
+                  maupun non-akademik, serta penguatan Gerakan Sekolah ASRI (Aman,
+                  Sehat, Resik, dan Indah), kami bertekad mendampingi setiap peserta
+                  didik agar tumbuh menjadi generasi berkarakter luhur yang siap
+                  melanjutkan pendidikan ke perguruan tinggi terbaik dan berkontribusi
+                  bagi masyarakat.
                 </p>
               </div>
             </div>

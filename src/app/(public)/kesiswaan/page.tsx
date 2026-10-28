@@ -70,39 +70,46 @@ function KesiswaanContent() {
 
   const prestasiList = [
     {
-      kegiatan: "Olimpiade Sains Nasional (OSN) Bidang Fisika Terapan",
-      tingkat: "Tingkat Provinsi Lampung 2026",
-      peraih: "Dharma Mudita Pratama (Kelas XII MIPA 1)",
-      predikat: "Medali Emas (Juara 1)",
+      kegiatan: "Seleksi Nasional Berdasarkan Prestasi (SNBP) PTN Negeri",
+      tingkat: "Tingkat Nasional (Universitas Negeri Jakarta - UNJ)",
+      peraih: "Nabila Dijayanti (Program Studi Biologi UNJ)",
+      predikat: "Lolos Jalur Prestasi SNBP",
       kategori: "Akademik",
     },
     {
-      kegiatan: "Lomba Baris-Berbaris (LBB) Paskibraka Way Kanan",
-      tingkat: "Tingkat Kabupaten 2026",
-      peraih: "Peleton Pasukan Pengibar Bendera SMAN 2 Buay Bahuga",
-      predikat: "Juara Umum & Danton Terbaik",
-      kategori: "Kedisiplinan",
-    },
-    {
-      kegiatan: "Festival & Lomba Seni Siswa Nasional (FLS2N) Tari Lampung",
-      tingkat: "Tingkat Wilayah II Lampung 2025",
-      peraih: "Sanggar Seni Tari Putri Melati",
-      predikat: "Juara 2 Penyaji Terbaik",
+      kegiatan: "Festival & Lomba Seni Siswa Nasional (FLS2N) Cabang Kriya",
+      tingkat: "Tingkat Kabupaten Way Kanan",
+      peraih: "Safety Octa Sushadi & Aji Winata Prayoga",
+      predikat: "Juara Umum (Medali Emas & Perak)",
       kategori: "Seni Budaya",
     },
     {
-      kegiatan: "Lomba Karya Ilmiah Remaja (KIR) Teknologi Tepat Guna",
-      tingkat: "Tingkat Provinsi Lampung 2025",
-      peraih: "Tim Robotika & IoT Pertanian Buay Bahuga",
-      predikat: "Finalis Favorit Inovasi",
-      kategori: "Sains & Teknologi",
+      kegiatan: "Olimpiade Sains Nasional (OSN) Tingkat SMA",
+      tingkat: "Tingkat Kabupaten Way Kanan",
+      peraih: "Evista Silvy Laudrya",
+      predikat: "Medali Perak (Juara 2)",
+      kategori: "Sains & Akademik",
     },
     {
-      kegiatan: "Turnamen Futsal Antar-SMA Se-Kabupaten Way Kanan",
-      tingkat: "Tingkat Kabupaten 2025",
-      peraih: "Tim Futsal Utama SMAN 2 Buay Bahuga",
-      predikat: "Juara 1 & Top Scorer",
-      kategori: "Olahraga",
+      kegiatan: "Olimpiade Olahraga Siswa Nasional (O2SN) Cabang Karate",
+      tingkat: "Tingkat Kabupaten Way Kanan",
+      peraih: "M. Ziddane Alfaridz",
+      predikat: "Medali Perak (Juara 2)",
+      kategori: "Olahraga Bela Diri",
+    },
+    {
+      kegiatan: "Olimpiade Olahraga Siswa Nasional (O2SN) Cabang Pencak Silat",
+      tingkat: "Tingkat Kabupaten Way Kanan",
+      peraih: "Frita Amelia",
+      predikat: "Medali Perunggu (Juara 3)",
+      kategori: "Olahraga Bela Diri",
+    },
+    {
+      kegiatan: "Lomba Baris-Berbaris (LBB) & Paskibraka Kecamatan Buay Bahuga",
+      tingkat: "Tingkat Kecamatan & Kabupaten Way Kanan",
+      peraih: "Pasukan Pengibar Bendera SMAN 2 Buay Bahuga",
+      predikat: "Pasukan Kehormatan HUT RI",
+      kategori: "Kedisiplinan",
     },
   ];
 
@@ -111,49 +118,49 @@ function KesiswaanContent() {
       nama: "Pasukan Pengibar Bendera (Paskibra)",
       kategori: "Kedisiplinan & Patriotisme",
       icon: ShieldCheck,
-      pembina: "Drs. Joko Prasetyo",
+      pembina: "Marsono, S.Pd.",
       jadwal: "Selasa & Jumat, 15:30 WIB",
-      prestasi: "Juara Umum Lomba Paskibraka Kabupaten Way Kanan",
+      prestasi: "Pasukan Pengibar Bendera Utama HUT RI Kec. Buay Bahuga",
     },
     {
-      nama: "Gerakan Pramuka Gudep Buay Bahuga",
+      nama: "Gerakan Pramuka Gudep SMAN 2 Buay Bahuga",
       kategori: "Kepanduan & Karakter Mandiri",
       icon: Compass,
-      pembina: "Budi Santoso, S.Pd., M.Si.",
+      pembina: "Tumijo, S.Pd.",
       jadwal: "Kamis, 15:30 WIB",
-      prestasi: "Juara Umum Raimuna Cabang Way Kanan 2025",
+      prestasi: "Gudep Teraktif Kwarran Buay Bahuga - Kwarcab Way Kanan",
     },
     {
-      nama: "Palang Merah Remaja (PMR Wira)",
-      kategori: "Kemanusiaan & Medis Pertama",
-      icon: HeartHandshake,
-      pembina: "Siti Rahmawati, S.Pd.",
+      nama: "Sanggar Seni Kriya & Budaya Lampung (FLS2N)",
+      kategori: "Seni Rupa, Kriya & Tari Tradisional",
+      icon: Sparkles,
+      pembina: "Marlita Illiansyah, S.Pd.",
       jadwal: "Rabu, 15:30 WIB",
-      prestasi: "Pelayanan Pertolongan Pertama Terbaik Tingkat SMA",
+      prestasi: "Juara Umum FLS2N (Medali Emas & Perak Cabang Kriya)",
     },
     {
-      nama: "Karya Ilmiah Remaja & Robotika (KIR)",
-      kategori: "Riset Sains & Inovasi IoT",
+      nama: "Klub Olimpiade Sains Nasional (OSN & KIR)",
+      kategori: "Pembinaan Sains & Riset Ilmiah",
       icon: Activity,
-      pembina: "Ahmad Fauzi, S.Kom.",
+      pembina: "Wida Awanda, S.Pd.Si. & Eva Dwi Kurniawati, S.Pd.",
       jadwal: "Sabtu, 09:00 WIB",
-      prestasi: "Finalis Lomba Inovasi Teknologi Lampung 2026",
+      prestasi: "Peraih Medali Perak OSN Tingkat Kabupaten Way Kanan",
     },
     {
-      nama: "Rohis & Bina Mental Spiritual",
+      nama: "Rohani Islam (Rohis) & Bina Imtaq",
       kategori: "Keagamaan & Akhlak Mulia",
       icon: Flame,
-      pembina: "Nurul Hidayati, M.Pd.",
+      pembina: "Mamad Fhadoli, S.Pd.I.",
       jadwal: "Jumat, 11:30 WIB",
-      prestasi: "Penyelenggara Pesantren Kilat Ramadhan Teraktif",
+      prestasi: "Penyelenggara Gebyar PHBI & Pesantren Kilat Sekolah",
     },
     {
-      nama: "Klub Olahraga Prestasi (Futsal & Basket)",
-      kategori: "Keolahragaan & Sportivitas",
+      nama: "Klub Olahraga Prestasi & Bela Diri (O2SN)",
+      kategori: "Karate, Pencak Silat, Futsal & Voli",
       icon: Trophy,
-      pembina: "Rian Hidayat, S.Pd.",
+      pembina: "Meiliana, S.Pd.",
       jadwal: "Senin & Rabu, 16:00 WIB",
-      prestasi: "Juara 1 Turnamen Futsal Pelajar Way Kanan",
+      prestasi: "Juara 2 Karate & Juara 3 Pencak Silat O2SN Way Kanan",
     },
   ];
 
@@ -351,24 +358,24 @@ function KesiswaanContent() {
               <span className="font-semibold text-[#2A2C5E] bg-blue-50 px-2 py-0.5 rounded inline-block">
                 Ketua Umum OSIS
               </span>
-              <h4 className="font-bold text-gray-900 text-sm">Dharma Mudita Pratama</h4>
-              <p className="text-gray-500">Kelas XII MIPA 1 (NISN: 0078129341)</p>
+              <h4 className="font-bold text-gray-900 text-sm">M. Ziddane Alfaridz</h4>
+              <p className="text-gray-500">Kelas XI IPS 1 (NISN: 0081234567)</p>
             </div>
 
             <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-2xs text-xs space-y-1.5">
               <span className="font-semibold text-[#2A2C5E] bg-blue-50 px-2 py-0.5 rounded inline-block">
                 Wakil Ketua OSIS
               </span>
-              <h4 className="font-bold text-gray-900 text-sm">Anisa Putri Lestari</h4>
-              <p className="text-gray-500">Kelas XI IPS 2 (NISN: 0089124432)</p>
+              <h4 className="font-bold text-gray-900 text-sm">Safety Octa Sushadi</h4>
+              <p className="text-gray-500">Kelas XII MIPA 2 (NISN: 0078129342)</p>
             </div>
 
             <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-2xs text-xs space-y-1.5">
               <span className="font-semibold text-[#2A2C5E] bg-blue-50 px-2 py-0.5 rounded inline-block">
                 Ketua MPK
               </span>
-              <h4 className="font-bold text-gray-900 text-sm">Reza Fahlevi</h4>
-              <p className="text-gray-500">Kelas XII MIPA 2 (NISN: 0076239102)</p>
+              <h4 className="font-bold text-gray-900 text-sm">Nabila Dijayanti</h4>
+              <p className="text-gray-500">Kelas XII MIPA 1 (NISN: 0078129341)</p>
             </div>
           </div>
         </section>

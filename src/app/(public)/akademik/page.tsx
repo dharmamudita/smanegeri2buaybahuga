@@ -68,7 +68,7 @@ function AkademikContent() {
       jenis: "Penilaian Tengah Semester (PTS) Ganjil",
       tanggal: "21 - 26 September 2026",
       metode: "Computer Based Test (CBT) di Lab Multimedia",
-      peserta: "Seluruh Tingkat X, XI, XII (450+ Siswa)",
+      peserta: "Seluruh Tingkat X, XI, XII (983 Siswa / 29 Rombel)",
       status: "Terjadwal",
     },
     {

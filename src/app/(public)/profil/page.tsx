@@ -49,85 +49,85 @@ function ProfilContent() {
 
   const fasilitasData = [
     {
-      nama: "Laboratorium Komputer Multimedia & CBT",
+      nama: "28 Ruang Kelas Belajar Representatif",
       deskripsi:
-        "Dilengkapi 40 unit PC workstation modern terhubung internet untuk pelaksanaan Asesmen Nasional (ANBK), KBM digital, dan literasi teknologi.",
-      icon: Monitor,
-      kapasitas: "40 Siswa",
+        "Ruang belajar untuk 29 rombongan belajar (983 siswa) yang nyaman, berventilasi sehat, dan mendukung proses KBM Kurikulum Merdeka.",
+      icon: Building2,
+      kapasitas: "28 Ruang Kelas",
     },
     {
-      nama: "Laboratorium Sains IPA Terpadu",
+      nama: "9 Unit Laboratorium Sains & Komputer CBT",
       deskripsi:
-        "Fasilitas praktikum Fisika, Kimia, dan Biologi lengkap dengan mikroskop binokuler, alat destilasi, dan kit praktikum Kurikulum Merdeka.",
+        "Mencakup Laboratorium Komputer Multimedia untuk Asesmen Nasional (ANBK), serta Laboratorium Biologi, Fisika, Kimia, dan Bahasa.",
       icon: FlaskConical,
-      kapasitas: "36 Siswa",
+      kapasitas: "9 Unit Lab",
     },
     {
-      nama: "Perpustakaan Digital Ki Hajar Dewantara",
+      nama: "Perpustakaan Sekolah SMAN 2 Buay Bahuga",
       deskripsi:
-        "Koleksi 5.000+ buku fisik dan akses e-book interaktif, ruang baca ber-AC, serta terminal pencarian katalog daring (OPAC).",
+        "Pusat literasi yang menyediakan ribuan koleksi buku teks utama Kurikulum Merdeka, referensi pengayaan PTN, dan ruang baca siswa.",
       icon: BookMarked,
-      kapasitas: "60 Siswa",
+      kapasitas: "1 Gedung Utama",
     },
     {
-      nama: "Lapangan Olahraga Multifungsi",
+      nama: "Lapangan Olahraga & Lahan Kampus 20.000 m²",
       deskripsi:
-        "Area olahraga terbuka standar untuk basket, futsal, voli, bulutangkis, serta kegiatan upacara bendera mingguan.",
+        "Lingkungan kampus seluas 2 hektar dengan fasilitas lapangan upacara, futsal, bola voli, karate, pencak silat, dan taman sekolah ASRI.",
       icon: Trophy,
-      kapasitas: "500+ Siswa",
+      kapasitas: "Lahan 20.000 m²",
     },
     {
       nama: "Ruang Unit Kesehatan Sekolah (UKS)",
       deskripsi:
-        "Pelayanan pertolongan medis pertama, ranjang istirahat terpisah putra/putri, serta pendampingan rutin dari Puskesmas Buay Bahuga.",
+        "Pelayanan kesehatan dasar siswa, fasilitas pertolongan pertama (PMR), serta koordinasi kesehatan berkala bersama Puskesmas Buay Bahuga.",
       icon: Heart,
-      kapasitas: "4 Ranjang Medis",
+      kapasitas: "Layanan Medis",
     },
     {
-      nama: "Masjid Baitul 'Ilmi SMAN 2 Buay Bahuga",
+      nama: "Sarana Ibadah & Pembinaan Karakter",
       deskripsi:
-        "Pusat pembinaan spiritual dan ibadah berjamaah, kegiatan keputrian, kajian Rohis, serta sholat dhuha dan dhuhur rutin siswa.",
+        "Pusat kegiatan keagamaan, ibadah sholat berjamaah, kajian Rohis, dan pembinaan akhlak mulia warga SMA Negeri 2 Buay Bahuga.",
       icon: Compass,
-      kapasitas: "350 Jamaah",
+      kapasitas: "Seluruh Warga Sekolah",
     },
   ];
 
   const strukturPimpinan = [
     {
       jabatan: "Kepala Sekolah",
-      nama: "Drs. H. Ahmad Dahlan, M.Pd.",
-      nip: "19680512 199403 1 005",
-      keterangan: "Penanggung Jawab Kebijakan Strategis Lembaga",
+      nama: "Apriyani, S.Si., M.M.Pd.",
+      nip: "19720405 200501 2 005",
+      keterangan: "Pembina Tk. I / IV.b — Penanggung Jawab Kebijakan & Manajemen Mutu Satuan Pendidikan",
     },
     {
       jabatan: "Wakil Kepala Sekolah Bidang Kurikulum",
-      nama: "Siti Rahmawati, S.Pd., M.Si.",
-      nip: "19780415 200312 2 004",
-      keterangan: "Pengembangan Kurikulum Merdeka & Supervisi Mutu KBM",
+      nama: "Marsono, S.Pd.",
+      nip: "19820315 200801 1 012",
+      keterangan: "Koordinator Implementasi Kurikulum Merdeka, Jadwal KBM 29 Rombel, & Evaluasi Akademik",
     },
     {
       jabatan: "Wakil Kepala Sekolah Bidang Kesiswaan",
-      nama: "Budi Santoso, S.Pd.",
-      nip: "19820921 200801 1 012",
-      keterangan: "Pembinaan Disiplin, Karakter Siswa, & Ekstrakurikuler",
+      nama: "Tumijo, S.Pd.",
+      nip: "19780512 200501 1 003",
+      keterangan: "Pembinaan Disiplin Siswa, Organisasi OSIS/MPK, serta Pendampingan Prestasi OSN, O2SN, & FLS2N",
     },
     {
       jabatan: "Wakil Kepala Sekolah Bidang Sarana & Prasarana",
-      nama: "Joko Supriyanto, S.T.",
-      nip: "19800310 200604 1 008",
-      keterangan: "Pemeliharaan Infrastruktur & Fasilitas Digital Kampus",
+      nama: "Wida Awanda, S.Pd.Si.",
+      nip: "19890418 201402 2 004",
+      keterangan: "Pengelolaan 28 Ruang Kelas, 9 Unit Laboratorium, Perpustakaan, & Lingkungan Sekolah ASRI",
     },
     {
       jabatan: "Wakil Kepala Sekolah Bidang Hubungan Masyarakat",
-      nama: "Nurul Hidayah, S.Sos.",
-      nip: "19850118 201001 2 015",
-      keterangan: "Kemitraan DUDI, Perguruan Tinggi, & Komunikasi Komite",
+      nama: "Eva Dwi Kurniawati, S.Pd.",
+      nip: "19880727 201101 2 005",
+      keterangan: "Kemitraan Komite Sekolah, Orang Tua/Wali Murid, Perguruan Tinggi Negeri, & Publikasi",
     },
     {
-      jabatan: "Kepala Tata Usaha & Administrasi Kepegawaian",
-      nama: "Haryono, S.A.P.",
-      nip: "19750802 199803 1 003",
-      keterangan: "Manajemen Dapodik, Surat Menyurat, & Keuangan Sekolah",
+      jabatan: "Tata Usaha & Operator Pokok Pendidikan (Dapodik)",
+      nama: "Abu Yasid",
+      nip: "Operator Resmi Dapodik (NPSN: 10810192)",
+      keterangan: "Manajemen Data Pokok Pendidikan Kemendikdasmen, Administrasi Kesiswaan, & Kepegawaian",
     },
   ];
 
@@ -177,22 +177,22 @@ function ProfilContent() {
               <Compass className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Visi, Misi & Tujuan Institusi</h2>
-              <p className="text-xs text-gray-500">Arah strategis pembinaan karakter dan keunggulan akademik</p>
+              <h2 className="text-xl font-bold text-gray-900">Visi, Misi & Sejarah Singkat SMAN 2 Buay Bahuga</h2>
+              <p className="text-xs text-gray-500">Landasan filosofis dan arah strategis pembinaan mutu pendidikan di Kabupaten Way Kanan</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Visi */}
+            {/* Visi & Sejarah */}
             <div className="bg-white p-6 sm:p-8 rounded-xl border border-gray-200 shadow-2xs space-y-4">
               <span className="text-xs font-semibold text-[#2A2C5E] bg-blue-50 px-3 py-1 rounded">
                 Visi Sekolah
               </span>
               <h3 className="text-xl font-bold text-gray-900 leading-snug">
-                &ldquo;Terwujudnya Generasi Cendekia yang Berakhlak Mulia, Unggul dalam Sains Teknologi, Berjiwa Wirausaha, dan Berwawasan Lingkungan Global.&rdquo;
+                &ldquo;Terwujudnya Insan yang Beriman, Berakhlak Mulia, Unggul dalam Prestasi, Berwawasan Lingkungan, dan Berdaya Saing Global.&rdquo;
               </h3>
               <p className="text-xs text-gray-600 leading-relaxed">
-                Visi ini menjadi landasan seluruh program strategis pembelajaran Kurikulum Merdeka di SMA Negeri 2 Buay Bahuga dalam mencetak profil Pelajar Pancasila yang tangguh menghadapi tantangan era digital.
+                SMA Negeri 2 Buay Bahuga resmi berdiri berdasarkan SK Pendirian Nomor 03 Tahun 2008 tanggal 22 Februari 2008 di Jl. Ryacudu No. 04, Kampung Suka Agung, Kecamatan Buay Bahuga, Kabupaten Way Kanan. Di bawah kepemimpinan Kepala Sekolah Ibu Apriyani, S.Si., M.M.Pd., sekolah berkomitmen mencetak lulusan berprestasi akademik maupun non-akademik yang berpegang teguh pada nilai-nilai luhur Pancasila.
               </p>
             </div>
 
@@ -204,19 +204,23 @@ function ProfilContent() {
               <ul className="space-y-3 text-xs text-gray-700">
                 <li className="flex items-start gap-2.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>Menanamkan nilai-nilai keimanan, ketakwaan, dan budi pekerti luhur dalam keseharian madani.</span>
+                  <span>Menumbuhkembangkan penghayatan dan pengamalan nilai keimanan, ketakwaan, serta budi pekerti luhur dalam kehidupan sehari-hari.</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>Melaksanakan pembelajaran sains dan teknologi terintegrasi dengan pemanfaatan media digital secara inovatif dan efektif.</span>
+                  <span>Melaksanakan pembelajaran dan bimbingan secara efektif, adaptif, kreatif, dan inovatif melalui implementasi Kurikulum Merdeka.</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>Mengembangkan bakat minat siswa melalui 12 cabang ekstrakurikuler kepemimpinan dan keolahragaan.</span>
+                  <span>Mendorong penguasaan ilmu pengetahuan, sains, dan literasi teknologi informasi agar siswa siap melanjutkan ke Perguruan Tinggi Negeri maupun dunia kerja.</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>Mewujudkan lingkungan sekolah yang asri, bersih, berbudaya mutu, dan ramah anak.</span>
+                  <span>Membina potensi minat dan bakat siswa secara terprogram pada bidang olimpiade sains (OSN), olahraga (O2SN), dan seni budaya (FLS2N).</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <span>Mewujudkan lingkungan sekolah melalui Gerakan ASRI (Aman, Sehat, Resik, dan Indah) dengan menjunjung kearifan lokal Lampung.</span>
                 </li>
               </ul>
             </div>
@@ -310,7 +314,7 @@ function ProfilContent() {
             </div>
             <div>
               <h2 className="text-xl font-bold text-gray-900">Identitas Resmi & Legalitas Sekolah</h2>
-              <p className="text-xs text-gray-500">Data pokok pendidikan terdaftar resmi pada Kemendikbudristek RI</p>
+              <p className="text-xs text-gray-500">Data Pokok Pendidikan (Dapodik) resmi terdaftar pada Kemendikdasmen RI</p>
             </div>
           </div>
 
@@ -322,22 +326,32 @@ function ProfilContent() {
                   <span className="font-bold text-gray-900">{SCHOOL_INFO.nama}</span>
                 </div>
                 <div className="flex justify-between py-1.5 border-b border-gray-100">
-                  <span className="text-gray-500">Nomor Pokok Sekolah Nasional (NPSN)</span>
-                  <span className="font-bold text-[#2A2C5E] font-mono">{SCHOOL_INFO.npsn}</span>
+                  <span className="text-gray-500">NPSN / NSS</span>
+                  <span className="font-bold text-[#2A2C5E] font-mono">
+                    {SCHOOL_INFO.npsn} / {SCHOOL_INFO.nss}
+                  </span>
                 </div>
                 <div className="flex justify-between py-1.5 border-b border-gray-100">
                   <span className="text-gray-500">Peringkat Akreditasi</span>
                   <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
-                    Terakreditasi {SCHOOL_INFO.akreditasi}
+                    Terakreditasi {SCHOOL_INFO.akreditasi} (Unggul)
                   </span>
                 </div>
                 <div className="flex justify-between py-1.5 border-b border-gray-100">
-                  <span className="text-gray-500">Bentuk Pendidikan</span>
-                  <span className="font-medium text-gray-900">Sekolah Menengah Atas (SMA)</span>
+                  <span className="text-gray-500">Kepala Sekolah</span>
+                  <span className="font-bold text-gray-900">{SCHOOL_INFO.kepalaSekolah}</span>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-gray-100">
+                  <span className="text-gray-500">SK Pendirian Sekolah</span>
+                  <span className="font-medium text-gray-900">{SCHOOL_INFO.skPendirian}</span>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-gray-100">
+                  <span className="text-gray-500">SK Izin Operasional</span>
+                  <span className="font-medium text-gray-900">{SCHOOL_INFO.skOperasional}</span>
                 </div>
                 <div className="flex justify-between py-1.5">
-                  <span className="text-gray-500">Status Sekolah</span>
-                  <span className="font-medium text-gray-900">Negeri</span>
+                  <span className="text-gray-500">Operator Sekolah / Dapodik</span>
+                  <span className="font-medium text-gray-900">{SCHOOL_INFO.operatorSekolah}</span>
                 </div>
               </div>
 
@@ -355,14 +369,24 @@ function ProfilContent() {
                   <span className="font-medium text-gray-900">{SCHOOL_INFO.provinsi} - {SCHOOL_INFO.kodePos}</span>
                 </div>
                 <div className="flex justify-between py-1.5 border-b border-gray-100">
+                  <span className="text-gray-500">Telepon / Email Resmi</span>
+                  <span className="font-medium text-gray-900 text-right">
+                    {SCHOOL_INFO.telepon} &bull; {SCHOOL_INFO.email}
+                  </span>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-gray-100">
+                  <span className="text-gray-500">Luas Tanah Kampus</span>
+                  <span className="font-medium text-gray-900">{SCHOOL_INFO.luasTanah}</span>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-gray-100">
                   <span className="text-gray-500">Titik Koordinat Geografis</span>
                   <span className="font-mono text-gray-900 text-right">
                     Lat {SCHOOL_INFO.koordinat.latitude}, Lng {SCHOOL_INFO.koordinat.longitude}
                   </span>
                 </div>
                 <div className="flex justify-between py-1.5">
-                  <span className="text-gray-500">Waktu Penyelenggaraan</span>
-                  <span className="font-bold text-[#2A2C5E]">Pagi / 6 Hari Sekolah</span>
+                  <span className="text-gray-500">Kurikulum & Waktu KBM</span>
+                  <span className="font-bold text-[#2A2C5E]">Kurikulum Merdeka / Pagi</span>
                 </div>
               </div>
             </div>

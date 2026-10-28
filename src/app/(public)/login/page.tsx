@@ -50,7 +50,7 @@ const ROLE_CONFIG: Record<
     btnLabel: "Masuk ke Ruang Siswa",
     demoId: "0078129341",
     demoPass: "siswa12345",
-    demoName: "Dharma Mudita Pratama (XII MIPA 1)",
+    demoName: "Nabila Dijayanti (XII MIPA 1)",
   },
   GURU: {
     title: "Portal Masuk Dewan Guru",
@@ -66,7 +66,7 @@ const ROLE_CONFIG: Record<
     btnLabel: "Masuk ke Portal Dewan Guru",
     demoId: "197805122005011003",
     demoPass: "guru12345",
-    demoName: "Budi Santoso, S.Pd., M.Si. (Biologi)",
+    demoName: "Tumijo, S.Pd. (Biologi)",
   },
   ADMIN: {
     title: "Portal Masuk Administrator",
@@ -82,7 +82,7 @@ const ROLE_CONFIG: Record<
     btnLabel: "Masuk ke Panel Administrator",
     demoId: "SMAN2BUBA",
     demoPass: "SMANegeri2buba",
-    demoName: "Drs. Hendro Wibowo, M.Pd. (Admin)",
+    demoName: "Abu Yasid (Operator Dapodik & Sistem)",
   },
 };
 

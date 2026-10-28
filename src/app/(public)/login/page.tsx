@@ -14,7 +14,6 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import { useAuthStore } from "@/lib/store";
-import { MOCK_USERS } from "@/lib/mockData";
 import { Role } from "@/lib/types";
 
 const ROLE_CONFIG: Record<
@@ -102,50 +101,42 @@ function LoginForm() {
     setErrorMsg("");
   }, [currentRole]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg("");
 
-    setTimeout(() => {
-      let matched = MOCK_USERS.find(
-        (u) =>
-          u.role === currentRole &&
-          (u.username.toLowerCase() === username.toLowerCase() ||
-            u.nisn === username ||
-            u.nuptk === username)
-      );
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: username.trim(),
+          password: password.trim(),
+          role: currentRole,
+        }),
+      });
 
-      if (currentRole === "ADMIN") {
-        if (username === "SMAN2BUBA" && password === "SMANegeri2buba") {
-          matched = MOCK_USERS[0];
-        } else {
-          setErrorMsg("ID Akses atau Password Administrator tidak valid.");
-          setLoading(false);
-          return;
-        }
-      }
+      const data = await res.json();
 
-      if (matched) {
-        setUser(matched);
-        if (matched.role === "ADMIN") {
+      if (res.ok && data.success && data.user) {
+        setUser(data.user);
+        if (data.user.role === "ADMIN") {
           router.push("/admin/dashboard");
-        } else if (matched.role === "GURU") {
+        } else if (data.user.role === "GURU") {
           router.push("/guru/dashboard");
         } else {
           router.push("/siswa/dashboard");
         }
       } else {
-        setErrorMsg(
-          currentRole === "GURU"
-            ? "NUPTK tidak terdaftar di sistem pendidik."
-            : currentRole === "ADMIN"
-            ? "Kredensial Administrator salah."
-            : "NISN tidak terdaftar di pangkalan data siswa."
-        );
-        setLoading(false);
+        setErrorMsg(data.message || "Kredensial atau kata sandi tidak valid.");
       }
-    }, 600);
+    } catch (err) {
+      console.error("Login Error:", err);
+      setErrorMsg("Gagal menghubungi server autentikasi. Pastikan koneksi internet aktif.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

@@ -52,6 +52,5 @@ export const SCHOOL_INFO = {
 
 export const ADMIN_CREDENTIALS = {
   username: "SMAN2BUBA",
-  password: "SMANegeri2buba",
   name: "Administrator Sistem SMAN 2 Buay Bahuga",
 };

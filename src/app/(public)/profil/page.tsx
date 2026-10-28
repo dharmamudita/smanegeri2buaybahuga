@@ -188,7 +188,7 @@ function ProfilContent() {
       pangkat: "Guru Ahli Muda",
       keterangan: "Pengelolaan 28 Ruang Kelas, 9 Laboratorium & Lingkungan ASRI",
       fotoUrl:
-        "https://images.unsplash.com/photo-1580894732454-d102e3379201?w=400&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&auto=format&fit=crop&q=80",
     },
     {
       jabatan: "Waka Bidang Hubungan Masyarakat",
@@ -334,11 +334,8 @@ function ProfilContent() {
                     <h3 className="text-base sm:text-lg font-extrabold tracking-tight text-white">
                       {strukturPimpinan[0].nama}
                     </h3>
-                    <p className="text-[11px] font-mono text-blue-200">
+                    <p className="text-[11px] font-mono text-blue-200 mt-0.5">
                       NIP. {strukturPimpinan[0].nip}
-                    </p>
-                    <p className="text-[11px] text-blue-100/90 pt-2 mt-2 border-t border-white/15 leading-relaxed">
-                      {strukturPimpinan[0].pangkat} &bull; {strukturPimpinan[0].keterangan}
                     </p>
                   </div>
                 </div>
@@ -368,11 +365,8 @@ function ProfilContent() {
                     <h4 className="text-sm sm:text-base font-bold text-gray-900">
                       {strukturPimpinan[1].nama}
                     </h4>
-                    <p className="text-[11px] font-mono text-gray-500">
+                    <p className="text-[11px] font-mono text-gray-500 mt-0.5">
                       {strukturPimpinan[1].nip}
-                    </p>
-                    <p className="text-[11px] text-gray-600 pt-1.5 mt-1.5 border-t border-blue-100 leading-relaxed">
-                      {strukturPimpinan[1].keterangan}
                     </p>
                   </div>
                 </div>
@@ -398,29 +392,24 @@ function ProfilContent() {
                 {strukturPimpinan.slice(2, 6).map((waka) => (
                   <div
                     key={waka.jabatan}
-                    className="relative z-10 bg-white rounded-2xl border-2 border-[#2A2C5E]/20 hover:border-[#2A2C5E] p-4 text-center shadow-2xs hover:shadow-md transition-all flex flex-col justify-between space-y-2"
+                    className="relative z-10 bg-white rounded-2xl border-2 border-[#2A2C5E]/20 hover:border-[#2A2C5E] p-4 text-center shadow-2xs hover:shadow-md transition-all flex flex-col items-center justify-center space-y-2"
                   >
-                    <div className="space-y-2">
-                      {/* Foto Wakil Kepala Sekolah di Atas Kartu */}
-                      <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-[#2A2C5E] shadow-sm mx-auto bg-gray-100 shrink-0">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={waka.fotoUrl}
-                          alt={waka.nama}
-                          className="w-full h-full object-cover object-top"
-                        />
-                      </div>
-                      <div>
-                        <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-blue-50 px-2.5 py-0.5 rounded">
-                          {waka.jabatan}
-                        </span>
-                        <h4 className="text-sm font-bold text-gray-900 mt-1">{waka.nama}</h4>
-                        <p className="text-[11px] font-mono text-gray-500">NIP. {waka.nip}</p>
-                      </div>
+                    {/* Foto Wakil Kepala Sekolah di Atas Kartu */}
+                    <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-[#2A2C5E] shadow-sm mx-auto bg-gray-100 shrink-0">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={waka.fotoUrl}
+                        alt={waka.nama}
+                        className="w-full h-full object-cover object-top"
+                      />
                     </div>
-                    <p className="text-[11px] text-gray-600 pt-2 border-t border-gray-100 leading-relaxed min-h-[2.75rem] flex items-center justify-center">
-                      {waka.keterangan}
-                    </p>
+                    <div>
+                      <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-blue-50 px-2.5 py-0.5 rounded">
+                        {waka.jabatan}
+                      </span>
+                      <h4 className="text-sm font-bold text-gray-900 mt-1">{waka.nama}</h4>
+                      <p className="text-[11px] font-mono text-gray-500 mt-0.5">NIP. {waka.nip}</p>
+                    </div>
                   </div>
                 ))}
               </div>

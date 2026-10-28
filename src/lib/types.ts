@@ -96,6 +96,7 @@ export interface BeritaItem {
   tanggal: string;
   bacaMenit: number;
   thumbnailUrl: string;
+  galeriUrls?: string[];
 }
 
 export interface PPDBRecord {

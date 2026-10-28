@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Info,
   Calendar,
@@ -12,6 +12,8 @@ import {
   Share2,
   Check,
   MapPin,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useBeritaStore } from "@/lib/store";
 import { BeritaItem } from "@/lib/types";
@@ -19,13 +21,55 @@ import PaginationBar from "@/components/common/PaginationBar";
 
 const ITEMS_PER_PAGE = 6;
 
+function getBeritaGaleri(berita: BeritaItem): string[] {
+  if (berita.galeriUrls && berita.galeriUrls.length >= 3) {
+    return berita.galeriUrls;
+  }
+
+  const fallbackByKategori: Record<string, [string, string]> = {
+    PENGUMUMAN: [
+      "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&auto=format&fit=crop&q=80",
+    ],
+    PRESTASI: [
+      "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&auto=format&fit=crop&q=80",
+    ],
+    AKADEMIK: [
+      "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&auto=format&fit=crop&q=80",
+    ],
+    KESISWAAN: [
+      "https://images.unsplash.com/photo-1529390079861-591de354faf5?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=800&auto=format&fit=crop&q=80",
+    ],
+  };
+
+  const extra = fallbackByKategori[berita.kategori] || fallbackByKategori.PENGUMUMAN;
+  return [berita.thumbnailUrl, extra[0], extra[1]];
+}
+
 export default function InformasiPage() {
   const beritaList = useBeritaStore((state) => state.beritaList);
   const [selectedKategori, setSelectedKategori] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [activeModalBerita, setActiveModalBerita] = useState<BeritaItem | null>(null);
+  const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const modalPhotos = activeModalBerita ? getBeritaGaleri(activeModalBerita) : [];
+
+  // Reset slide ke foto pertama setiap kali membuka berita baru & jalankan auto-slide setiap 3.5 detik
+  useEffect(() => {
+    if (!activeModalBerita || modalPhotos.length <= 1) return;
+
+    const timer = setInterval(() => {
+      setActiveSlideIndex((prev) => (prev + 1) % modalPhotos.length);
+    }, 3500);
+
+    return () => clearInterval(timer);
+  }, [activeModalBerita, modalPhotos.length, activeSlideIndex]);
 
   const kategoriList = [
     { key: "ALL", label: "Semua Kategori" },
@@ -180,7 +224,10 @@ export default function InformasiPage() {
 
               <div className="p-5 pt-0">
                 <button
-                  onClick={() => setActiveModalBerita(berita)}
+                  onClick={() => {
+                    setActiveSlideIndex(0);
+                    setActiveModalBerita(berita);
+                  }}
                   className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold text-[#2A2C5E] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
                 >
                   <span>Baca Pengumuman Lengkap</span>
@@ -279,14 +326,72 @@ export default function InformasiPage() {
                 </span>
               </div>
 
-              {/* Foto Berita */}
-              <div className="relative h-60 sm:h-80 w-full rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={activeModalBerita.thumbnailUrl}
-                  alt={activeModalBerita.judul}
-                  className="w-full h-full object-cover"
-                />
+              {/* Slider 3 Foto Berita (Geser Kiri/Kanan Manual & Bergeser Otomatis Tiap 3.5 Detik) */}
+              <div className="relative h-60 sm:h-80 w-full rounded-xl overflow-hidden bg-gray-100 border border-gray-200 group">
+                <div
+                  className="flex w-full h-full transition-transform duration-500 ease-out"
+                  style={{ transform: `translateX(-${activeSlideIndex * 100}%)` }}
+                >
+                  {modalPhotos.map((photoUrl, idx) => (
+                    <div key={idx} className="w-full h-full shrink-0 relative">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={photoUrl}
+                        alt={`${activeModalBerita.judul} - Foto ${idx + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Indikator Nomor Foto (Pojok Kanan Atas) */}
+                <span className="absolute top-3 right-3 bg-black/55 backdrop-blur-xs text-white text-[11px] font-bold px-2.5 py-1 rounded-md">
+                  {activeSlideIndex + 1} / {modalPhotos.length}
+                </span>
+
+                {/* Tombol Geser Kiri */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setActiveSlideIndex(
+                      (prev) => (prev - 1 + modalPhotos.length) % modalPhotos.length
+                    )
+                  }
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white text-gray-800 hover:text-[#2A2C5E] shadow-md flex items-center justify-center transition-all cursor-pointer"
+                  aria-label="Foto Sebelumnya"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+
+                {/* Tombol Geser Kanan */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setActiveSlideIndex((prev) => (prev + 1) % modalPhotos.length)
+                  }
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white text-gray-800 hover:text-[#2A2C5E] shadow-md flex items-center justify-center transition-all cursor-pointer"
+                  aria-label="Foto Berikutnya"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+
+                {/* Indikator Titik Slide di Bawah Tengah */}
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/35 backdrop-blur-xs px-2.5 py-1.5 rounded-full">
+                  {modalPhotos.map((_, idx) => {
+                    const isCurrent = idx === activeSlideIndex;
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setActiveSlideIndex(idx)}
+                        className={`h-2 rounded-full transition-all cursor-pointer ${
+                          isCurrent ? "w-6 bg-white" : "w-2 bg-white/55 hover:bg-white/80"
+                        }`}
+                        aria-label={`Pilih Foto ${idx + 1}`}
+                      />
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Isi Berita Lengkap */}

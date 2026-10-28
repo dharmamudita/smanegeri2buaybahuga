@@ -177,10 +177,45 @@ Selain cabang tersebut, SMAN 2 Buay Bahuga juga unggul pada tangkai lomba Cipta 
 
 Sejalan dengan pembinaan akademik, sekolah juga menggalakkan Gerakan ASRI (Aman, Sehat, Resik, dan Indah) di atas lahan sekolah seluas 20.000 m² serta bekerja sama dengan Puskesmas Buay Bahuga dalam menjaga kesehatan warga sekolah.`,
     kategori: "AKADEMIK",
-    penulis: "Wakabid Kurikulum",
+    penulis: "Wakabid Kurikulum (Marsono, S.Pd.)",
     tanggal: "10 Oktober 2026",
     bacaMenit: 3,
     thumbnailUrl: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    id: "berita-5",
+    slug: "pelantikan-pengurus-osis-mpk-dan-ldks-sman-2-buay-bahuga",
+    judul: "Pelantikan Pengurus OSIS & MPK Periode 2026/2027 Serta Latihan Dasar Kepemimpinan Siswa",
+    ringkasan: "Kepala Sekolah Apriyani, S.Si., M.M.Pd. melantik jajaran pengurus OSIS & MPK baru yang dipimpin M. Ziddane Alfaridz dan Nabila Dijayanti.",
+    konten: `SMA Negeri 2 Buay Bahuga menggelar upacara pelantikan dan serah terima jabatan Pengurus Organisasi Siswa Intra Sekolah (OSIS) serta Majelis Perwakilan Kelas (MPK) masa bakti 2026/2027 di lapangan upacara utama sekolah.
+
+Prosesi pelantikan dipimpin langsung oleh Kepala SMAN 2 Buay Bahuga, Ibu Apriyani, S.Si., M.M.Pd., didampingi Wakil Kepala Sekolah Bidang Kesiswaan, Bapak Tumijo, S.Pd., serta dihadiri oleh seluruh dewan guru, staf tata usaha, dan 983 peserta didik.
+
+Usai pelantikan, seluruh pengurus terpilih mengikuti kegiatan Latihan Dasar Kepemimpinan Siswa (LDKS) guna membekali kecakapan berorganisasi, manajemen program kerja 6 Seksi Bidang, tata tertib kedisiplinan, serta sinergi kegiatan ekstrakurikuler.`,
+    kategori: "KESISWAAN",
+    penulis: "Wakabid Kesiswaan (Tumijo, S.Pd.)",
+    tanggal: "05 Oktober 2026",
+    bacaMenit: 4,
+    thumbnailUrl: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    id: "berita-6",
+    slug: "edaran-resmi-jadwal-penilaian-akhir-semester-cbt-ganjil-2026",
+    judul: "Edaran Resmi: Pelaksanaan Penilaian Akhir Semester (PAS) Ganjil Berbasis CBT Terpadu",
+    ringkasan: "Panitia Akademik merilis jadwal lengkap ujian PAS Ganjil Tahun Pelajaran 2026/2027 bagi seluruh siswa Kelas X, XI, dan XII.",
+    konten: `Diberitahukan kepada seluruh peserta didik Kelas X (Fase E), Kelas XI, dan Kelas XII (Fase F) SMA Negeri 2 Buay Bahuga bahwa pelaksanaan Penilaian Akhir Semester (PAS) Ganjil Tahun Pelajaran 2026/2027 akan diselenggarakan secara terjadwal menggunakan moda Computer Based Test (CBT) Terpadu.
+
+Ketentuan utama bagi peserta ujian:
+1. Peserta wajib hadir 15 menit sebelum sesi ujian dimulai dengan mengenakan seragam sekolah lengkap sesuai hari pelaksanaan.
+2. Membawa Kartu Peserta Ujian resmi yang telah disahkan oleh Panitia Akademik.
+3. Menjaga ketertiban, kejujuran akademik, dan mematuhi seluruh tata tertib ruang ujian.
+
+Jadwal rincian mata pelajaran per hari dapat diakses secara langsung melalui halaman Akademik pada menu Jadwal Ujian.`,
+    kategori: "PENGUMUMAN",
+    penulis: "Panitia Akademik & Kurikulum",
+    tanggal: "01 Oktober 2026",
+    bacaMenit: 3,
+    thumbnailUrl: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&auto=format&fit=crop&q=80",
   },
 ];
 

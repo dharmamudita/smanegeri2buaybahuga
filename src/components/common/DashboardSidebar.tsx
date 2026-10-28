@@ -34,7 +34,6 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { href: "/admin/dashboard", label: "Ringkasan Statistik", icon: LayoutDashboard },
     { href: "/admin/cms", label: "CMS Konten Portal", icon: Sparkles },
     { href: "/admin/users", label: "Manajemen Akun", icon: Users },
-    { href: "/admin/berita", label: "CMS Berita & Warta", icon: FileText },
     { href: "/admin/ppdb", label: "Verifikasi PPDB", icon: FileCheck },
   ],
   GURU: [

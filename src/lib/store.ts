@@ -112,6 +112,7 @@ export const usePresensiStore = create<PresensiState>((set) => ({
 interface BeritaState {
   beritaList: BeritaItem[];
   addBerita: (item: BeritaItem) => void;
+  updateBerita: (id: string, item: Partial<BeritaItem>) => void;
   deleteBerita: (id: string) => void;
 }
 
@@ -123,6 +124,12 @@ export const useBeritaStore = create<BeritaState>()(
         set((state) => ({
           // Pastikan berita terbaru selalu berada di posisi paling atas / paling depan (index 0)
           beritaList: [item, ...state.beritaList],
+        })),
+      updateBerita: (id, item) =>
+        set((state) => ({
+          beritaList: state.beritaList.map((b) =>
+            b.id === id ? { ...b, ...item } : b
+          ),
         })),
       deleteBerita: (id) =>
         set((state) => ({

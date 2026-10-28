@@ -78,7 +78,7 @@ export default function AdminCMSManager() {
     resetAllToDefault,
   } = useCMSStore();
 
-  const { beritaList, addBerita, deleteBerita } = useBeritaStore();
+  const { beritaList, addBerita, updateBerita, deleteBerita } = useBeritaStore();
 
   const showToast = (msg: string) => {
     setNotification(msg);
@@ -143,7 +143,7 @@ export default function AdminCMSManager() {
   });
 
   const [editingItem, setEditingItem] = useState<{
-    type: "VIDEO" | "ORG" | "GURU" | "AGENDA" | "UJIAN" | "PRESTASI" | "EKSKUL" | "KBM";
+    type: "VIDEO" | "ORG" | "GURU" | "AGENDA" | "UJIAN" | "PRESTASI" | "EKSKUL" | "KBM" | "BERITA";
     id: string;
     data: any;
   } | null>(null);
@@ -159,6 +159,7 @@ export default function AdminCMSManager() {
     else if (type === "PRESTASI") updatePrestasi(id, data);
     else if (type === "EKSKUL") updateEkskul(id, data);
     else if (type === "KBM") updateSlotPelajaran(id, data);
+    else if (type === "BERITA") updateBerita(id, data);
 
     setEditingItem(null);
     showToast("Perubahan data berhasil disimpan dan langsung tayang!");
@@ -2498,13 +2499,9 @@ export default function AdminCMSManager() {
                     Artikel langsung terbit di halaman Beranda dan menu Informasi publik
                   </p>
                 </div>
-                <Link
-                  href="/admin/berita"
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#2A2C5E] hover:underline"
-                >
-                  <span>Buka CMS Berita Penuh</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </Link>
+                <span className="text-[11px] font-semibold text-[#2A2C5E] bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200">
+                  Modul Publikasi Resmi
+                </span>
               </div>
 
               <div className="space-y-3">
@@ -2647,18 +2644,27 @@ export default function AdminCMSManager() {
                         </div>
                       </div>
 
-                      <button
-                        onClick={() => {
-                          if (confirm(`Hapus artikel "${b.judul}"?`)) {
-                            deleteBerita(b.id);
-                            showToast("Artikel berhasil dihapus.");
-                          }
-                        }}
-                        className="text-red-500 hover:text-red-700 p-1 shrink-0"
-                        title="Hapus Artikel"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button
+                          onClick={() => setEditingItem({ type: "BERITA", id: b.id, data: { ...b } })}
+                          className="text-[#2A2C5E] hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                          title="Edit Artikel"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm(`Hapus artikel "${b.judul}"?`)) {
+                              deleteBerita(b.id);
+                              showToast("Artikel berhasil dihapus.");
+                            }
+                          }}
+                          className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition-colors"
+                          title="Hapus Artikel"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
                   ))}
               </div>
@@ -3310,6 +3316,82 @@ export default function AdminCMSManager() {
                         className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
                       />
                     </div>
+                  </div>
+                </>
+              )}
+
+              {/* Form BERITA */}
+              {editingItem.type === "BERITA" && (
+                <>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">Judul Warta / Pengumuman</label>
+                    <input
+                      type="text"
+                      value={editingItem.data.judul || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, judul: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Kategori</label>
+                      <select
+                        value={editingItem.data.kategori || "PENGUMUMAN"}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, kategori: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E] bg-white"
+                      >
+                        <option value="PENGUMUMAN">Pengumuman Resmi</option>
+                        <option value="AKADEMIK">Akademik & Kurikulum</option>
+                        <option value="KESISWAAN">Kesiswaan & Ekskul</option>
+                        <option value="PRESTASI">Prestasi Sekolah</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="font-semibold text-gray-700">Nama Penulis</label>
+                      <input
+                        type="text"
+                        value={editingItem.data.penulis || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, penulis: e.target.value } })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">Foto Sampul (Thumbnail)</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={editingItem.data.thumbnailUrl || ""}
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, thumbnailUrl: e.target.value } })}
+                        className="flex-1 px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => openCropper("Foto Sampul Berita", "16:9", (url) => setEditingItem({ ...editingItem, data: { ...editingItem.data, thumbnailUrl: url } }))}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-[#2A2C5E] text-white text-[11px] font-semibold rounded-lg hover:bg-[#1F2147] shrink-0"
+                      >
+                        <UploadCloud className="w-3.5 h-3.5" />
+                        <span>Unggah</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">Ringkasan</label>
+                    <input
+                      type="text"
+                      value={editingItem.data.ringkasan || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, ringkasan: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-gray-700">Isi Konten Lengkap</label>
+                    <textarea
+                      rows={5}
+                      value={editingItem.data.konten || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, konten: e.target.value } })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-hidden focus:border-[#2A2C5E]"
+                    />
                   </div>
                 </>
               )}

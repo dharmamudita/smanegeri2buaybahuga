@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { SCHOOL_INFO } from "@/lib/constants";
 import { MOCK_USERS } from "@/lib/mockData";
+import { useCMSStore } from "@/lib/cmsStore";
 import PaginationBar from "@/components/common/PaginationBar";
 
 const FASILITAS_PER_PAGE = 6;
@@ -49,7 +50,13 @@ function ProfilContent() {
   ];
 
   const [fasilitasPage, setFasilitasPage] = useState<number>(1);
-  const guruList = MOCK_USERS.filter((u) => u.role === "GURU");
+  const { profil, beranda } = useCMSStore();
+  const guruList = profil.guruStaff && profil.guruStaff.length > 0
+    ? profil.guruStaff
+    : MOCK_USERS.filter((u) => u.role === "GURU");
+  const strukturPimpinan = profil.strukturOrganisasi && profil.strukturOrganisasi.length > 0
+    ? profil.strukturOrganisasi
+    : [];
 
   const fasilitasData = [
     {
@@ -143,63 +150,6 @@ function ProfilContent() {
     (fasilitasPage - 1) * FASILITAS_PER_PAGE,
     fasilitasPage * FASILITAS_PER_PAGE
   );
-
-  const strukturPimpinan = [
-    {
-      jabatan: "Kepala Sekolah",
-      nama: "Apriyani, S.Si., M.M.Pd.",
-      nip: "19720405 200501 2 005",
-      pangkat: "Pembina Tk. I (IV/b)",
-      keterangan: "Penanggung Jawab Kebijakan & Manajemen Mutu Satuan Pendidikan",
-      fotoUrl:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80",
-    },
-    {
-      jabatan: "Kepala Tata Usaha & Operator Dapodik",
-      nama: "Abu Yasid",
-      nip: "Operator Resmi Dapodik (NPSN: 10810192)",
-      pangkat: "Staf Administrasi & Dapodik",
-      keterangan: "Layanan Administrasi Sekolah, Dapodik Kemendikdasmen & 5 Tendik",
-      fotoUrl:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&auto=format&fit=crop&q=80",
-    },
-    {
-      jabatan: "Waka Bidang Kurikulum",
-      nama: "Marsono, S.Pd.",
-      nip: "19820315 200801 1 012",
-      pangkat: "Guru Ahli Madya",
-      keterangan: "Implementasi Kurikulum Merdeka, Jadwal KBM 29 Rombel & Evaluasi",
-      fotoUrl:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80",
-    },
-    {
-      jabatan: "Waka Bidang Kesiswaan",
-      nama: "Tumijo, S.Pd.",
-      nip: "19780512 200501 1 003",
-      pangkat: "Guru Ahli Madya",
-      keterangan: "Disiplin Siswa, Pengurus OSIS/MPK, Pembinaan Prestasi & Ekskul",
-      fotoUrl:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80",
-    },
-    {
-      jabatan: "Waka Bidang Sarana & Prasarana",
-      nama: "Wida Awanda, S.Pd.Si.",
-      nip: "19890418 201402 2 004",
-      pangkat: "Guru Ahli Muda",
-      keterangan: "Pengelolaan 28 Ruang Kelas, 9 Laboratorium & Lingkungan ASRI",
-      fotoUrl:
-        "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&auto=format&fit=crop&q=80",
-    },
-    {
-      jabatan: "Waka Bidang Hubungan Masyarakat",
-      nama: "Eva Dwi Kurniawati, S.Pd.",
-      nip: "19880727 201101 2 005",
-      pangkat: "Guru Ahli Muda",
-      keterangan: "Kemitraan Komite, Orang Tua/Wali Murid, PTN & Pusat Informasi",
-      fotoUrl:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=80",
-    },
-  ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
@@ -520,17 +470,17 @@ function ProfilContent() {
                 <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-[#2A2C5E] font-bold text-lg overflow-hidden shrink-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={guru.avatarUrl}
-                    alt={guru.name}
+                    src={(guru as any).fotoUrl || (guru as any).avatarUrl || "/logosmanda.png"}
+                    alt={(guru as any).nama || (guru as any).name || "Guru"}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="min-w-0">
                   <h4 className="text-sm font-bold text-gray-900 truncate">
-                    {guru.name}
+                    {(guru as any).nama || (guru as any).name}
                   </h4>
                   <p className="text-xs text-[#2A2C5E] font-medium mt-0.5">
-                    {guru.mataPelajaran}
+                    {(guru as any).mapel || (guru as any).mataPelajaran}
                   </p>
                   <p className="text-[11px] text-gray-400 mt-0.5">
                     NUPTK: {guru.nuptk}

@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { SCHOOL_INFO } from "@/lib/constants";
 import { useAuthStore } from "@/lib/store";
+import AdminCMSManager from "@/components/admin/AdminCMSManager";
 
 export default function AdminDashboardPage() {
   const { currentUser } = useAuthStore();
@@ -72,6 +73,11 @@ export default function AdminDashboardPage() {
           <div className="text-2xl font-bold text-gray-900">94.8%</div>
           <p className="text-xs text-gray-500">Presensi Hadir Tepat Waktu</p>
         </div>
+      </div>
+
+      {/* Pusat Pengelolaan Konten Website (CMS Portal Sekolah) */}
+      <div id="cms-portal" className="scroll-mt-6">
+        <AdminCMSManager />
       </div>
 
       {/* Quick Links to Management Modules */}

@@ -24,6 +24,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import PaginationBar from "@/components/common/PaginationBar";
+import { useCMSStore } from "@/lib/cmsStore";
 
 const PRESTASI_PER_PAGE = 6;
 const EKSKUL_PER_PAGE = 6;
@@ -383,7 +384,20 @@ function KesiswaanContent() {
     },
   ];
 
-  const prestasiList = [
+  const { kesiswaan } = useCMSStore();
+  const cmsPrestasiMapped = (kesiswaan?.prestasiList || []).map((p) => ({
+    kegiatan: p.judul,
+    jenisLomba: p.bidang,
+    tingkat: p.tingkat,
+    peraih: p.peraih,
+    pembimbing: p.penyelenggara || "Pembina Sekolah",
+    predikat: p.juara,
+    kategori: p.bidang,
+    tahun: p.tahun,
+    fotoUrl: p.fotoUrl,
+  }));
+
+  const rawPrestasiList = [
     {
       kegiatan: "Seleksi Nasional Berdasarkan Prestasi (SNBP) PTN Negeri",
       jenisLomba: "Seleksi Prestasi Akademik Nasional (Program Studi Biologi UNJ)",
@@ -529,6 +543,8 @@ function KesiswaanContent() {
         "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=600&auto=format&fit=crop&q=80",
     },
   ];
+
+  const prestasiList = [...cmsPrestasiMapped, ...rawPrestasiList];
 
   const ekskulList = [
     {
@@ -1454,7 +1470,9 @@ function KesiswaanContent() {
                       <span className="inline-block text-[9px] font-bold uppercase tracking-wider text-[#2A2C5E] bg-blue-100/80 px-2 py-0.5 rounded">
                         Pembina OSIS
                       </span>
-                      <h4 className="text-xs sm:text-sm font-bold text-gray-900">Tumijo, S.Pd.</h4>
+                      <h4 className="text-xs sm:text-sm font-bold text-gray-900">
+                        {kesiswaan?.osis?.pembina || "Tumijo, S.Pd."}
+                      </h4>
                     </div>
                     <p className="text-[10px] sm:text-[11px] text-gray-600 leading-snug pt-1 border-t border-blue-100">
                       Waka Bidang Kesiswaan
@@ -1489,7 +1507,7 @@ function KesiswaanContent() {
                     Ketua Umum OSIS
                   </span>
                   <h4 className="text-sm sm:text-base font-extrabold text-gray-900">
-                    M. Ziddane Alfaridz
+                    {kesiswaan?.osis?.ketua || "M. Ziddane Alfaridz"}
                   </h4>
                   <p className="text-xs font-semibold text-[#2A2C5E]">
                     Kelas XI IPS 1 &bull; NISN. 0081234567
@@ -1504,7 +1522,7 @@ function KesiswaanContent() {
                     Wakil Ketua OSIS
                   </span>
                   <h4 className="text-sm sm:text-base font-extrabold text-gray-900">
-                    Safety Octa Sushadi
+                    {kesiswaan?.osis?.wakil || "Safety Octa Sushadi"}
                   </h4>
                   <p className="text-xs font-semibold text-[#2A2C5E]">
                     Kelas XII MIPA 2 &bull; NISN. 0078129342
@@ -1533,7 +1551,7 @@ function KesiswaanContent() {
                   <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-white border border-gray-200 px-2.5 py-0.5 rounded">
                     Sekretaris Umum OSIS
                   </span>
-                  <h4 className="text-sm font-bold text-gray-900">Evista Silvy Laudrya</h4>
+                  <h4 className="text-sm font-bold text-gray-900">{kesiswaan?.osis?.sekretaris || "Evista Silvy Laudrya"}</h4>
                   <p className="text-[11px] font-medium text-[#2A2C5E]">Kelas XI MIPA 1</p>
                   <p className="text-[11px] text-gray-600 pt-1 border-t border-gray-200/70">
                     Administrasi Kesekretariatan, Proposal, & Dokumentasi Rapat
@@ -1544,7 +1562,7 @@ function KesiswaanContent() {
                   <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-white border border-gray-200 px-2.5 py-0.5 rounded">
                     Bendahara Umum OSIS
                   </span>
-                  <h4 className="text-sm font-bold text-gray-900">Frita Amelia</h4>
+                  <h4 className="text-sm font-bold text-gray-900">{kesiswaan?.osis?.bendahara || "Frita Amelia"}</h4>
                   <p className="text-[11px] font-medium text-[#2A2C5E]">Kelas XI IPS 1</p>
                   <p className="text-[11px] text-gray-600 pt-1 border-t border-gray-200/70">
                     Pengelolaan Kas Organisasi & Pertanggungjawaban Anggaran

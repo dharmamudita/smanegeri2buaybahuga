@@ -1,0 +1,2074 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import {
+  Home,
+  Building2,
+  BookOpen,
+  Trophy,
+  FileText,
+  Save,
+  Plus,
+  Trash2,
+  Edit3,
+  ExternalLink,
+  CheckCircle2,
+  AlertCircle,
+  Video,
+  Users,
+  Calendar,
+  Layers,
+  GraduationCap,
+  Sparkles,
+  RotateCcw,
+  Clock,
+  MapPin,
+  X,
+  Search,
+} from "lucide-react";
+import { useCMSStore } from "@/lib/cmsStore";
+import { useBeritaStore } from "@/lib/store";
+
+type CMSTab = "BERANDA" | "PROFIL" | "AKADEMIK" | "KESISWAAN" | "INFORMASI";
+
+export default function AdminCMSManager() {
+  const [activeTab, setActiveTab] = useState<CMSTab>("BERANDA");
+  const [notification, setNotification] = useState<string | null>(null);
+
+  const {
+    beranda,
+    profil,
+    akademik,
+    kesiswaan,
+    updateBerandaInfo,
+    updateKepsek,
+    updateStatistik,
+    addVideoPanduan,
+    deleteVideoPanduan,
+    updateProfilVisiMisi,
+    addStrukturOrganisasi,
+    deleteStrukturOrganisasi,
+    addGuruStaff,
+    deleteGuruStaff,
+    addAgendaKalender,
+    deleteAgendaKalender,
+    addJadwalUjian,
+    deleteJadwalUjian,
+    addPrestasi,
+    deletePrestasi,
+    updateOsis,
+    addEkskul,
+    deleteEkskul,
+    resetAllToDefault,
+  } = useCMSStore();
+
+  const { beritaList, addBerita, deleteBerita } = useBeritaStore();
+
+  const showToast = (msg: string) => {
+    setNotification(msg);
+    setTimeout(() => {
+      setNotification(null);
+    }, 4000);
+  };
+
+  // --- Form States for Quick Adds ---
+  // Video Beranda
+  const [showAddVideo, setShowAddVideo] = useState(false);
+  const [videoForm, setVideoForm] = useState({
+    judul: "",
+    kategori: "Panduan Sekolah",
+    durasi: "4 Menit",
+    ringkasan: "",
+    youtubeUrl: "https://www.youtube.com",
+    highlight: "Video Panduan",
+  });
+
+  // Guru / Staf
+  const [showAddGuru, setShowAddGuru] = useState(false);
+  const [guruForm, setGuruForm] = useState({
+    nama: "",
+    nuptk: "",
+    mapel: "",
+    email: "",
+    pendidikan: "S1 Pendidikan",
+    fotoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80",
+    role: "GURU" as const,
+  });
+
+  // Struktur Organisasi
+  const [showAddOrg, setShowAddOrg] = useState(false);
+  const [orgForm, setOrgForm] = useState({
+    jabatan: "",
+    nama: "",
+    nip: "",
+    pangkat: "Guru Ahli Muda",
+    keterangan: "",
+    fotoUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80",
+  });
+
+  // Agenda Kalender
+  const [showAddAgenda, setShowAddAgenda] = useState(false);
+  const [agendaForm, setAgendaForm] = useState({
+    tanggal: "",
+    bulanSingkat: "Jan",
+    kegiatan: "",
+    kategori: "AKADEMIK" as const,
+    keterangan: "",
+    semester: "GANJIL" as const,
+  });
+
+  // Jadwal Ujian
+  const [showAddUjian, setShowAddUjian] = useState(false);
+  const [ujianForm, setUjianForm] = useState({
+    hariTanggal: "",
+    sesi: "Sesi 1 (07.30 - 09.30)",
+    waktu: "07.30 - 09.30 WIB",
+    mataPelajaran: "",
+    tingkatLabel: "Kelas X, XI, XII",
+    ruangModa: "28 Ruang Kelas & CBT Lab",
+    koordinator: "",
+  });
+
+  // Prestasi Siswa
+  const [showAddPrestasi, setShowAddPrestasi] = useState(false);
+  const [prestasiForm, setPrestasiForm] = useState({
+    judul: "",
+    juara: "Juara 1",
+    tingkat: "Tingkat Kabupaten Way Kanan",
+    bidang: "Akademik & Sains",
+    tahun: "2026",
+    penyelenggara: "Dinas Pendidikan",
+    peraih: "",
+    deskripsi: "",
+    fotoUrl: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=600&auto=format&fit=crop&q=80",
+  });
+
+  // Ekskul
+  const [showAddEkskul, setShowAddEkskul] = useState(false);
+  const [ekskulForm, setEkskulForm] = useState({
+    nama: "",
+    kategori: "Pengembangan Bakat",
+    pembina: "",
+    jadwal: "Sabtu, 15.30 - 17.00 WIB",
+    lokasi: "Lingkungan SMAN 2 Buay Bahuga",
+    deskripsi: "",
+    prestasiUnggulan: "",
+  });
+
+  // Quick Berita
+  const [beritaForm, setBeritaForm] = useState({
+    judul: "",
+    kategori: "PENGUMUMAN" as const,
+    ringkasan: "",
+    konten: "",
+    thumbnailUrl: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80",
+  });
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200 shadow-xs overflow-hidden">
+      {/* Toast Notification */}
+      {notification && (
+        <div className="fixed top-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 bg-[#2A2C5E] text-white rounded-xl shadow-xl border border-blue-400/40 text-xs font-semibold animate-in fade-in slide-in-from-top-4 duration-200">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          <span>{notification}</span>
+        </div>
+      )}
+
+      {/* CMS Header Banner */}
+      <div className="p-6 sm:p-8 bg-gradient-to-r from-[#2A2C5E] to-[#1F2147] text-white flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#1F2147]">
+        <div className="space-y-1.5 max-w-2xl">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-white/15 text-blue-100 text-[11px] font-semibold backdrop-blur-xs">
+            <Sparkles className="w-3.5 h-3.5 text-blue-300" />
+            <span>Pusat Pengelolaan Konten Website (CMS Portal Sekolah)</span>
+          </div>
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+            Kelola Halaman Publik SMAN 2 Buay Bahuga
+          </h2>
+          <p className="text-xs text-blue-100/90 leading-relaxed">
+            Perbarui data beranda, struktur profil kepsek/guru, jadwal kalender akademik, prestasi kesiswaan, dan ekskul. Semua perubahan otomatis tersimpan dan langsung tayang di portal publik.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2.5 shrink-0">
+          <button
+            onClick={() => {
+              if (confirm("Kembalikan seluruh konten ke data standar resmi Dapodik?")) {
+                resetAllToDefault();
+                showToast("Data konten berhasil di-reset ke standar resmi Dapodik!");
+              }
+            }}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-blue-100 text-xs font-medium transition-all"
+            title="Reset ke bawaan awal"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Reset Bawaan</span>
+          </button>
+
+          <Link
+            href="/"
+            target="_blank"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white text-[#2A2C5E] hover:bg-blue-50 text-xs font-bold shadow-xs transition-all"
+          >
+            <span>Lihat Website</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      </div>
+
+      {/* Filter Navigation Tabs */}
+      <div className="bg-gray-50/80 px-4 sm:px-6 pt-3 border-b border-gray-200 overflow-x-auto scrollbar-none">
+        <div className="flex items-center gap-1.5 min-w-max pb-3">
+          {[
+            { key: "BERANDA" as CMSTab, label: "Edit Beranda", icon: Home },
+            { key: "PROFIL" as CMSTab, label: "Halaman Profil", icon: Building2 },
+            { key: "AKADEMIK" as CMSTab, label: "Akademik & Jadwal", icon: BookOpen },
+            { key: "KESISWAAN" as CMSTab, label: "Kesiswaan & Ekskul", icon: Trophy },
+            { key: "INFORMASI" as CMSTab, label: "Warta & Informasi", icon: FileText },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.key;
+            return (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                  isActive
+                    ? "bg-[#2A2C5E] text-white shadow-xs"
+                    : "bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-100 border border-gray-200"
+                }`}
+              >
+                <Icon className={`w-3.5 h-3.5 ${isActive ? "text-blue-200" : "text-gray-500"}`} />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Content Area */}
+      <div className="p-6 sm:p-8 space-y-8 bg-white">
+        {/* ========================================================================= */}
+        {/* TAB 1: EDIT BERANDA */}
+        {/* ========================================================================= */}
+        {activeTab === "BERANDA" && (
+          <div className="space-y-8 animate-in fade-in duration-200">
+            {/* 1.1 Banner Tahun Ajaran & Semester (Sesuai Permintaan Spesifik) */}
+            <div className="p-5 sm:p-6 rounded-xl border border-blue-200 bg-blue-50/40 space-y-4">
+              <div className="flex items-center justify-between border-b border-blue-200/80 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center font-bold text-xs">
+                    1
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-gray-900">
+                      Pengaturan Kartu Tahun Ajaran & Semester Aktif
+                    </h3>
+                    <p className="text-[11px] text-gray-600">
+                      Teks yang tampil pada kartu biru kanan di sebelah hero section beranda
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => showToast("Perubahan Tahun Ajaran & Semester berhasil disimpan!")}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2A2C5E] text-white text-xs font-semibold hover:bg-[#1F2147] transition-all"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>Simpan</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                    Label Tahun Ajaran
+                  </label>
+                  <input
+                    type="text"
+                    value={beranda.tahunAjaran}
+                    onChange={(e) => updateBerandaInfo({ tahunAjaran: e.target.value })}
+                    placeholder="Contoh: Tahun Ajaran 2026/2027"
+                    className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                    Label Semester
+                  </label>
+                  <input
+                    type="text"
+                    value={beranda.semester}
+                    onChange={(e) => updateBerandaInfo({ semester: e.target.value })}
+                    placeholder="Contoh: Semester Ganjil"
+                    className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                    Deskripsi Penyelenggaraan Pendidikan
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={beranda.deskripsiSemester}
+                    onChange={(e) => updateBerandaInfo({ deskripsiSemester: e.target.value })}
+                    placeholder="Penyelenggaraan pendidikan bagi 983 peserta didik..."
+                    className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 1.2 Hero Headline & Subheadline */}
+            <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-gray-50/50 space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center font-bold text-xs">
+                    2
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-gray-900">
+                      Teks Headline Halaman Depan (Hero Section)
+                    </h3>
+                    <p className="text-[11px] text-gray-500">
+                      Kalimat utama yang menyambut pengunjung saat membuka web pertama kali
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => showToast("Headline halaman depan berhasil diperbarui!")}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2A2C5E] text-white text-xs font-semibold hover:bg-[#1F2147] transition-all"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>Simpan</span>
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                    Badge Label Atas
+                  </label>
+                  <input
+                    type="text"
+                    value={beranda.heroBadge}
+                    onChange={(e) => updateBerandaInfo({ heroBadge: e.target.value })}
+                    className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                    Judul Headline Utama
+                  </label>
+                  <input
+                    type="text"
+                    value={beranda.heroHeadline}
+                    onChange={(e) => updateBerandaInfo({ heroHeadline: e.target.value })}
+                    className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                    Paragraf Deskripsi Singkat
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={beranda.heroSubheadline}
+                    onChange={(e) => updateBerandaInfo({ heroSubheadline: e.target.value })}
+                    className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 1.3 Statistik Peserta Didik Aktif & Dapodik */}
+            <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-white space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center font-bold text-xs">
+                    3
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-gray-900">
+                      Data Statistik Pokok Dapodik (4 Kartu Beranda)
+                    </h3>
+                    <p className="text-[11px] text-gray-500">
+                      Ubah angka Peserta Didik Aktif, Rombel, Tenaga Pendidik, Ruang Kelas & Laboratorium
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => showToast("Angka statistik Dapodik berhasil disimpan!")}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2A2C5E] text-white text-xs font-semibold hover:bg-[#1F2147] transition-all"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>Simpan</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                    Peserta Didik Aktif
+                  </label>
+                  <input
+                    type="number"
+                    value={beranda.statistik.totalSiswa}
+                    onChange={(e) => updateStatistik({ totalSiswa: parseInt(e.target.value) || 0 })}
+                    className="w-full text-base font-bold px-2.5 py-1.5 border border-gray-300 rounded-md bg-white"
+                  />
+                </div>
+
+                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                    Rombongan Belajar
+                  </label>
+                  <input
+                    type="number"
+                    value={beranda.statistik.totalRombel}
+                    onChange={(e) => updateStatistik({ totalRombel: parseInt(e.target.value) || 0 })}
+                    className="w-full text-base font-bold px-2.5 py-1.5 border border-gray-300 rounded-md bg-white"
+                  />
+                </div>
+
+                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                    Pendidik & Tendik
+                  </label>
+                  <input
+                    type="number"
+                    value={beranda.statistik.totalGuruTendik}
+                    onChange={(e) => updateStatistik({ totalGuruTendik: parseInt(e.target.value) || 0 })}
+                    className="w-full text-base font-bold px-2.5 py-1.5 border border-gray-300 rounded-md bg-white"
+                  />
+                </div>
+
+                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                    Ruang Kelas
+                  </label>
+                  <input
+                    type="number"
+                    value={beranda.statistik.ruangKelas}
+                    onChange={(e) => updateStatistik({ ruangKelas: parseInt(e.target.value) || 0 })}
+                    className="w-full text-base font-bold px-2.5 py-1.5 border border-gray-300 rounded-md bg-white"
+                  />
+                </div>
+
+                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                    Laboratorium
+                  </label>
+                  <input
+                    type="number"
+                    value={beranda.statistik.laboratorium}
+                    onChange={(e) => updateStatistik({ laboratorium: parseInt(e.target.value) || 0 })}
+                    className="w-full text-base font-bold px-2.5 py-1.5 border border-gray-300 rounded-md bg-white"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 1.4 Profil & Sambutan Kepala Sekolah */}
+            <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-gray-50/50 space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center font-bold text-xs">
+                    4
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-gray-900">
+                      Profil & Sambutan Resmi Kepala Sekolah
+                    </h3>
+                    <p className="text-[11px] text-gray-500">
+                      Ubah foto profil (PP), nama, NIP, pangkat, dan isi sambutan Kepala Sekolah
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => showToast("Profil dan sambutan Kepala Sekolah berhasil disimpan!")}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2A2C5E] text-white text-xs font-semibold hover:bg-[#1F2147] transition-all"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>Simpan</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="md:col-span-1 space-y-3">
+                  <div className="flex flex-col items-center p-4 bg-white rounded-xl border border-gray-200 text-center">
+                    <img
+                      src={beranda.kepsek.fotoUrl}
+                      alt={beranda.kepsek.nama}
+                      className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover border-2 border-[#2A2C5E] mb-3 shadow-xs"
+                    />
+                    <h4 className="text-xs font-bold text-gray-900">{beranda.kepsek.nama}</h4>
+                    <p className="text-[10px] text-gray-500 font-mono mt-0.5">{beranda.kepsek.nip}</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                      URL Foto Profil Kepala Sekolah
+                    </label>
+                    <input
+                      type="text"
+                      value={beranda.kepsek.fotoUrl}
+                      onChange={(e) => updateKepsek({ fotoUrl: e.target.value })}
+                      placeholder="https://..."
+                      className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                    />
+                  </div>
+                </div>
+
+                <div className="md:col-span-2 space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
+                        Nama Lengkap Beserta Gelar
+                      </label>
+                      <input
+                        type="text"
+                        value={beranda.kepsek.nama}
+                        onChange={(e) => updateKepsek({ nama: e.target.value })}
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
+                        Nomor Induk Pegawai (NIP)
+                      </label>
+                      <input
+                        type="text"
+                        value={beranda.kepsek.nip}
+                        onChange={(e) => updateKepsek({ nip: e.target.value })}
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                      Pangkat & Golongan
+                    </label>
+                    <input
+                      type="text"
+                      value={beranda.kepsek.pangkat}
+                      onChange={(e) => updateKepsek({ pangkat: e.target.value })}
+                      className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                      Teks Sambutan Kepala Sekolah
+                    </label>
+                    <textarea
+                      rows={5}
+                      value={beranda.kepsek.sambutan}
+                      onChange={(e) => updateKepsek({ sambutan: e.target.value })}
+                      className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E] leading-relaxed"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 1.5 Video Panduan YouTube */}
+            <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-white space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center font-bold text-xs">
+                    5
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-gray-900">
+                      Daftar Video Panduan YouTube di Beranda
+                    </h3>
+                    <p className="text-[11px] text-gray-500">
+                      Kelola 3 kartu video tutorial resmi yang tampil di halaman depan
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setShowAddVideo(!showAddVideo)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-all shadow-xs"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Tambah Video</span>
+                </button>
+              </div>
+
+              {/* Form Tambah Video */}
+              {showAddVideo && (
+                <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-3">
+                  <h4 className="text-xs font-bold text-emerald-900">
+                    Form Tambah Video Panduan Baru
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Judul Video
+                      </label>
+                      <input
+                        type="text"
+                        value={videoForm.judul}
+                        onChange={(e) => setVideoForm({ ...videoForm, judul: e.target.value })}
+                        placeholder="Contoh: Tata Cara Pendaftaran PPDB"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Kategori / Label
+                      </label>
+                      <input
+                        type="text"
+                        value={videoForm.kategori}
+                        onChange={(e) => setVideoForm({ ...videoForm, kategori: e.target.value })}
+                        placeholder="Contoh: Panduan PPDB"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        URL YouTube
+                      </label>
+                      <input
+                        type="text"
+                        value={videoForm.youtubeUrl}
+                        onChange={(e) => setVideoForm({ ...videoForm, youtubeUrl: e.target.value })}
+                        placeholder="https://www.youtube.com/watch?v=..."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Estimasi Durasi
+                      </label>
+                      <input
+                        type="text"
+                        value={videoForm.durasi}
+                        onChange={(e) => setVideoForm({ ...videoForm, durasi: e.target.value })}
+                        placeholder="Contoh: 4 Menit"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Ringkasan Video
+                      </label>
+                      <input
+                        type="text"
+                        value={videoForm.ringkasan}
+                        onChange={(e) => setVideoForm({ ...videoForm, ringkasan: e.target.value })}
+                        placeholder="Deskripsi singkat isi materi video..."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-2 pt-2">
+                    <button
+                      onClick={() => setShowAddVideo(false)}
+                      className="px-3 py-1.5 rounded-lg border border-gray-300 text-xs text-gray-600 bg-white"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!videoForm.judul) {
+                          alert("Judul video wajib diisi!");
+                          return;
+                        }
+                        addVideoPanduan({
+                          id: `vid-${Date.now()}`,
+                          ...videoForm,
+                        });
+                        setShowAddVideo(false);
+                        setVideoForm({
+                          judul: "",
+                          kategori: "Panduan Sekolah",
+                          durasi: "4 Menit",
+                          ringkasan: "",
+                          youtubeUrl: "https://www.youtube.com",
+                          highlight: "Video Panduan",
+                        });
+                        showToast("Video panduan baru berhasil ditambahkan!");
+                      }}
+                      className="px-4 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700"
+                    >
+                      Simpan Video
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Daftar Video Saat Ini */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {beranda.videoPanduan.map((v) => (
+                  <div
+                    key={v.id}
+                    className="p-3.5 rounded-xl border border-gray-200 bg-gray-50 flex flex-col justify-between space-y-2"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
+                          {v.kategori}
+                        </span>
+                        <button
+                          onClick={() => {
+                            if (confirm(`Hapus video "${v.judul}"?`)) {
+                              deleteVideoPanduan(v.id);
+                              showToast("Video berhasil dihapus.");
+                            }
+                          }}
+                          className="text-red-500 hover:text-red-700 p-1"
+                          title="Hapus Video"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                      <h4 className="text-xs font-bold text-gray-900 line-clamp-2">{v.judul}</h4>
+                      <p className="text-[11px] text-gray-500 line-clamp-2">{v.ringkasan}</p>
+                    </div>
+
+                    <div className="pt-2 border-t border-gray-200 flex items-center justify-between text-[10px] text-gray-500">
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-blue-500" />
+                        {v.durasi}
+                      </span>
+                      <a
+                        href={v.youtubeUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[#2A2C5E] hover:underline font-semibold flex items-center gap-1"
+                      >
+                        Buka YT
+                        <ExternalLink className="w-2.5 h-2.5" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 2: HALAMAN PROFIL */}
+        {/* ========================================================================= */}
+        {activeTab === "PROFIL" && (
+          <div className="space-y-8 animate-in fade-in duration-200">
+            {/* 2.1 Struktur Organisasi Pimpinan */}
+            <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-white space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                    <Users className="w-4 h-4 text-[#2A2C5E]" />
+                    <span>Bagan Struktur Organisasi & Pimpinan Sekolah</span>
+                  </h3>
+                  <p className="text-[11px] text-gray-500">
+                    Kelola foto, nama, NIP, pangkat, dan jabatan yang tampil pada bagan hierarki profil
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowAddOrg(!showAddOrg)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2A2C5E] text-white text-xs font-semibold hover:bg-[#1F2147] transition-all shadow-xs"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Tambah Posisi</span>
+                </button>
+              </div>
+
+              {/* Form Tambah Struktur Organisasi */}
+              {showAddOrg && (
+                <div className="p-4 bg-blue-50/70 border border-blue-200 rounded-xl space-y-3">
+                  <h4 className="text-xs font-bold text-[#2A2C5E]">Tambah Jabatan Pimpinan Baru</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Nama Jabatan
+                      </label>
+                      <input
+                        type="text"
+                        value={orgForm.jabatan}
+                        onChange={(e) => setOrgForm({ ...orgForm, jabatan: e.target.value })}
+                        placeholder="Contoh: Waka Bidang Hubungan Industri"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Nama Lengkap Beserta Gelar
+                      </label>
+                      <input
+                        type="text"
+                        value={orgForm.nama}
+                        onChange={(e) => setOrgForm({ ...orgForm, nama: e.target.value })}
+                        placeholder="Contoh: Ahmad Subagja, S.Pd."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        NIP / NUPTK
+                      </label>
+                      <input
+                        type="text"
+                        value={orgForm.nip}
+                        onChange={(e) => setOrgForm({ ...orgForm, nip: e.target.value })}
+                        placeholder="Contoh: 19850101 201001 1 002"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        URL Foto Formal
+                      </label>
+                      <input
+                        type="text"
+                        value={orgForm.fotoUrl}
+                        onChange={(e) => setOrgForm({ ...orgForm, fotoUrl: e.target.value })}
+                        placeholder="https://..."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Tugas Pokok Singkat
+                      </label>
+                      <input
+                        type="text"
+                        value={orgForm.keterangan}
+                        onChange={(e) => setOrgForm({ ...orgForm, keterangan: e.target.value })}
+                        placeholder="Keterangan bidang pembinaan..."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-2 pt-2">
+                    <button
+                      onClick={() => setShowAddOrg(false)}
+                      className="px-3 py-1.5 rounded-lg border border-gray-300 text-xs text-gray-600 bg-white"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!orgForm.jabatan || !orgForm.nama) {
+                          alert("Nama jabatan dan nama pejabat wajib diisi!");
+                          return;
+                        }
+                        addStrukturOrganisasi({
+                          id: `org-${Date.now()}`,
+                          ...orgForm,
+                        });
+                        setShowAddOrg(false);
+                        setOrgForm({
+                          jabatan: "",
+                          nama: "",
+                          nip: "",
+                          pangkat: "Guru Ahli Muda",
+                          keterangan: "",
+                          fotoUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80",
+                        });
+                        showToast("Posisi pimpinan berhasil ditambahkan ke profil!");
+                      }}
+                      className="px-4 py-1.5 rounded-lg bg-[#2A2C5E] text-white text-xs font-semibold"
+                    >
+                      Simpan Posisi
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Grid Posisi Organisasi */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {profil.strukturOrganisasi.map((item) => (
+                  <div
+                    key={item.id}
+                    className="p-3.5 rounded-xl border border-gray-200 bg-gray-50 flex items-start gap-3 relative group"
+                  >
+                    <img
+                      src={item.fotoUrl}
+                      alt={item.nama}
+                      className="w-12 h-12 rounded-lg object-cover border border-gray-300 shrink-0"
+                    />
+                    <div className="space-y-0.5 min-w-0 flex-1">
+                      <span className="inline-block text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded truncate max-w-full">
+                        {item.jabatan}
+                      </span>
+                      <h4 className="text-xs font-bold text-gray-900 truncate">{item.nama}</h4>
+                      <p className="text-[10px] font-mono text-gray-500 truncate">{item.nip}</p>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        if (confirm(`Hapus jabatan "${item.jabatan}"?`)) {
+                          deleteStrukturOrganisasi(item.id);
+                          showToast("Posisi berhasil dihapus.");
+                        }
+                      }}
+                      className="text-gray-400 hover:text-red-600 p-1 shrink-0"
+                      title="Hapus Posisi"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 2.2 Direktori Dewan Guru & Staf */}
+            <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-white space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                    <GraduationCap className="w-4 h-4 text-[#2A2C5E]" />
+                    <span>Direktori Dewan Guru & Tenaga Kependidikan</span>
+                  </h3>
+                  <p className="text-[11px] text-gray-500">
+                    Kelola foto profil guru, nama lengkap, NUPTK, bidang mata pelajaran yang diampu
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowAddGuru(!showAddGuru)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-all shadow-xs"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Tambah Guru/Staf</span>
+                </button>
+              </div>
+
+              {/* Form Tambah Guru */}
+              {showAddGuru && (
+                <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-3">
+                  <h4 className="text-xs font-bold text-emerald-900">Form Data Pendidik Baru</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Nama Lengkap & Gelar
+                      </label>
+                      <input
+                        type="text"
+                        value={guruForm.nama}
+                        onChange={(e) => setGuruForm({ ...guruForm, nama: e.target.value })}
+                        placeholder="Contoh: Rina Wahyuni, S.Pd."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        NUPTK / NIP
+                      </label>
+                      <input
+                        type="text"
+                        value={guruForm.nuptk}
+                        onChange={(e) => setGuruForm({ ...guruForm, nuptk: e.target.value })}
+                        placeholder="Contoh: 19900101 201501 2 003"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Mata Pelajaran / Bidang
+                      </label>
+                      <input
+                        type="text"
+                        value={guruForm.mapel}
+                        onChange={(e) => setGuruForm({ ...guruForm, mapel: e.target.value })}
+                        placeholder="Contoh: Kimia & Praktikum IPA"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Alamat Email
+                      </label>
+                      <input
+                        type="email"
+                        value={guruForm.email}
+                        onChange={(e) => setGuruForm({ ...guruForm, email: e.target.value })}
+                        placeholder="guru@smandabuba.com"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Pendidikan Terakhir
+                      </label>
+                      <input
+                        type="text"
+                        value={guruForm.pendidikan}
+                        onChange={(e) => setGuruForm({ ...guruForm, pendidikan: e.target.value })}
+                        placeholder="Contoh: S1 Pendidikan Kimia"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        URL Foto Profil (PP)
+                      </label>
+                      <input
+                        type="text"
+                        value={guruForm.fotoUrl}
+                        onChange={(e) => setGuruForm({ ...guruForm, fotoUrl: e.target.value })}
+                        placeholder="https://..."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-2 pt-2">
+                    <button
+                      onClick={() => setShowAddGuru(false)}
+                      className="px-3 py-1.5 rounded-lg border border-gray-300 text-xs text-gray-600 bg-white"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!guruForm.nama || !guruForm.nuptk) {
+                          alert("Nama dan NUPTK guru wajib diisi!");
+                          return;
+                        }
+                        addGuruStaff({
+                          id: `guru-${Date.now()}`,
+                          ...guruForm,
+                        });
+                        setShowAddGuru(false);
+                        setGuruForm({
+                          nama: "",
+                          nuptk: "",
+                          mapel: "",
+                          email: "",
+                          pendidikan: "S1 Pendidikan",
+                          fotoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80",
+                          role: "GURU",
+                        });
+                        showToast("Guru/Staf baru berhasil didaftarkan ke direktori!");
+                      }}
+                      className="px-4 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700"
+                    >
+                      Simpan Guru
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Grid Daftar Guru */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {profil.guruStaff.map((g) => (
+                  <div
+                    key={g.id}
+                    className="p-3 bg-gray-50 rounded-xl border border-gray-200 flex flex-col justify-between space-y-2 relative"
+                  >
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={g.fotoUrl}
+                        alt={g.nama}
+                        className="w-11 h-11 rounded-lg object-cover border border-gray-300 shrink-0"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-xs font-bold text-gray-900 truncate">{g.nama}</h4>
+                        <p className="text-[10px] text-gray-500 font-mono truncate">NUPTK: {g.nuptk}</p>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-gray-200 flex items-center justify-between text-[10px]">
+                      <span className="text-[#2A2C5E] font-semibold truncate max-w-[150px]">
+                        {g.mapel}
+                      </span>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Hapus guru "${g.nama}"?`)) {
+                            deleteGuruStaff(g.id);
+                            showToast("Guru berhasil dihapus.");
+                          }
+                        }}
+                        className="text-red-500 hover:text-red-700 p-1"
+                        title="Hapus Guru"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 3: AKADEMIK & JADWAL */}
+        {/* ========================================================================= */}
+        {activeTab === "AKADEMIK" && (
+          <div className="space-y-8 animate-in fade-in duration-200">
+            {/* 3.1 Agenda Kalender Akademik */}
+            <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-white space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-[#2A2C5E]" />
+                    <span>Agenda Kalender Akademik Resmi</span>
+                  </h3>
+                  <p className="text-[11px] text-gray-500">
+                    Tambah, edit, atau hapus kegiatan kalender akademik tahun berjalan
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowAddAgenda(!showAddAgenda)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2A2C5E] text-white text-xs font-semibold hover:bg-[#1F2147] transition-all shadow-xs"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Tambah Agenda</span>
+                </button>
+              </div>
+
+              {/* Form Tambah Agenda */}
+              {showAddAgenda && (
+                <div className="p-4 bg-blue-50/70 border border-blue-200 rounded-xl space-y-3">
+                  <h4 className="text-xs font-bold text-[#2A2C5E]">Tambah Agenda Kalender Baru</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div className="sm:col-span-2">
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Nama Kegiatan
+                      </label>
+                      <input
+                        type="text"
+                        value={agendaForm.kegiatan}
+                        onChange={(e) => setAgendaForm({ ...agendaForm, kegiatan: e.target.value })}
+                        placeholder="Contoh: Sumatif Akhir Semester (SAS)"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Rentang Tanggal
+                      </label>
+                      <input
+                        type="text"
+                        value={agendaForm.tanggal}
+                        onChange={(e) => setAgendaForm({ ...agendaForm, tanggal: e.target.value })}
+                        placeholder="Contoh: 15 - 20 Desember 2026"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Kategori
+                      </label>
+                      <select
+                        value={agendaForm.kategori}
+                        onChange={(e) => setAgendaForm({ ...agendaForm, kategori: e.target.value as any })}
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      >
+                        <option value="AKADEMIK">Akademik</option>
+                        <option value="UJIAN">Ujian & Evaluasi</option>
+                        <option value="LIBUR">Hari Libur</option>
+                        <option value="KESISWAAN">Kesiswaan</option>
+                      </select>
+                    </div>
+                    <div className="sm:col-span-4">
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Keterangan Rinci
+                      </label>
+                      <input
+                        type="text"
+                        value={agendaForm.keterangan}
+                        onChange={(e) => setAgendaForm({ ...agendaForm, keterangan: e.target.value })}
+                        placeholder="Penjelasan sasaran peserta atau tata laksana kegiatan..."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-2 pt-2">
+                    <button
+                      onClick={() => setShowAddAgenda(false)}
+                      className="px-3 py-1.5 rounded-lg border border-gray-300 text-xs text-gray-600 bg-white"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!agendaForm.kegiatan || !agendaForm.tanggal) {
+                          alert("Nama kegiatan dan tanggal wajib diisi!");
+                          return;
+                        }
+                        addAgendaKalender({
+                          ...agendaForm,
+                          id: `agenda-${Date.now()}`,
+                          bulanSingkat: agendaForm.tanggal.slice(0, 3),
+                        });
+                        setShowAddAgenda(false);
+                        setAgendaForm({
+                          tanggal: "",
+                          bulanSingkat: "Jan",
+                          kegiatan: "",
+                          kategori: "AKADEMIK",
+                          keterangan: "",
+                          semester: "GANJIL",
+                        });
+                        showToast("Agenda kalender berhasil ditambahkan!");
+                      }}
+                      className="px-4 py-1.5 rounded-lg bg-[#2A2C5E] text-white text-xs font-semibold"
+                    >
+                      Simpan Agenda
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Tabel Daftar Agenda */}
+              <div className="divide-y divide-gray-100 border border-gray-200 rounded-xl overflow-hidden">
+                {akademik.agendaList.map((ag) => (
+                  <div key={ag.id} className="p-3.5 flex items-center justify-between gap-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="w-16 px-2 py-1 text-center text-[10px] font-bold text-[#2A2C5E] bg-blue-50 border border-blue-200 rounded shrink-0">
+                        {ag.tanggal}
+                      </span>
+                      <div className="min-w-0">
+                        <h4 className="text-xs font-bold text-gray-900 truncate">{ag.kegiatan}</h4>
+                        <p className="text-[11px] text-gray-500 truncate">{ag.keterangan}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[10px] font-semibold text-gray-600 bg-gray-100 px-2 py-0.5 rounded">
+                        {ag.kategori}
+                      </span>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Hapus agenda "${ag.kegiatan}"?`)) {
+                            deleteAgendaKalender(ag.id);
+                            showToast("Agenda berhasil dihapus.");
+                          }
+                        }}
+                        className="text-red-500 hover:text-red-700 p-1"
+                        title="Hapus Agenda"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 3.2 Jadwal Ujian Sekolah (CBT) */}
+            <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-white space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-[#2A2C5E]" />
+                    <span>Jadwal Ujian Sekolah (Computer Based Test)</span>
+                  </h3>
+                  <p className="text-[11px] text-gray-500">
+                    Atur jadwal pelaksanaan ujian formatif / sumatif siswa
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowAddUjian(!showAddUjian)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-all shadow-xs"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Tambah Jadwal Ujian</span>
+                </button>
+              </div>
+
+              {/* Form Tambah Jadwal Ujian */}
+              {showAddUjian && (
+                <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-3">
+                  <h4 className="text-xs font-bold text-emerald-900">Tambah Sesi Ujian Baru</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Mata Pelajaran
+                      </label>
+                      <input
+                        type="text"
+                        value={ujianForm.mataPelajaran}
+                        onChange={(e) => setUjianForm({ ...ujianForm, mataPelajaran: e.target.value })}
+                        placeholder="Contoh: Fisika / Ekonomi"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Hari & Tanggal
+                      </label>
+                      <input
+                        type="text"
+                        value={ujianForm.hariTanggal}
+                        onChange={(e) => setUjianForm({ ...ujianForm, hariTanggal: e.target.value })}
+                        placeholder="Contoh: Rabu, 2 Desember 2026"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Waktu & Sesi
+                      </label>
+                      <input
+                        type="text"
+                        value={ujianForm.waktu}
+                        onChange={(e) => setUjianForm({ ...ujianForm, waktu: e.target.value })}
+                        placeholder="Contoh: 07.30 - 09.30 WIB"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Tingkat Peserta
+                      </label>
+                      <input
+                        type="text"
+                        value={ujianForm.tingkatLabel}
+                        onChange={(e) => setUjianForm({ ...ujianForm, tingkatLabel: e.target.value })}
+                        placeholder="Contoh: Kelas X, XI, XII"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Ruang & Moda
+                      </label>
+                      <input
+                        type="text"
+                        value={ujianForm.ruangModa}
+                        onChange={(e) => setUjianForm({ ...ujianForm, ruangModa: e.target.value })}
+                        placeholder="Contoh: Ruang CBT & Kelas"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Guru Koordinator
+                      </label>
+                      <input
+                        type="text"
+                        value={ujianForm.koordinator}
+                        onChange={(e) => setUjianForm({ ...ujianForm, koordinator: e.target.value })}
+                        placeholder="Nama guru penanggung jawab..."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-2 pt-2">
+                    <button
+                      onClick={() => setShowAddUjian(false)}
+                      className="px-3 py-1.5 rounded-lg border border-gray-300 text-xs text-gray-600 bg-white"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!ujianForm.mataPelajaran || !ujianForm.hariTanggal) {
+                          alert("Mata pelajaran dan hari tanggal wajib diisi!");
+                          return;
+                        }
+                        addJadwalUjian({
+                          id: `uj-${Date.now()}`,
+                          jenisUjian: "PAS_GANJIL",
+                          tingkat: "SEMUA",
+                          ...ujianForm,
+                        });
+                        setShowAddUjian(false);
+                        setUjianForm({
+                          hariTanggal: "",
+                          sesi: "Sesi 1 (07.30 - 09.30)",
+                          waktu: "07.30 - 09.30 WIB",
+                          mataPelajaran: "",
+                          tingkatLabel: "Kelas X, XI, XII",
+                          ruangModa: "28 Ruang Kelas & CBT Lab",
+                          koordinator: "",
+                        });
+                        showToast("Jadwal ujian berhasil ditambahkan!");
+                      }}
+                      className="px-4 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700"
+                    >
+                      Simpan Jadwal Ujian
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Grid Jadwal Ujian */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {akademik.jadwalUjianList.map((uj) => (
+                  <div key={uj.id} className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 space-y-1.5 relative">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
+                        {uj.mataPelajaran}
+                      </span>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Hapus jadwal "${uj.mataPelajaran}"?`)) {
+                            deleteJadwalUjian(uj.id);
+                            showToast("Jadwal ujian berhasil dihapus.");
+                          }
+                        }}
+                        className="text-red-500 hover:text-red-700 p-1"
+                        title="Hapus Jadwal"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    <p className="text-xs font-bold text-gray-900">{uj.hariTanggal}</p>
+                    <p className="text-[11px] text-gray-500">{uj.waktu} &bull; {uj.ruangModa}</p>
+                    <p className="text-[10px] text-gray-400">Koordinator: {uj.koordinator || "-"}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 4: KESISWAAN & EKSKUL */}
+        {/* ========================================================================= */}
+        {activeTab === "KESISWAAN" && (
+          <div className="space-y-8 animate-in fade-in duration-200">
+            {/* 4.1 Manajemen Prestasi Siswa (Bisa Tambah Gambar & Prestasi Baru) */}
+            <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-white space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                    <Trophy className="w-4 h-4 text-[#2A2C5E]" />
+                    <span>Katalog Prestasi Siswa & Kejuaraan</span>
+                  </h3>
+                  <p className="text-[11px] text-gray-500">
+                    Tambah prestasi baru beserta foto sertifikat/trofi, predikat juara, dan data peraih
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowAddPrestasi(!showAddPrestasi)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-all shadow-xs"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Tambah Prestasi Baru</span>
+                </button>
+              </div>
+
+              {/* Form Tambah Prestasi Baru */}
+              {showAddPrestasi && (
+                <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-3">
+                  <h4 className="text-xs font-bold text-emerald-900">Form Prestasi Siswa Baru</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div className="sm:col-span-2">
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Nama Kejuaraan / Kompetisi
+                      </label>
+                      <input
+                        type="text"
+                        value={prestasiForm.judul}
+                        onChange={(e) => setPrestasiForm({ ...prestasiForm, judul: e.target.value })}
+                        placeholder="Contoh: Olimpiade Sains Nasional (OSN) Bidang Biologi"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Predikat Juara
+                      </label>
+                      <input
+                        type="text"
+                        value={prestasiForm.juara}
+                        onChange={(e) => setPrestasiForm({ ...prestasiForm, juara: e.target.value })}
+                        placeholder="Contoh: Juara 1 (Medali Emas)"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Tingkat Kejuaraan
+                      </label>
+                      <input
+                        type="text"
+                        value={prestasiForm.tingkat}
+                        onChange={(e) => setPrestasiForm({ ...prestasiForm, tingkat: e.target.value })}
+                        placeholder="Contoh: Tingkat Kabupaten Way Kanan"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Nama Siswa Peraih
+                      </label>
+                      <input
+                        type="text"
+                        value={prestasiForm.peraih}
+                        onChange={(e) => setPrestasiForm({ ...prestasiForm, peraih: e.target.value })}
+                        placeholder="Contoh: Ahmad Dani (Kelas XII MIPA)"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Tahun & Bidang
+                      </label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          value={prestasiForm.tahun}
+                          onChange={(e) => setPrestasiForm({ ...prestasiForm, tahun: e.target.value })}
+                          placeholder="2026"
+                          className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                        />
+                        <input
+                          type="text"
+                          value={prestasiForm.bidang}
+                          onChange={(e) => setPrestasiForm({ ...prestasiForm, bidang: e.target.value })}
+                          placeholder="Sains"
+                          className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                        />
+                      </div>
+                    </div>
+                    <div className="sm:col-span-3">
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        URL Foto Piagam / Dokumentasi Penyerahan Trofi
+                      </label>
+                      <input
+                        type="text"
+                        value={prestasiForm.fotoUrl}
+                        onChange={(e) => setPrestasiForm({ ...prestasiForm, fotoUrl: e.target.value })}
+                        placeholder="https://images.unsplash.com/..."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div className="sm:col-span-3">
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Deskripsi Capaian Prestasi
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={prestasiForm.deskripsi}
+                        onChange={(e) => setPrestasiForm({ ...prestasiForm, deskripsi: e.target.value })}
+                        placeholder="Penjelasan prestasi dan perwakilan kompetisi..."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-2 pt-2">
+                    <button
+                      onClick={() => setShowAddPrestasi(false)}
+                      className="px-3 py-1.5 rounded-lg border border-gray-300 text-xs text-gray-600 bg-white"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!prestasiForm.judul || !prestasiForm.peraih) {
+                          alert("Nama kejuaraan dan peraih wajib diisi!");
+                          return;
+                        }
+                        addPrestasi({
+                          id: `prestasi-${Date.now()}`,
+                          ...prestasiForm,
+                        });
+                        setShowAddPrestasi(false);
+                        setPrestasiForm({
+                          judul: "",
+                          juara: "Juara 1",
+                          tingkat: "Tingkat Kabupaten Way Kanan",
+                          bidang: "Akademik & Sains",
+                          tahun: "2026",
+                          penyelenggara: "Dinas Pendidikan",
+                          peraih: "",
+                          deskripsi: "",
+                          fotoUrl: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=600&auto=format&fit=crop&q=80",
+                        });
+                        showToast("Prestasi siswa baru berhasil ditambahkan!");
+                      }}
+                      className="px-4 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700"
+                    >
+                      Simpan Prestasi
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Grid Prestasi */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {kesiswaan.prestasiList.map((pres) => (
+                  <div key={pres.id} className="rounded-xl border border-gray-200 overflow-hidden bg-gray-50 flex flex-col justify-between">
+                    <div>
+                      <div className="h-36 overflow-hidden relative">
+                        <img
+                          src={pres.fotoUrl}
+                          alt={pres.judul}
+                          className="w-full h-full object-cover"
+                        />
+                        <span className="absolute top-2 left-2 bg-[#2A2C5E] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-xs">
+                          {pres.juara}
+                        </span>
+                        <button
+                          onClick={() => {
+                            if (confirm(`Hapus prestasi "${pres.judul}"?`)) {
+                              deletePrestasi(pres.id);
+                              showToast("Prestasi berhasil dihapus.");
+                            }
+                          }}
+                          className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-md shadow-xs hover:bg-red-700"
+                          title="Hapus Prestasi"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                      <div className="p-3.5 space-y-1">
+                        <span className="text-[10px] text-gray-500 font-medium">
+                          {pres.tingkat} &bull; {pres.tahun}
+                        </span>
+                        <h4 className="text-xs font-bold text-gray-900 line-clamp-2">{pres.judul}</h4>
+                        <p className="text-[11px] font-semibold text-[#2A2C5E]">{pres.peraih}</p>
+                        <p className="text-[10px] text-gray-500 line-clamp-2 mt-1">{pres.deskripsi}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 4.2 Struktur Kepengurusan OSIS */}
+            <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-gray-50/50 space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                    <Users className="w-4 h-4 text-[#2A2C5E]" />
+                    <span>Struktur Inti Organisasi Siswa Intra Sekolah (OSIS)</span>
+                  </h3>
+                  <p className="text-[11px] text-gray-500">
+                    Ubah data Pembina OSIS, Ketua, Wakil, Sekretaris, dan Bendahara
+                  </p>
+                </div>
+                <button
+                  onClick={() => showToast("Struktur kepengurusan OSIS berhasil disimpan!")}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2A2C5E] text-white text-xs font-semibold hover:bg-[#1F2147] transition-all"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>Simpan</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Pembina Utama OSIS
+                  </label>
+                  <input
+                    type="text"
+                    value={kesiswaan.osis.pembina}
+                    onChange={(e) => updateOsis({ pembina: e.target.value })}
+                    className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Ketua Umum OSIS
+                  </label>
+                  <input
+                    type="text"
+                    value={kesiswaan.osis.ketua}
+                    onChange={(e) => updateOsis({ ketua: e.target.value })}
+                    className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Wakil Ketua OSIS
+                  </label>
+                  <input
+                    type="text"
+                    value={kesiswaan.osis.wakil}
+                    onChange={(e) => updateOsis({ wakil: e.target.value })}
+                    className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Sekretaris Umum
+                  </label>
+                  <input
+                    type="text"
+                    value={kesiswaan.osis.sekretaris}
+                    onChange={(e) => updateOsis({ sekretaris: e.target.value })}
+                    className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Bendahara Umum
+                  </label>
+                  <input
+                    type="text"
+                    value={kesiswaan.osis.bendahara}
+                    onChange={(e) => updateOsis({ bendahara: e.target.value })}
+                    className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 4.3 Ekstrakurikuler (Eskul) */}
+            <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-white space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-[#2A2C5E]" />
+                    <span>Daftar Ekstrakurikuler (Eskul) & Pembina</span>
+                  </h3>
+                  <p className="text-[11px] text-gray-500">
+                    Kelola nama eskul, nama pembina, jadwal latihan, lokasi, dan prestasi unggulan
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowAddEkskul(!showAddEkskul)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-all shadow-xs"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Tambah Eskul</span>
+                </button>
+              </div>
+
+              {/* Form Tambah Eskul */}
+              {showAddEkskul && (
+                <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-3">
+                  <h4 className="text-xs font-bold text-emerald-900">Tambah Kegiatan Eskul Baru</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Nama Ekstrakurikuler
+                      </label>
+                      <input
+                        type="text"
+                        value={ekskulForm.nama}
+                        onChange={(e) => setEkskulForm({ ...ekskulForm, nama: e.target.value })}
+                        placeholder="Contoh: English Debate Club"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Kategori
+                      </label>
+                      <input
+                        type="text"
+                        value={ekskulForm.kategori}
+                        onChange={(e) => setEkskulForm({ ...ekskulForm, kategori: e.target.value })}
+                        placeholder="Contoh: Bahasa & Komunikasi"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Guru Pembina
+                      </label>
+                      <input
+                        type="text"
+                        value={ekskulForm.pembina}
+                        onChange={(e) => setEkskulForm({ ...ekskulForm, pembina: e.target.value })}
+                        placeholder="Nama guru pembina..."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Hari & Waktu Latihan
+                      </label>
+                      <input
+                        type="text"
+                        value={ekskulForm.jadwal}
+                        onChange={(e) => setEkskulForm({ ...ekskulForm, jadwal: e.target.value })}
+                        placeholder="Contoh: Rabu, 15.30 - 17.00 WIB"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Lokasi Latihan
+                      </label>
+                      <input
+                        type="text"
+                        value={ekskulForm.lokasi}
+                        onChange={(e) => setEkskulForm({ ...ekskulForm, lokasi: e.target.value })}
+                        placeholder="Contoh: Lab Bahasa & Aula"
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Prestasi Unggulan
+                      </label>
+                      <input
+                        type="text"
+                        value={ekskulForm.prestasiUnggulan}
+                        onChange={(e) => setEkskulForm({ ...ekskulForm, prestasiUnggulan: e.target.value })}
+                        placeholder="Capaian terbaik eskul..."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                    <div className="sm:col-span-3">
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Deskripsi Kegiatan
+                      </label>
+                      <input
+                        type="text"
+                        value={ekskulForm.deskripsi}
+                        onChange={(e) => setEkskulForm({ ...ekskulForm, deskripsi: e.target.value })}
+                        placeholder="Ringkasan kegiatan eskul..."
+                        className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-2 pt-2">
+                    <button
+                      onClick={() => setShowAddEkskul(false)}
+                      className="px-3 py-1.5 rounded-lg border border-gray-300 text-xs text-gray-600 bg-white"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!ekskulForm.nama) {
+                          alert("Nama eskul wajib diisi!");
+                          return;
+                        }
+                        addEkskul({
+                          id: `ekskul-${Date.now()}`,
+                          logoId: "pramuka",
+                          ...ekskulForm,
+                        });
+                        setShowAddEkskul(false);
+                        setEkskulForm({
+                          nama: "",
+                          kategori: "Pengembangan Bakat",
+                          pembina: "",
+                          jadwal: "Sabtu, 15.30 - 17.00 WIB",
+                          lokasi: "Lingkungan SMAN 2 Buay Bahuga",
+                          deskripsi: "",
+                          prestasiUnggulan: "",
+                        });
+                        showToast("Ekstrakurikuler baru berhasil ditambahkan!");
+                      }}
+                      className="px-4 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700"
+                    >
+                      Simpan Eskul
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Grid Daftar Eskul */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {kesiswaan.ekskulList.map((ek) => (
+                  <div key={ek.id} className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 space-y-1.5 relative">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
+                        {ek.kategori}
+                      </span>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Hapus ekstrakurikuler "${ek.nama}"?`)) {
+                            deleteEkskul(ek.id);
+                            showToast("Ekstrakurikuler berhasil dihapus.");
+                          }
+                        }}
+                        className="text-red-500 hover:text-red-700 p-1"
+                        title="Hapus Eskul"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    <h4 className="text-xs font-bold text-gray-900">{ek.nama}</h4>
+                    <p className="text-[11px] text-gray-600">Pembina: {ek.pembina || "-"}</p>
+                    <p className="text-[10px] text-gray-500">{ek.jadwal} &bull; {ek.lokasi}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 5: WARTA & INFORMASI */}
+        {/* ========================================================================= */}
+        {activeTab === "INFORMASI" && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            {/* Form Publikasi Cepat */}
+            <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-white space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-[#2A2C5E]" />
+                    <span>Terbitkan Warta & Pengumuman Resmi Baru</span>
+                  </h3>
+                  <p className="text-[11px] text-gray-500">
+                    Artikel langsung terbit di halaman Beranda dan menu Informasi publik
+                  </p>
+                </div>
+                <Link
+                  href="/admin/berita"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#2A2C5E] hover:underline"
+                >
+                  <span>Buka CMS Berita Penuh</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                      Judul Warta / Pengumuman
+                    </label>
+                    <input
+                      type="text"
+                      value={beritaForm.judul}
+                      onChange={(e) => setBeritaForm({ ...beritaForm, judul: e.target.value })}
+                      placeholder="Contoh: Jadwal Pelaksanaan Ujian Sumatif Akhir Semester"
+                      className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                      Kategori Publikasi
+                    </label>
+                    <select
+                      value={beritaForm.kategori}
+                      onChange={(e) => setBeritaForm({ ...beritaForm, kategori: e.target.value as any })}
+                      className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                    >
+                      <option value="PENGUMUMAN">Pengumuman Resmi</option>
+                      <option value="AKADEMIK">Akademik & Kurikulum</option>
+                      <option value="KESISWAAN">Kesiswaan & Ekskul</option>
+                      <option value="PRESTASI">Prestasi Sekolah</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                    URL Foto Sampul (Thumbnail)
+                  </label>
+                  <input
+                    type="text"
+                    value={beritaForm.thumbnailUrl}
+                    onChange={(e) => setBeritaForm({ ...beritaForm, thumbnailUrl: e.target.value })}
+                    placeholder="https://images.unsplash.com/..."
+                    className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                    Ringkasan Singkat (Muncul di kartu warta)
+                  </label>
+                  <input
+                    type="text"
+                    value={beritaForm.ringkasan}
+                    onChange={(e) => setBeritaForm({ ...beritaForm, ringkasan: e.target.value })}
+                    placeholder="Deskripsi singkat maksimal 2 kalimat..."
+                    className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                    Isi Konten Lengkap
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={beritaForm.konten}
+                    onChange={(e) => setBeritaForm({ ...beritaForm, konten: e.target.value })}
+                    placeholder="Tuliskan isi rincian surat edaran / pengumuman secara formal..."
+                    className="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]"
+                  />
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button
+                    onClick={() => {
+                      if (!beritaForm.judul || !beritaForm.konten) {
+                        alert("Judul dan isi konten artikel wajib diisi!");
+                        return;
+                      }
+                      addBerita({
+                        id: `berita-${Date.now()}`,
+                        slug: beritaForm.judul.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+                        judul: beritaForm.judul,
+                        ringkasan: beritaForm.ringkasan || beritaForm.judul,
+                        konten: beritaForm.konten,
+                        kategori: beritaForm.kategori,
+                        penulis: "Administrator Sekolah",
+                        tanggal: new Date().toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        }),
+                        bacaMenit: 3,
+                        thumbnailUrl: beritaForm.thumbnailUrl,
+                      });
+                      setBeritaForm({
+                        judul: "",
+                        kategori: "PENGUMUMAN",
+                        ringkasan: "",
+                        konten: "",
+                        thumbnailUrl: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80",
+                      });
+                      showToast("Artikel pengumuman resmi berhasil diterbitkan!");
+                    }}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#2A2C5E] text-white text-xs font-bold hover:bg-[#1F2147] transition-all shadow-xs"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Terbitkan Sekarang</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Daftar Artikel Terbit */}
+            <div className="p-5 sm:p-6 rounded-xl border border-gray-200 bg-white space-y-3">
+              <h4 className="text-xs font-bold text-gray-900">Artikel & Pengumuman yang Sedang Tayang ({beritaList.length})</h4>
+              <div className="divide-y divide-gray-100 border border-gray-200 rounded-xl overflow-hidden">
+                {beritaList.slice(0, 6).map((b) => (
+                  <div key={b.id} className="p-3.5 flex items-center justify-between gap-3 hover:bg-gray-50">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <img src={b.thumbnailUrl} alt={b.judul} className="w-12 h-12 rounded-lg object-cover shrink-0 border border-gray-200" />
+                      <div className="min-w-0">
+                        <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-100 px-2 py-0.5 rounded">
+                          {b.kategori}
+                        </span>
+                        <h5 className="text-xs font-bold text-gray-900 truncate mt-0.5">{b.judul}</h5>
+                        <p className="text-[10px] text-gray-500">{b.tanggal} &bull; Oleh: {b.penulis}</p>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        if (confirm(`Hapus artikel "${b.judul}"?`)) {
+                          deleteBerita(b.id);
+                          showToast("Artikel berhasil dihapus.");
+                        }
+                      }}
+                      className="text-red-500 hover:text-red-700 p-1 shrink-0"
+                      title="Hapus Artikel"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

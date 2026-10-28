@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { SCHOOL_INFO } from "@/lib/constants";
 import { useBeritaStore } from "@/lib/store";
+import { useCMSStore } from "@/lib/cmsStore";
 
 const VIDEO_PANDUAN_LIST = [
   {
@@ -115,6 +116,7 @@ const EXTENDED_HERO_SLIDES = [
 ];
 
 export default function HomePage() {
+  const { beranda } = useCMSStore();
   const beritaList = useBeritaStore((state) => state.beritaList);
   const beritaTerbaru = beritaList.slice(0, 3);
   const [bannerTrackIdx, setBannerTrackIdx] = useState<number>(1);
@@ -258,19 +260,15 @@ export default function HomePage() {
             <div className="lg:col-span-7 space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100/70 border border-blue-200 text-[#2A2C5E] text-xs font-semibold">
                 <ShieldCheck className="w-4 h-4" />
-                <span>Portal Resmi Pendidikan Terakreditasi {SCHOOL_INFO.akreditasi}</span>
+                <span>{beranda.heroBadge}</span>
               </div>
 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-[1.15]">
-                Pusat Keunggulan Akademik &{" "}
-                <span className="text-[#2A2C5E]">Smart School Terintegrasi</span>
+                {beranda.heroHeadline}
               </h1>
 
               <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl">
-                SMA Negeri 2 Buay Bahuga menyelenggarakan pendidikan berkualitas
-                berlandaskan budi pekerti luhur, penguasaan sains teknologi, serta
-                pembelajaran holistik yang membentuk lulusan unggul, berprestasi,
-                dan berkarakter mulia.
+                {beranda.heroSubheadline}
               </p>
 
               <div className="flex flex-wrap items-center gap-4 pt-2">
@@ -364,14 +362,14 @@ export default function HomePage() {
                 <div className="bg-[#2A2C5E] rounded-xl p-4 text-white space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-medium text-blue-200">
-                      Tahun Ajaran 2026/2027
+                      {beranda.tahunAjaran}
                     </span>
                     <span className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-bold">
-                      Semester Ganjil
+                      {beranda.semester}
                     </span>
                   </div>
                   <p className="text-xs text-blue-100 leading-relaxed">
-                    Penyelenggaraan pendidikan bagi 983 peserta didik (29 rombel) serta 53 pendidik dan tenaga kependidikan.
+                    {beranda.deskripsiSemester}
                   </p>
                 </div>
               </div>
@@ -387,9 +385,11 @@ export default function HomePage() {
             <div className="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-3">
               <Users className="w-5 h-5" />
             </div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">983</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">
+              {beranda.statistik.totalSiswa}
+            </div>
             <div className="text-xs font-semibold text-gray-600">
-              Peserta Didik Aktif (29 Rombel)
+              Peserta Didik Aktif ({beranda.statistik.totalRombel} Rombel)
             </div>
           </div>
 
@@ -397,7 +397,9 @@ export default function HomePage() {
             <div className="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-3">
               <GraduationCap className="w-5 h-5" />
             </div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">53</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">
+              {beranda.statistik.totalGuruTendik}
+            </div>
             <div className="text-xs font-semibold text-gray-600">
               Pendidik & Tenaga Kependidikan
             </div>
@@ -417,9 +419,11 @@ export default function HomePage() {
             <div className="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-3">
               <BookOpen className="w-5 h-5" />
             </div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">28</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">
+              {beranda.statistik.ruangKelas}
+            </div>
             <div className="text-xs font-semibold text-gray-600">
-              Ruang Kelas & 9 Laboratorium
+              Ruang Kelas & {beranda.statistik.laboratorium} Laboratorium
             </div>
           </div>
         </div>
@@ -433,20 +437,20 @@ export default function HomePage() {
               <div className="w-40 h-48 sm:w-48 sm:h-56 rounded-xl overflow-hidden bg-gray-100 border-2 border-gray-200 shadow-xs">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80"
-                  alt="Apriyani, S.Si., M.M.Pd. - Kepala SMAN 2 Buay Bahuga"
+                  src={beranda.kepsek.fotoUrl}
+                  alt={`${beranda.kepsek.nama} - Kepala SMAN 2 Buay Bahuga`}
                   className="w-full h-full object-cover object-top"
                 />
               </div>
               <div>
                 <h3 className="font-bold text-gray-900 text-base">
-                  {SCHOOL_INFO.kepalaSekolah}
+                  {beranda.kepsek.nama}
                 </h3>
                 <p className="text-xs text-[#2A2C5E] font-medium">
-                  Kepala SMA Negeri 2 Buay Bahuga
+                  {beranda.kepsek.jabatan}
                 </p>
                 <p className="text-[11px] text-gray-400">
-                  NIP. {SCHOOL_INFO.nipKepalaSekolah} ({SCHOOL_INFO.pangkatKepalaSekolah})
+                  NIP. {beranda.kepsek.nip} ({beranda.kepsek.pangkat})
                 </p>
               </div>
             </div>
@@ -459,27 +463,8 @@ export default function HomePage() {
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
                 Mewujudkan Insan Beriman, Berakhlak Mulia, Unggul dalam Prestasi, dan Berdaya Saing Global
               </h2>
-              <div className="text-sm text-gray-600 space-y-3 leading-relaxed">
-                <p>
-                  Assalamu’alaikum Warahmatullahi Wabarakatuh, Salam Sejahtera bagi
-                  kita semua, Tabik Pun.
-                </p>
-                <p>
-                  Puji syukur kehadirat Tuhan Yang Maha Esa atas hadirnya portal
-                  informasi resmi dan sistem pembelajaran terpadu SMA Negeri 2 Buay
-                  Bahuga (Smandabuba), Kampung Suka Agung, Kecamatan Buay Bahuga,
-                  Kabupaten Way Kanan. Sejak berdiri pada 22 Februari 2008, sekolah
-                  kami terus berkomitmen menghadirkan layanan pendidikan yang
-                  transparan, akuntabel, dan bermutu tinggi.
-                </p>
-                <p>
-                  Melalui implementasi Kurikulum Merdeka, pembinaan prestasi akademik
-                  maupun non-akademik, serta penguatan Gerakan Sekolah ASRI (Aman,
-                  Sehat, Resik, dan Indah), kami bertekad mendampingi setiap peserta
-                  didik agar tumbuh menjadi generasi berkarakter luhur yang siap
-                  melanjutkan pendidikan ke perguruan tinggi terbaik dan berkontribusi
-                  bagi masyarakat.
-                </p>
+              <div className="text-sm text-gray-600 space-y-3 leading-relaxed whitespace-pre-line">
+                <p>{beranda.kepsek.sambutan}</p>
               </div>
             </div>
           </div>
@@ -509,8 +494,12 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-          {VIDEO_PANDUAN_LIST.map((vid, idx) => {
+          {beranda.videoPanduan.map((vid, idx) => {
             const isPlaying = playingVideoId === vid.id;
+            const embedUrl = vid.youtubeUrl?.includes("embed")
+              ? vid.youtubeUrl
+              : vid.youtubeUrl?.replace("watch?v=", "embed/") || "https://www.youtube.com/embed/dQw4w9WgXcQ";
+            const thumbnail = (vid as any).thumbnailUrl || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80";
             return (
               <div
                 key={vid.id}
@@ -521,7 +510,7 @@ export default function HomePage() {
                   <div className="relative aspect-video w-full bg-gray-900 overflow-hidden shrink-0">
                     {isPlaying ? (
                       <iframe
-                        src={`${vid.youtubeEmbedUrl}?autoplay=1&rel=0`}
+                        src={`${embedUrl}?autoplay=1&rel=0`}
                         title={vid.judul}
                         className="w-full h-full border-0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -534,7 +523,7 @@ export default function HomePage() {
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src={vid.thumbnailUrl}
+                          src={thumbnail}
                           alt={vid.judul}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
@@ -573,7 +562,7 @@ export default function HomePage() {
                   {/* Keterangan Video */}
                   <div className="p-5 flex flex-col">
                     <div className="text-[11px] text-gray-400 h-5 flex items-center">
-                      <span>{vid.tanggal}</span>
+                      <span>{(vid as any).tanggal || vid.highlight}</span>
                     </div>
                     <div className="mt-2 min-h-[2.85rem] flex items-start">
                       <h3 className="text-base font-bold text-gray-900 leading-snug line-clamp-2">

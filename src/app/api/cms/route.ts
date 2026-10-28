@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import {
   INITIAL_BERANDA_CMS,
   INITIAL_PROFIL_CMS,
@@ -7,8 +7,6 @@ import {
   INITIAL_KESISWAAN_CMS,
 } from "@/lib/cmsData";
 import { MOCK_BERITA } from "@/lib/mockData";
-
-const prisma = new PrismaClient();
 
 // GET: Ambil seluruh data CMS dan Berita langsung dari basis data Supabase
 export async function GET(req: NextRequest) {

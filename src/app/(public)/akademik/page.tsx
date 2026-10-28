@@ -7,15 +7,9 @@ import {
   Calendar,
   Clock,
   FileCheck2,
-  Laptop,
-  GraduationCap,
   AlertCircle,
   Search,
   Filter,
-  MapPin,
-  UserCheck,
-  CheckCircle2,
-  Layers,
 } from "lucide-react";
 
 type AkademikTab = "KALENDER" | "JADWAL_PELAJARAN" | "JADWAL_UJIAN";
@@ -74,7 +68,7 @@ const KALENDER_DATA: BulanKalender[] = [
         bulanSingkat: "Jul",
         kegiatan: "Hari Pertama Masuk & Masa Pengenalan Lingkungan Sekolah (MPLS)",
         kategori: "KESISWAAN",
-        keterangan: "Orientasi peserta didik baru Kelas X dan pembagian wali kelas 29 rombel.",
+        keterangan: "Orientasi peserta didik baru Kelas X dan pembagian rombongan belajar.",
       },
       {
         tanggal: "16 - 18",
@@ -100,9 +94,9 @@ const KALENDER_DATA: BulanKalender[] = [
       {
         tanggal: "10 - 15",
         bulanSingkat: "Agu",
-        kegiatan: "Pekan Gebyar Kemerdekaan & Lomba Antar-Rombel",
+        kegiatan: "Pekan Gebyar Kemerdekaan & Lomba Antar-Kelas",
         kategori: "KESISWAAN",
-        keterangan: "Lomba kebersihan kelas ASRI, baris-berbaris, dan olahraga antar-kelas.",
+        keterangan: "Lomba kebersihan kelas ASRI, baris-berbaris, dan olahraga antar-rombel.",
       },
       {
         tanggal: "17",
@@ -158,7 +152,7 @@ const KALENDER_DATA: BulanKalender[] = [
         bulanSingkat: "Okt",
         kegiatan: "Peringatan Hari Sumpah Pemuda & Pemilihan Pengurus OSIS/MPK",
         kategori: "KESISWAAN",
-        keterangan: "Pesta demokrasi pemilihan Ketua & Wakil Ketua OSIS periode baru.",
+        keterangan: "Pemilihan Ketua & Wakil Ketua OSIS periode baru.",
       },
     ],
   },
@@ -186,7 +180,7 @@ const KALENDER_DATA: BulanKalender[] = [
         bulanSingkat: "Nov",
         kegiatan: "Peringatan Hari Guru Nasional (HGN)",
         kategori: "KESISWAAN",
-        keterangan: "Apresiasi dedikasi 48 pendidik dan 5 tenaga kependidikan SMAN 2 Buay Bahuga.",
+        keterangan: "Apresiasi dedikasi pendidik dan tenaga kependidikan SMAN 2 Buay Bahuga.",
       },
     ],
   },
@@ -200,14 +194,14 @@ const KALENDER_DATA: BulanKalender[] = [
         bulanSingkat: "Des",
         kegiatan: "Penilaian Akhir Semester (PAS) Ganjil Tahun Ajaran 2026/2027",
         kategori: "UJIAN",
-        keterangan: "Ujian sumatif akhir semester ganjil seluruh tingkat kelas (983 siswa).",
+        keterangan: "Ujian sumatif akhir semester ganjil seluruh tingkat kelas.",
       },
       {
         tanggal: "18",
         bulanSingkat: "Des",
         kegiatan: "Pembagian Buku Laporan Hasil Belajar (e-Rapor) Semester Ganjil",
         kategori: "AKADEMIK",
-        keterangan: "Penyerahan rapor kepada orang tua/wali murid oleh masing-masing wali kelas.",
+        keterangan: "Penyerahan rapor kepada orang tua/wali murid oleh wali kelas.",
       },
       {
         tanggal: "21 - 31",
@@ -249,7 +243,7 @@ const KALENDER_DATA: BulanKalender[] = [
         bulanSingkat: "Feb",
         kegiatan: "Seleksi Tingkat Sekolah Olimpiade OSN, O2SN & FLS2N",
         kategori: "KESISWAAN",
-        keterangan: "Penjaringan kontingen terbaik SMAN 2 Buay Bahuga menuju tingkat Kabupaten Way Kanan.",
+        keterangan: "Penjaringan kontingen SMAN 2 Buay Bahuga menuju tingkat Kabupaten Way Kanan.",
       },
       {
         tanggal: "22",
@@ -311,23 +305,16 @@ const KALENDER_DATA: BulanKalender[] = [
   },
 ];
 
+// Setiap kelas memiliki jadwal 1 minggu penuh (Senin s.d. Jumat)
 const DAFTAR_KELAS_INFO: Record<
   string,
   {
     namaKelas: string;
-    waliKelas: string;
-    ruangHomebase: string;
-    jumlahSiswa: number;
-    peminatan: string;
     jadwal: JadwalHariKelas[];
   }
 > = {
   "XII MIPA 1": {
     namaKelas: "Kelas XII MIPA 1",
-    waliKelas: "Tumijo, S.Pd.",
-    ruangHomebase: "Gedung A - Ruang R.12 MIPA 1",
-    jumlahSiswa: 34,
-    peminatan: "Matematika & Ilmu Pengetahuan Alam",
     jadwal: [
       {
         hari: "Senin",
@@ -380,17 +367,13 @@ const DAFTAR_KELAS_INFO: Record<
         slots: [
           { jamKe: "0", waktu: "07:15 - 08:00", mapel: "Jumat Rohani / Senam Bersama & Gerakan ASRI", guru: "Mamad Fhadoli, S.Pd.I.", ruang: "Lapangan & Musholla", tipe: "KHUSUS" },
           { jamKe: "1 - 2", waktu: "08:00 - 09:30", mapel: "Pendidikan Jasmani, Olahraga & Kesehatan", guru: "Tim Olahraga Sekolah", ruang: "Lapangan Olahraga", tipe: "KBM" },
-          { jamKe: "3 - 4", waktu: "09:45 - 11:15", mapel: "Bimbingan Konseling (BK) & Persiapan SNBP/SNBT", guru: "Koordinator BK & Wali Kelas", ruang: "R.12 MIPA 1", tipe: "KBM" },
+          { jamKe: "3 - 5", waktu: "09:45 - 11:30", mapel: "Bimbingan Konseling (BK) & Persiapan SNBP/SNBT", guru: "Koordinator BK & Wali Kelas", ruang: "R.12 MIPA 1", tipe: "KBM" },
         ],
       },
     ],
   },
   "XII MIPA 2": {
     namaKelas: "Kelas XII MIPA 2",
-    waliKelas: "Wida Awanda, S.Pd.Si.",
-    ruangHomebase: "Gedung A - Ruang R.12 MIPA 2",
-    jumlahSiswa: 34,
-    peminatan: "Matematika & Ilmu Pengetahuan Alam",
     jadwal: [
       {
         hari: "Senin",
@@ -449,10 +432,6 @@ const DAFTAR_KELAS_INFO: Record<
   },
   "XII IPS 1": {
     namaKelas: "Kelas XII IPS 1",
-    waliKelas: "Eva Dwi Kurniawati, S.Pd.",
-    ruangHomebase: "Gedung B - Ruang R.12 IPS 1",
-    jumlahSiswa: 35,
-    peminatan: "Ilmu Pengetahuan Sosial & Ekonomi",
     jadwal: [
       {
         hari: "Senin",
@@ -511,10 +490,6 @@ const DAFTAR_KELAS_INFO: Record<
   },
   "XI MIPA 1": {
     namaKelas: "Kelas XI MIPA 1",
-    waliKelas: "Marsono, S.Pd.",
-    ruangHomebase: "Gedung A - Ruang R.11 MIPA 1",
-    jumlahSiswa: 34,
-    peminatan: "Fase F - Sains & Matematika",
     jadwal: [
       {
         hari: "Senin",
@@ -525,7 +500,7 @@ const DAFTAR_KELAS_INFO: Record<
           { jamKe: "3 - 4", waktu: "09:30 - 11:00", mapel: "Fisika Mekanika & Termodinamika", guru: "Wida Awanda, S.Pd.Si.", ruang: "Lab Fisika", tipe: "KBM" },
           { jamKe: "-", waktu: "11:00 - 11:30", mapel: "Istirahat Pagi", guru: "-", ruang: "Area Sekolah", tipe: "ISTIRAHAT" },
           { jamKe: "5 - 6", waktu: "11:30 - 13:00", mapel: "Biologi Struktur & Fungsi Jaringan", guru: "Tumijo, S.Pd.", ruang: "Lab Biologi", tipe: "KBM" },
-          { jamKe: "7 - 8", waktu: "13:30 - 15:00", mapel: "Bahasa Indonesia", guru: "Marlita Illiansyah, S.Pd.", ruang: "R.11 MIPA 1", tipe: "KBM" },
+          { jamKe: "7 - 8", waktu: "13:30 - 15:00", mapel: "Bahasa dan Sastra Indonesia", guru: "Marlita Illiansyah, S.Pd.", ruang: "R.11 MIPA 1", tipe: "KBM" },
         ],
       },
       {
@@ -535,17 +510,45 @@ const DAFTAR_KELAS_INFO: Record<
           { jamKe: "1 - 2", waktu: "07:15 - 08:45", mapel: "Pendidikan Agama Islam & Budi Pekerti", guru: "Mamad Fhadoli, S.Pd.I.", ruang: "R.11 MIPA 1", tipe: "KBM" },
           { jamKe: "3 - 4", waktu: "08:45 - 10:15", mapel: "Informatika & Persiapan ANBK", guru: "Tim Lab Komputer", ruang: "Lab Komputer CBT 1", tipe: "KBM" },
           { jamKe: "-", waktu: "10:15 - 10:45", mapel: "Istirahat Pagi", guru: "-", ruang: "Area Sekolah", tipe: "ISTIRAHAT" },
-          { jamKe: "5 - 8", waktu: "10:45 - 14:30", mapel: "Kimia & Praktikum Laboratorium", guru: "Apriyani, S.Si., M.M.Pd.", ruang: "Lab Kimia", tipe: "KBM" },
+          { jamKe: "5 - 6", waktu: "10:45 - 12:15", mapel: "Kimia Larutan & Stoikiometri", guru: "Apriyani, S.Si., M.M.Pd.", ruang: "Lab Kimia", tipe: "KBM" },
+          { jamKe: "7 - 8", waktu: "13:00 - 14:30", mapel: "Matematika Umum", guru: "Marsono, S.Pd.", ruang: "R.11 MIPA 1", tipe: "KBM" },
+        ],
+      },
+      {
+        hari: "Rabu",
+        totalJp: "8 Jam Pelajaran",
+        slots: [
+          { jamKe: "1 - 2", waktu: "07:15 - 08:45", mapel: "Fisika Gelombang & Optik", guru: "Wida Awanda, S.Pd.Si.", ruang: "R.11 MIPA 1", tipe: "KBM" },
+          { jamKe: "3 - 4", waktu: "08:45 - 10:15", mapel: "Bahasa Inggris Tingkat Lanjut", guru: "Tim Rumpun Bahasa", ruang: "Lab Bahasa", tipe: "KBM" },
+          { jamKe: "-", waktu: "10:15 - 10:45", mapel: "Istirahat Pagi", guru: "-", ruang: "Area Sekolah", tipe: "ISTIRAHAT" },
+          { jamKe: "5 - 6", waktu: "10:45 - 12:15", mapel: "Pendidikan Pancasila & Kewarganegaraan", guru: "Tim Rumpun Sosial", ruang: "R.11 MIPA 1", tipe: "KBM" },
+          { jamKe: "7 - 8", waktu: "13:00 - 14:30", mapel: "Sejarah Indonesia", guru: "Tim Rumpun Sejarah", ruang: "R.11 MIPA 1", tipe: "KBM" },
+        ],
+      },
+      {
+        hari: "Kamis",
+        totalJp: "8 Jam Pelajaran",
+        slots: [
+          { jamKe: "1 - 2", waktu: "07:15 - 08:45", mapel: "Biologi Sistem Organ & Metabolisme", guru: "Tumijo, S.Pd.", ruang: "Lab Biologi", tipe: "KBM" },
+          { jamKe: "3 - 4", waktu: "08:45 - 10:15", mapel: "Prakarya & Kewirausahaan", guru: "Meiliana, S.Pd.", ruang: "R.11 MIPA 1", tipe: "KBM" },
+          { jamKe: "-", waktu: "10:15 - 10:45", mapel: "Istirahat Pagi", guru: "-", ruang: "Area Sekolah", tipe: "ISTIRAHAT" },
+          { jamKe: "5 - 6", waktu: "10:45 - 12:15", mapel: "Seni Budaya & Kriya Lampung", guru: "Marlita Illiansyah, S.Pd.", ruang: "Ruang Seni Kriya", tipe: "KBM" },
+          { jamKe: "7 - 8", waktu: "13:00 - 14:30", mapel: "Projek Penguatan Profil Pelajar Pancasila (P5)", guru: "Marsono, S.Pd.", ruang: "R.11 MIPA 1", tipe: "KBM" },
+        ],
+      },
+      {
+        hari: "Jumat",
+        totalJp: "5 Jam Pelajaran",
+        slots: [
+          { jamKe: "0", waktu: "07:15 - 08:00", mapel: "Jumat Rohani & Gerakan Sekolah ASRI", guru: "Mamad Fhadoli, S.Pd.I.", ruang: "Lapangan Utama", tipe: "KHUSUS" },
+          { jamKe: "1 - 3", waktu: "08:00 - 10:15", mapel: "Pendidikan Jasmani, Olahraga & Kesehatan", guru: "Tim Olahraga Sekolah", ruang: "Lapangan Olahraga", tipe: "KBM" },
+          { jamKe: "4 - 5", waktu: "10:15 - 11:30", mapel: "Bimbingan Konseling & Literasi ANBK", guru: "Marsono, S.Pd.", ruang: "R.11 MIPA 1", tipe: "KBM" },
         ],
       },
     ],
   },
   "X MERDEKA 1": {
     namaKelas: "Kelas X Merdeka 1",
-    waliKelas: "Marlita Illiansyah, S.Pd.",
-    ruangHomebase: "Gedung C - Ruang R.10 Merdeka 1",
-    jumlahSiswa: 34,
-    peminatan: "Fase E - Kurikulum Merdeka Umum",
     jadwal: [
       {
         hari: "Senin",
@@ -553,10 +556,51 @@ const DAFTAR_KELAS_INFO: Record<
         slots: [
           { jamKe: "0", waktu: "07:15 - 08:00", mapel: "Upacara Bendera & Pembinaan Karakter", guru: "Seluruh Dewan Guru", ruang: "Lapangan Utama", tipe: "KHUSUS" },
           { jamKe: "1 - 2", waktu: "08:00 - 09:30", mapel: "Bahasa dan Sastra Indonesia", guru: "Marlita Illiansyah, S.Pd.", ruang: "R.10 Merdeka 1", tipe: "KBM" },
-          { jamKe: "3 - 4", waktu: "09:30 - 11:00", mapel: "IPA Terpadu (Biologi, Fisika, Kimia)", guru: "Tumijo, S.Pd. & Wida Awanda, S.Pd.Si.", ruang: "Lab IPA", tipe: "KBM" },
+          { jamKe: "3 - 4", waktu: "09:30 - 11:00", mapel: "IPA Terpadu: Biologi & Ekosistem", guru: "Tumijo, S.Pd.", ruang: "Lab Biologi", tipe: "KBM" },
           { jamKe: "-", waktu: "11:00 - 11:30", mapel: "Istirahat Pagi", guru: "-", ruang: "Area Sekolah", tipe: "ISTIRAHAT" },
-          { jamKe: "5 - 6", waktu: "11:30 - 13:00", mapel: "IPS Terpadu (Geografi & Ekonomi)", guru: "Eva Dwi Kurniawati, S.Pd. & Meiliana, S.Pd.", ruang: "R.10 Merdeka 1", tipe: "KBM" },
+          { jamKe: "5 - 6", waktu: "11:30 - 13:00", mapel: "IPS Terpadu: Geografi Dasar", guru: "Eva Dwi Kurniawati, S.Pd.", ruang: "R.10 Merdeka 1", tipe: "KBM" },
           { jamKe: "7 - 8", waktu: "13:30 - 15:00", mapel: "Matematika Fase E", guru: "Marsono, S.Pd.", ruang: "R.10 Merdeka 1", tipe: "KBM" },
+        ],
+      },
+      {
+        hari: "Selasa",
+        totalJp: "8 Jam Pelajaran",
+        slots: [
+          { jamKe: "1 - 2", waktu: "07:15 - 08:45", mapel: "IPA Terpadu: Fisika & Pengukuran", guru: "Wida Awanda, S.Pd.Si.", ruang: "Lab Fisika", tipe: "KBM" },
+          { jamKe: "3 - 4", waktu: "08:45 - 10:15", mapel: "IPS Terpadu: Pengantar Ekonomi", guru: "Meiliana, S.Pd.", ruang: "R.10 Merdeka 1", tipe: "KBM" },
+          { jamKe: "-", waktu: "10:15 - 10:45", mapel: "Istirahat Pagi", guru: "-", ruang: "Area Sekolah", tipe: "ISTIRAHAT" },
+          { jamKe: "5 - 6", waktu: "10:45 - 12:15", mapel: "Pendidikan Agama Islam & Budi Pekerti", guru: "Mamad Fhadoli, S.Pd.I.", ruang: "R.10 Merdeka 1", tipe: "KBM" },
+          { jamKe: "7 - 8", waktu: "13:00 - 14:30", mapel: "Bahasa Inggris Fase E", guru: "Tim Rumpun Bahasa", ruang: "Lab Bahasa", tipe: "KBM" },
+        ],
+      },
+      {
+        hari: "Rabu",
+        totalJp: "8 Jam Pelajaran",
+        slots: [
+          { jamKe: "1 - 2", waktu: "07:15 - 08:45", mapel: "IPA Terpadu: Kimia Dasar & Struktur Atom", guru: "Apriyani, S.Si., M.M.Pd.", ruang: "Lab Kimia", tipe: "KBM" },
+          { jamKe: "3 - 4", waktu: "08:45 - 10:15", mapel: "Pendidikan Pancasila & Kewarganegaraan", guru: "Tim Rumpun Sosial", ruang: "R.10 Merdeka 1", tipe: "KBM" },
+          { jamKe: "-", waktu: "10:15 - 10:45", mapel: "Istirahat Pagi", guru: "-", ruang: "Area Sekolah", tipe: "ISTIRAHAT" },
+          { jamKe: "5 - 6", waktu: "10:45 - 12:15", mapel: "Informatika & Berpikir Komputasional", guru: "Tim Lab Komputer", ruang: "Lab Komputer CBT 1", tipe: "KBM" },
+          { jamKe: "7 - 8", waktu: "13:00 - 14:30", mapel: "Sejarah Indonesia", guru: "Tim Rumpun Sejarah", ruang: "R.10 Merdeka 1", tipe: "KBM" },
+        ],
+      },
+      {
+        hari: "Kamis",
+        totalJp: "8 Jam Pelajaran",
+        slots: [
+          { jamKe: "1 - 2", waktu: "07:15 - 08:45", mapel: "Matematika Fase E (Aljabar & Fungsi)", guru: "Marsono, S.Pd.", ruang: "R.10 Merdeka 1", tipe: "KBM" },
+          { jamKe: "3 - 4", waktu: "08:45 - 10:15", mapel: "Seni Budaya & Kriya Lampung", guru: "Marlita Illiansyah, S.Pd.", ruang: "Ruang Seni Kriya", tipe: "KBM" },
+          { jamKe: "-", waktu: "10:15 - 10:45", mapel: "Istirahat Pagi", guru: "-", ruang: "Area Sekolah", tipe: "ISTIRAHAT" },
+          { jamKe: "5 - 8", waktu: "10:45 - 14:30", mapel: "Projek Penguatan Profil Pelajar Pancasila (P5)", guru: "Marlita Illiansyah, S.Pd.", ruang: "R.10 Merdeka 1", tipe: "KBM" },
+        ],
+      },
+      {
+        hari: "Jumat",
+        totalJp: "5 Jam Pelajaran",
+        slots: [
+          { jamKe: "0", waktu: "07:15 - 08:00", mapel: "Jumat Rohani & Gerakan Sekolah ASRI", guru: "Mamad Fhadoli, S.Pd.I.", ruang: "Lapangan Utama", tipe: "KHUSUS" },
+          { jamKe: "1 - 3", waktu: "08:00 - 10:15", mapel: "Pendidikan Jasmani, Olahraga & Kesehatan", guru: "Tim Olahraga Sekolah", ruang: "Lapangan Olahraga", tipe: "KBM" },
+          { jamKe: "4 - 5", waktu: "10:15 - 11:30", mapel: "Bimbingan Konseling & Pemetaan Minat Fase F", guru: "Marlita Illiansyah, S.Pd.", ruang: "R.10 Merdeka 1", tipe: "KBM" },
         ],
       },
     ],
@@ -722,9 +766,8 @@ function AkademikContent() {
   // State Filter Kalender Akademik
   const [filterSemester, setFilterSemester] = useState<"SEMUA" | "GANJIL" | "GENAP">("SEMUA");
 
-  // State Filter Jadwal Pelajaran
+  // State Filter Jadwal Pelajaran (1 Kelas = Otomatis Tampil 1 Minggu Penuh Senin - Jumat)
   const [selectedKelas, setSelectedKelas] = useState<string>("XII MIPA 1");
-  const [selectedHari, setSelectedHari] = useState<string>("SEMUA");
   const [searchJadwal, setSearchJadwal] = useState<string>("");
 
   // State Filter Jadwal Ujian
@@ -743,10 +786,9 @@ function AkademikContent() {
     filterSemester === "SEMUA" ? true : b.semester === filterSemester
   );
 
-  // Filter Jadwal Pelajaran
+  // Filter Jadwal Pelajaran (Seluruh 1 minggu Senin - Jumat untuk kelas terpilih)
   const currentKelasData = DAFTAR_KELAS_INFO[selectedKelas] || DAFTAR_KELAS_INFO["XII MIPA 1"];
   const filteredHariJadwal = currentKelasData.jadwal
-    .filter((h) => (selectedHari === "SEMUA" ? true : h.hari === selectedHari))
     .map((h) => ({
       ...h,
       slots: h.slots.filter((s) => {
@@ -755,7 +797,8 @@ function AkademikContent() {
         return (
           s.mapel.toLowerCase().includes(q) ||
           s.guru.toLowerCase().includes(q) ||
-          s.ruang.toLowerCase().includes(q)
+          s.ruang.toLowerCase().includes(q) ||
+          h.hari.toLowerCase().includes(q)
         );
       }),
     }))
@@ -820,7 +863,7 @@ function AkademikContent() {
           Struktur Akademik & Kurikulum Merdeka
         </h1>
         <p className="text-xs sm:text-sm text-gray-600 max-w-3xl leading-relaxed">
-          SMAN 2 Buay Bahuga menyelenggarakan Kurikulum Merdeka berorientasi kemandirian sains, jadwal pelajaran terstruktur untuk 29 rombongan belajar, kalender pendidikan bulanan, dan evaluasi ujian terpadu.
+          SMAN 2 Buay Bahuga menyelenggarakan Kurikulum Merdeka berorientasi kemandirian sains, jadwal pelajaran mingguan terstruktur, kalender pendidikan bulanan, dan evaluasi ujian terpadu.
         </p>
 
         {/* Sub-Navigation Tabs: Rapi dan pas penuh di dalam kotak baik di Mobile maupun Desktop */}
@@ -886,48 +929,6 @@ function AkademikContent() {
                   {sem.label}
                 </button>
               ))}
-            </div>
-          </div>
-
-          {/* Ringkasan Hari Efektif & Legenda Kategori */}
-          <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 shadow-2xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs flex-1">
-              <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-100">
-                <span className="text-gray-500 block text-[11px]">Semester Ganjil</span>
-                <span className="font-extrabold text-sm text-[#2A2C5E]">132 Hari Efektif</span>
-              </div>
-              <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-100">
-                <span className="text-gray-500 block text-[11px]">Semester Genap</span>
-                <span className="font-extrabold text-sm text-[#2A2C5E]">119 Hari Efektif</span>
-              </div>
-              <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-100">
-                <span className="text-gray-500 block text-[11px]">Pekan Evaluasi / Ujian</span>
-                <span className="font-extrabold text-sm text-amber-700">6 Pekan Terjadwal</span>
-              </div>
-              <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-100">
-                <span className="text-gray-500 block text-[11px]">Rombongan Belajar</span>
-                <span className="font-extrabold text-sm text-emerald-700">29 Rombel Aktif</span>
-              </div>
-            </div>
-
-            {/* Legenda Warna */}
-            <div className="flex flex-wrap items-center gap-3 text-[11px] font-medium text-gray-600 pt-2 lg:pt-0 border-t lg:border-t-0 border-gray-100">
-              <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#2A2C5E]" />
-                Akademik & KBM
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                Asesmen & Ujian
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
-                Kesiswaan & PHBN
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-                Libur Resmi
-              </span>
             </div>
           </div>
 
@@ -999,50 +1000,11 @@ function AkademikContent() {
               </div>
             ))}
           </div>
-
-          {/* Program Jurusan / Konsentrasi Kurikulum Merdeka */}
-          <div className="space-y-4 pt-6 border-t border-gray-200">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#2A2C5E] text-white flex items-center justify-center">
-                <GraduationCap className="w-4 h-4" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">Konsentrasi Program Peminatan</h2>
-                <p className="text-xs text-gray-500">Fase E (Kelas X) & Fase F (Kelas XI - XII) Kurikulum Merdeka</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-5 sm:p-6 rounded-xl border border-gray-200 shadow-2xs space-y-2.5">
-                <span className="text-xs font-semibold text-[#2A2C5E] bg-blue-50 px-2.5 py-1 rounded inline-block">
-                  Program Sains (MIPA)
-                </span>
-                <h3 className="text-base font-bold text-gray-900">
-                  Matematika dan Ilmu Pengetahuan Alam
-                </h3>
-                <p className="text-xs text-gray-600 leading-relaxed">
-                  Fokus penguatan Biologi, Fisika, Kimia, dan Matematika Tingkat Lanjut didukung praktikum di 9 unit laboratorium sekolah untuk persiapan seleksi masuk PTN (SNBP/SNBT).
-                </p>
-              </div>
-
-              <div className="bg-white p-5 sm:p-6 rounded-xl border border-gray-200 shadow-2xs space-y-2.5">
-                <span className="text-xs font-semibold text-amber-700 bg-amber-50 px-2.5 py-1 rounded inline-block">
-                  Program Sosial & Humaniora (IPS)
-                </span>
-                <h3 className="text-base font-bold text-gray-900">
-                  Ilmu Pengetahuan Sosial & Ekonomi
-                </h3>
-                <p className="text-xs text-gray-600 leading-relaxed">
-                  Membangun kompetensi Geografi, Ekonomi & Kewirausahaan, Sosiologi, serta Sejarah untuk menyiapkan lulusan yang kritis, analitis, dan siap bersaing di perguruan tinggi maupun dunia usaha.
-                </p>
-              </div>
-            </div>
-          </div>
         </section>
       )}
 
       {/* =====================================================================
-          TAB 2: JADWAL PELAJARAN (FILTER KELAS, HARI, CARI & TABEL PER HARI)
+          TAB 2: JADWAL PELAJARAN (1 KELAS MENCAKUP 1 MINGGU PENUH SENIN - JUMAT)
          ===================================================================== */}
       {activeTab === "JADWAL_PELAJARAN" && (
         <section className="space-y-6">
@@ -1052,58 +1014,38 @@ function AkademikContent() {
             </div>
             <div>
               <h2 className="text-xl font-bold text-gray-900">
-                Jadwal Pelajaran Reguler Per Rombongan Belajar
+                Jadwal Pelajaran Mingguan (Senin &ndash; Jumat)
               </h2>
               <p className="text-xs text-gray-500">
-                Pilih kelas, filter hari, atau cari mata pelajaran dan nama guru pengampu
+                Pilih kelas untuk melihat jadwal pelajaran lengkap selama 1 minggu penuh
               </p>
             </div>
           </div>
 
-          {/* Panel Filter Kelas, Filter Hari, dan Pencarian */}
-          <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 shadow-2xs space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          {/* Panel Filter Kelas dan Pencarian (Tanpa Filter Hari & Tanpa Banner Wali Kelas) */}
+          <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 shadow-2xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               {/* Dropdown Pilih Kelas */}
               <div className="space-y-1">
                 <label className="text-[11px] font-bold text-gray-700 flex items-center gap-1.5">
                   <Filter className="w-3.5 h-3.5 text-[#2A2C5E]" />
-                  <span>Pilih Rombongan Belajar / Kelas</span>
+                  <span>Pilih Kelas</span>
                 </label>
                 <select
                   value={selectedKelas}
                   onChange={(e) => setSelectedKelas(e.target.value)}
                   className="w-full px-3 py-2 text-xs font-bold text-[#2A2C5E] bg-blue-50/50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E] cursor-pointer"
                 >
-                  <option value="XII MIPA 1">Kelas XII MIPA 1 (Wali: Tumijo, S.Pd.)</option>
-                  <option value="XII MIPA 2">Kelas XII MIPA 2 (Wali: Wida Awanda, S.Pd.Si.)</option>
-                  <option value="XII IPS 1">Kelas XII IPS 1 (Wali: Eva Dwi Kurniawati, S.Pd.)</option>
-                  <option value="XI MIPA 1">Kelas XI MIPA 1 (Wali: Marsono, S.Pd.)</option>
-                  <option value="X MERDEKA 1">Kelas X Merdeka 1 (Wali: Marlita Illiansyah, S.Pd.)</option>
-                </select>
-              </div>
-
-              {/* Dropdown / Pilihan Hari */}
-              <div className="space-y-1">
-                <label className="text-[11px] font-bold text-gray-700 flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-[#2A2C5E]" />
-                  <span>Filter Hari KBM</span>
-                </label>
-                <select
-                  value={selectedHari}
-                  onChange={(e) => setSelectedHari(e.target.value)}
-                  className="w-full px-3 py-2 text-xs font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E] cursor-pointer"
-                >
-                  <option value="SEMUA">Semua Hari (Senin - Jumat)</option>
-                  <option value="Senin">Hari Senin</option>
-                  <option value="Selasa">Hari Selasa</option>
-                  <option value="Rabu">Hari Rabu</option>
-                  <option value="Kamis">Hari Kamis</option>
-                  <option value="Jumat">Hari Jumat</option>
+                  <option value="XII MIPA 1">Kelas XII MIPA 1</option>
+                  <option value="XII MIPA 2">Kelas XII MIPA 2</option>
+                  <option value="XII IPS 1">Kelas XII IPS 1</option>
+                  <option value="XI MIPA 1">Kelas XI MIPA 1</option>
+                  <option value="X MERDEKA 1">Kelas X Merdeka 1</option>
                 </select>
               </div>
 
               {/* Input Cari Mapel / Guru */}
-              <div className="space-y-1 sm:col-span-2 lg:col-span-1">
+              <div className="space-y-1">
                 <label className="text-[11px] font-bold text-gray-700 flex items-center gap-1.5">
                   <Search className="w-3.5 h-3.5 text-[#2A2C5E]" />
                   <span>Cari Mata Pelajaran / Nama Guru</span>
@@ -1114,36 +1056,15 @@ function AkademikContent() {
                     type="text"
                     value={searchJadwal}
                     onChange={(e) => setSearchJadwal(e.target.value)}
-                    placeholder="Ketik mapel (mis. Biologi) atau nama guru..."
+                    placeholder="Ketik mata pelajaran atau nama guru..."
                     className="w-full pl-8 pr-3 py-2 text-xs bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
                   />
                 </div>
               </div>
             </div>
-
-            {/* Banner Info Kelas yang Sedang Ditampilkan */}
-            <div className="pt-3 border-t border-gray-100 flex flex-wrap items-center justify-between gap-3 text-xs">
-              <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-                <span className="inline-flex items-center gap-1.5 font-extrabold text-white bg-[#2A2C5E] px-3 py-1 rounded-md">
-                  <Layers className="w-3.5 h-3.5" />
-                  {currentKelasData.namaKelas}
-                </span>
-                <span className="text-gray-600 flex items-center gap-1">
-                  <UserCheck className="w-3.5 h-3.5 text-[#2A2C5E]" />
-                  Wali Kelas: <strong className="text-gray-900">{currentKelasData.waliKelas}</strong>
-                </span>
-                <span className="text-gray-600 flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-[#2A2C5E]" />
-                  Ruang: <strong className="text-gray-900">{currentKelasData.ruangHomebase}</strong>
-                </span>
-              </div>
-              <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded">
-                {currentKelasData.jumlahSiswa} Peserta Didik &bull; {currentKelasData.peminatan}
-              </span>
-            </div>
           </div>
 
-          {/* Daftar Tabel Jadwal Per Hari */}
+          {/* Daftar Tabel Jadwal 1 Minggu Penuh (Senin s.d. Jumat) */}
           {filteredHariJadwal.length === 0 ? (
             <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-xs text-gray-500">
               Tidak ditemukan jadwal mata pelajaran atau guru yang sesuai dengan kata kunci pencarian.
@@ -1253,8 +1174,8 @@ function AkademikContent() {
             </div>
           </div>
 
-          {/* Filter Jenis Ujian, Filter Tingkat Kelas, & Pencarian */}
-          <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 shadow-2xs space-y-4">
+          {/* Filter Jenis Ujian, Filter Tingkat Kelas, & Pencarian (Tanpa Kotak Moda/Peserta/Panitia) */}
+          <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 shadow-2xs">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
               {/* Pilih Jenis Ujian */}
               <div className="space-y-1">
@@ -1288,7 +1209,7 @@ function AkademikContent() {
                   onChange={(e) => setSelectedTingkatUjian(e.target.value)}
                   className="w-full px-3 py-2 text-xs font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E] cursor-pointer"
                 >
-                  <option value="SEMUA">Semua Tingkat & Peminatan (983 Siswa)</option>
+                  <option value="SEMUA">Semua Tingkat & Peminatan</option>
                   <option value="XII_MIPA">Peminatan MIPA (Sains)</option>
                   <option value="XII_IPS">Peminatan IPS (Sosial)</option>
                 </select>
@@ -1309,31 +1230,6 @@ function AkademikContent() {
                     placeholder="Ketik mata ujian atau hari..."
                     className="w-full pl-8 pr-3 py-2 text-xs bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
                   />
-                </div>
-              </div>
-            </div>
-
-            {/* Info Ringkas Pelaksanaan Ujian */}
-            <div className="pt-3 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-              <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-gray-50 border border-gray-100">
-                <Laptop className="w-4 h-4 text-[#2A2C5E] shrink-0" />
-                <div>
-                  <span className="text-[11px] text-gray-500 block">Moda Pelaksanaan</span>
-                  <span className="font-bold text-gray-900">Computer Based Test (CBT) Terpadu</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-gray-50 border border-gray-100">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <div>
-                  <span className="text-[11px] text-gray-500 block">Peserta Terdaftar</span>
-                  <span className="font-bold text-gray-900">983 Siswa (29 Rombongan Belajar)</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-gray-50 border border-gray-100">
-                <UserCheck className="w-4 h-4 text-[#2A2C5E] shrink-0" />
-                <div>
-                  <span className="text-[11px] text-gray-500 block">Ketua Panitia Akademik</span>
-                  <span className="font-bold text-gray-900">Marsono, S.Pd. (Waka Kurikulum)</span>
                 </div>
               </div>
             </div>

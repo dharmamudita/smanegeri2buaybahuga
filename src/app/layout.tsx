@@ -13,13 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SMAN 2 Buay Bahuga | Smart School & LMS Terintegrasi",
+  title: "SMAN 2 Buay Bahuga | Smart School & Portal Pembelajaran Terpadu",
   description:
-    "Portal Resmi dan Learning Management System (LMS) SMA Negeri 2 Buay Bahuga, Kabupaten Way Kanan, Provinsi Lampung. Dilengkapi presensi geofencing dan ujian terproteksi.",
+    "Portal Resmi dan Sistem Pembelajaran Digital Terpadu SMA Negeri 2 Buay Bahuga, Kabupaten Way Kanan, Provinsi Lampung. Mendukung Kurikulum Merdeka, Presensi Harian, dan Evaluasi Akademik Terstruktur.",
   keywords: [
     "SMAN 2 Buay Bahuga",
     "Smart School",
-    "LMS Sekolah",
+    "Kurikulum Merdeka",
     "Way Kanan",
     "Lampung",
     "PPDB SMAN 2 Buay Bahuga",

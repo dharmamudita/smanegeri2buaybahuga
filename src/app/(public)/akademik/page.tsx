@@ -1092,16 +1092,16 @@ function AkademikContent() {
                     </span>
                   </div>
 
-                  {/* Tabel Jadwal Pelajaran Hari Ini */}
+                  {/* Tabel Jadwal Pelajaran Hari Ini (table-fixed agar setiap kolom sejajar lurus vertikal antar-hari) */}
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full min-w-[700px] table-fixed text-left border-collapse">
                       <thead>
                         <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
-                          <th className="py-2.5 px-4 w-24">Jam Ke</th>
-                          <th className="py-2.5 px-4 w-36">Waktu (WIB)</th>
-                          <th className="py-2.5 px-4">Mata Pelajaran / Kegiatan</th>
-                          <th className="py-2.5 px-4">Guru Pengampu</th>
-                          <th className="py-2.5 px-4 w-44">Ruang / Lokasi</th>
+                          <th className="py-2.5 px-4 w-[12%]">Jam Ke</th>
+                          <th className="py-2.5 px-4 w-[18%]">Waktu (WIB)</th>
+                          <th className="py-2.5 px-4 w-[34%]">Mata Pelajaran / Kegiatan</th>
+                          <th className="py-2.5 px-4 w-[18%]">Guru Pengampu</th>
+                          <th className="py-2.5 px-4 w-[18%]">Ruang / Lokasi</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 text-xs">
@@ -1137,7 +1137,7 @@ function AkademikContent() {
                               <td className="py-3 px-4 text-gray-700 font-medium">
                                 {slot.guru}
                               </td>
-                              <td className="py-3 px-4 whitespace-nowrap">
+                              <td className="py-3 px-4">
                                 <span className="inline-flex items-center gap-1 text-[11px] font-medium text-gray-600 bg-gray-100 px-2.5 py-0.5 rounded">
                                   {slot.ruang}
                                 </span>
@@ -1254,15 +1254,15 @@ function AkademikContent() {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full min-w-[760px] table-fixed text-left border-collapse">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
-                    <th className="py-3 px-4">Hari & Tanggal</th>
-                    <th className="py-3 px-4">Sesi & Waktu</th>
-                    <th className="py-3 px-4">Mata Pelajaran Ujian</th>
-                    <th className="py-3 px-4">Peserta / Peminatan</th>
-                    <th className="py-3 px-4">Ruang & Moda</th>
-                    <th className="py-3 px-4">Koordinator Soal</th>
+                    <th className="py-3 px-4 w-[17%]">Hari & Tanggal</th>
+                    <th className="py-3 px-4 w-[14%]">Sesi & Waktu</th>
+                    <th className="py-3 px-4 w-[24%]">Mata Pelajaran Ujian</th>
+                    <th className="py-3 px-4 w-[16%]">Peserta / Peminatan</th>
+                    <th className="py-3 px-4 w-[14%]">Ruang & Moda</th>
+                    <th className="py-3 px-4 w-[15%]">Koordinator Soal</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 text-xs">

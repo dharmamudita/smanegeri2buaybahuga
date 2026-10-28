@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   GraduationCap,
   Award,
@@ -18,15 +17,12 @@ import {
   Building2,
   Lock,
   Play,
-  Video,
-  Clock,
   ExternalLink,
-  X,
 } from "lucide-react";
 import { SCHOOL_INFO } from "@/lib/constants";
 import { useBeritaStore } from "@/lib/store";
 import { useCMSStore } from "@/lib/cmsStore";
-import { formatYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
+import YouTubePlayerCard from "@/components/common/YouTubePlayerCard";
 
 const VIDEO_PANDUAN_LIST = [
   {
@@ -124,26 +120,6 @@ export default function HomePage() {
   const beritaTerbaru = beritaList.slice(0, 3);
   const [bannerTrackIdx, setBannerTrackIdx] = useState<number>(1);
   const [isBannerTransitioning, setIsBannerTransitioning] = useState<boolean>(true);
-  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
-  const pathname = usePathname();
-
-  // 1. Otomatis jeda / pause video saat pengguna berpindah ke halaman lain di website
-  useEffect(() => {
-    setPlayingVideoId(null);
-  }, [pathname]);
-
-  // 2. Otomatis jeda / pause video saat pengguna berpindah tab peramban atau meminimize jendela
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        setPlayingVideoId(null);
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
 
   useEffect(() => {
     fetchFromSupabase();
@@ -522,126 +498,20 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-          {beranda.videoPanduan.map((vid, idx) => {
-            const isPlaying = playingVideoId === vid.id;
-            const embedUrl = formatYouTubeEmbedUrl(vid.youtubeUrl, true);
-            const thumbnail = (vid as any).thumbnailUrl || getYouTubeThumbnailUrl(vid.youtubeUrl);
-            return (
-              <div
-                key={vid.id}
-                className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between h-full"
-              >
-                <div className="flex flex-col">
-                  {/* Layar Video 16:9 */}
-                  <div className="relative aspect-video w-full bg-gray-900 overflow-hidden shrink-0">
-                    {isPlaying ? (
-                      <div className="relative w-full h-full">
-                        <iframe
-                          src={embedUrl}
-                          title={vid.judul}
-                          className="w-full h-full border-0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          referrerPolicy="strict-origin-when-cross-origin"
-                          allowFullScreen
-                        />
-                        {/* Tombol Tutup / Jeda Video */}
-                        <button
-                          onClick={() => setPlayingVideoId(null)}
-                          className="absolute top-2 right-2 z-20 px-2.5 py-1 bg-black/75 hover:bg-black text-white text-[10px] font-semibold rounded-lg backdrop-blur-xs flex items-center gap-1 transition-all cursor-pointer shadow-md"
-                          title="Jeda dan tutup pemutar video"
-                        >
-                          <X className="w-3 h-3 text-red-300" />
-                          <span>Jeda Video</span>
-                        </button>
-                      </div>
-                    ) : (
-                      <div
-                        onClick={() => setPlayingVideoId(vid.id)}
-                        className="group relative w-full h-full cursor-pointer"
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={thumbnail}
-                          alt={vid.judul}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-gray-950/75 via-gray-900/20 to-transparent" />
-
-                        {/* Badge Kategori & Durasi */}
-                        <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
-                          <span className="inline-flex items-center gap-1 bg-[#2A2C5E] text-white text-[11px] font-semibold px-2.5 py-0.5 rounded shadow-xs">
-                            <Video className="w-3 h-3" />
-                            <span>{vid.kategori}</span>
-                          </span>
-                          <span className="inline-flex items-center gap-1 bg-black/65 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded">
-                            <Clock className="w-2.5 h-2.5" />
-                            <span>{vid.durasi}</span>
-                          </span>
-                        </div>
-
-                        {/* Tombol Play di Tengah */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-12 h-12 rounded-xl bg-[#2A2C5E]/90 group-hover:bg-[#2A2C5E] backdrop-blur-md border border-white/40 text-white shadow-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110">
-                            <Play className="w-5 h-5 fill-white ml-0.5" />
-                          </div>
-                        </div>
-
-                        {/* Keterangan di Bawah Layar */}
-                        <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white/90 text-[11px] font-medium">
-                          <span>Klik untuk memutar</span>
-                          <span className="text-[10px] bg-white/20 backdrop-blur-xs px-2 py-0.2 rounded">
-                            HD 1080p
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Keterangan Video */}
-                  <div className="p-5 flex flex-col">
-                    <div className="text-[11px] text-gray-400 h-5 flex items-center">
-                      <span>{(vid as any).tanggal || vid.highlight}</span>
-                    </div>
-                    <div className="mt-2 min-h-[2.85rem] flex items-start">
-                      <h3 className="text-base font-bold text-gray-900 leading-snug line-clamp-2">
-                        {vid.judul}
-                      </h3>
-                    </div>
-                    <div className="mt-2 min-h-[3.75rem] flex items-start">
-                      <p className="text-xs text-gray-600 line-clamp-3 leading-relaxed">
-                        {vid.ringkasan}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Footer Kartu Video */}
-                <div className="px-5 pb-5 pt-3 border-t border-gray-100 flex items-center justify-between">
-                  {isPlaying ? (
-                    <button
-                      type="button"
-                      onClick={() => setPlayingVideoId(null)}
-                      className="text-xs font-semibold text-rose-600 hover:text-rose-700 cursor-pointer"
-                    >
-                      Tutup Pemutar
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => setPlayingVideoId(vid.id)}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#2A2C5E] hover:underline cursor-pointer"
-                    >
-                      <Play className="w-3.5 h-3.5 fill-[#2A2C5E]" />
-                      <span>Putar Video Panduan</span>
-                    </button>
-                  )}
-                  <span className="text-[11px] text-gray-400 font-medium">
-                    Video 0{idx + 1}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+          {beranda.videoPanduan.map((vid) => (
+            <YouTubePlayerCard
+              key={vid.id}
+              id={vid.id}
+              youtubeUrl={vid.youtubeUrl}
+              judul={vid.judul}
+              kategori={vid.kategori}
+              durasi={vid.durasi}
+              ringkasan={vid.ringkasan}
+              thumbnailUrl={(vid as any).thumbnailUrl}
+              highlight={vid.highlight}
+              poinPanduan={(vid as any).poinPanduan}
+            />
+          ))}
         </div>
       </section>
 

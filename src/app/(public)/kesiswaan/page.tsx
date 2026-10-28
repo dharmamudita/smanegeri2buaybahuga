@@ -26,6 +26,206 @@ import {
 
 type KesiswaanTab = "TATA_TERTIB" | "PRESTASI" | "OSIS" | "EKSTRAKURIKULER";
 
+function EkskulLogo({ id, size = "md" }: { id: string; size?: "sm" | "md" | "lg" }) {
+  const sizeClass =
+    size === "lg" ? "w-16 h-16" : size === "sm" ? "w-10 h-10" : "w-14 h-14";
+
+  switch (id) {
+    case "pramuka":
+      return (
+        <div
+          className={`${sizeClass} rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center p-1.5 shrink-0 shadow-2xs`}
+          title="Logo Gerakan Pramuka"
+        >
+          <svg viewBox="0 0 64 64" className="w-full h-full" fill="none">
+            {/* Segilima Khas Pramuka */}
+            <path
+              d="M32 4L58 22L48 56H16L6 22L32 4Z"
+              fill="#6B3E1B"
+              stroke="#D97706"
+              strokeWidth="3"
+            />
+            <path
+              d="M32 9L53 23.5L45 51H19L11 23.5L32 9Z"
+              fill="#FEF3C7"
+            />
+            {/* Bintang Ketuhanan */}
+            <polygon
+              points="32,12 33.6,15.5 37.5,16 34.6,18.7 35.4,22.5 32,20.5 28.6,22.5 29.4,18.7 26.5,16 30.4,15.5"
+              fill="#D97706"
+            />
+            {/* Siluet Tunas Kelapa */}
+            <path
+              d="M32 23C27 27 25 32 28 37C25 35 22 36 21 39C25 39 28 40 30 43H34C36 40 39 39 43 39C42 36 39 35 36 37C39 32 37 27 32 23Z"
+              fill="#6B3E1B"
+            />
+            <ellipse cx="32" cy="44.5" rx="6.5" ry="3.5" fill="#6B3E1B" />
+            <path d="M27 48.5H37" stroke="#D97706" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </div>
+      );
+
+    case "paskibra":
+      return (
+        <div
+          className={`${sizeClass} rounded-xl bg-red-50 border border-red-200 flex items-center justify-center p-1.5 shrink-0 shadow-2xs`}
+          title="Logo Paskibra"
+        >
+          <svg viewBox="0 0 64 64" className="w-full h-full" fill="none">
+            {/* Perisai Paskibra */}
+            <path
+              d="M10 10H54V32C54 46 32 58 32 58C32 58 10 46 10 32V10Z"
+              fill="#991B1B"
+              stroke="#F59E0B"
+              strokeWidth="3"
+            />
+            {/* Bendera Merah Putih */}
+            <path d="M16 16H48V26H16V16Z" fill="#EF4444" />
+            <path d="M16 26H48V36H16V26Z" fill="#FFFFFF" />
+            {/* Kelopak Teratai Paskibra Emas */}
+            <circle cx="32" cy="26" r="7" fill="#F59E0B" stroke="#991B1B" strokeWidth="1.5" />
+            <polygon
+              points="32,20.5 33.5,24 37.2,24.4 34.4,26.8 35.2,30.5 32,28.5 28.8,30.5 29.6,26.8 26.8,24.4 30.5,24"
+              fill="#FFFBEB"
+            />
+            <path
+              d="M22 43C25 46 39 46 42 43"
+              stroke="#FCD34D"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
+      );
+
+    case "fls2n":
+      return (
+        <div
+          className={`${sizeClass} rounded-xl bg-amber-50/90 border border-amber-300 flex items-center justify-center p-1.5 shrink-0 shadow-2xs`}
+          title="Logo Sanggar Seni & Budaya Lampung (FLS2N)"
+        >
+          <svg viewBox="0 0 64 64" className="w-full h-full" fill="none">
+            <circle cx="32" cy="32" r="27" fill="#7C2D12" stroke="#F59E0B" strokeWidth="3" />
+            <circle cx="32" cy="32" r="22" fill="#FFFBEB" />
+            {/* Mahkota Siger Lampung 9 Lekuk Emas */}
+            <path
+              d="M14 38L17 28L21 33L24 23L28 30L32 18L36 30L40 23L43 33L47 28L50 38H14Z"
+              fill="#D97706"
+              stroke="#7C2D12"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+            <path d="M15 41H49" stroke="#B91C1C" strokeWidth="3" strokeLinecap="round" />
+            <path d="M20 46H44" stroke="#D97706" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </div>
+      );
+
+    case "osn":
+      return (
+        <div
+          className={`${sizeClass} rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center p-1.5 shrink-0 shadow-2xs`}
+          title="Logo Klub Olimpiade Sains Nasional (OSN & KIR)"
+        >
+          <svg viewBox="0 0 64 64" className="w-full h-full" fill="none">
+            <circle cx="32" cy="32" r="27" fill="#1E293B" stroke="#38BDF8" strokeWidth="2.5" />
+            {/* Orbit Atom Sains */}
+            <ellipse
+              cx="32"
+              cy="32"
+              rx="20"
+              ry="8"
+              transform="rotate(30 32 32)"
+              stroke="#38BDF8"
+              strokeWidth="2"
+            />
+            <ellipse
+              cx="32"
+              cy="32"
+              rx="20"
+              ry="8"
+              transform="rotate(-30 32 32)"
+              stroke="#60A5FA"
+              strokeWidth="2"
+            />
+            <ellipse cx="32" cy="32" rx="8" ry="20" stroke="#93C5FD" strokeWidth="2" />
+            {/* Inti Atom Emas */}
+            <circle cx="32" cy="32" r="5" fill="#FBBF24" />
+          </svg>
+        </div>
+      );
+
+    case "rohis":
+      return (
+        <div
+          className={`${sizeClass} rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center p-1.5 shrink-0 shadow-2xs`}
+          title="Logo Rohani Islam (Rohis)"
+        >
+          <svg viewBox="0 0 64 64" className="w-full h-full" fill="none">
+            {/* Bintang Segi Delapan (Rub el Hizb) */}
+            <rect
+              x="13"
+              y="13"
+              width="38"
+              height="38"
+              rx="3"
+              fill="#065F46"
+              stroke="#F59E0B"
+              strokeWidth="2.5"
+            />
+            <rect
+              x="13"
+              y="13"
+              width="38"
+              height="38"
+              rx="3"
+              transform="rotate(45 32 32)"
+              fill="#047857"
+              stroke="#F59E0B"
+              strokeWidth="2.5"
+            />
+            {/* Kubah & Bulan Sabit */}
+            <path
+              d="M22 40V33C22 27 26.5 23 32 20C37.5 23 42 27 42 33V40H22Z"
+              fill="#ECFDF5"
+            />
+            <circle cx="32" cy="16" r="2" fill="#FCD34D" />
+            {/* Mushaf Terbuka */}
+            <path
+              d="M20 43L32 46L44 43V39L32 42L20 39V43Z"
+              fill="#FCD34D"
+            />
+          </svg>
+        </div>
+      );
+
+    default:
+      return (
+        <div
+          className={`${sizeClass} rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center p-1.5 shrink-0 shadow-2xs`}
+          title="Logo Klub Olahraga Prestasi (O2SN)"
+        >
+          <svg viewBox="0 0 64 64" className="w-full h-full" fill="none">
+            {/* Perisai Olahraga O2SN */}
+            <path
+              d="M12 10H52L48 38C46 48 32 56 32 56C32 56 18 48 16 38L12 10Z"
+              fill="#2A2C5E"
+              stroke="#F59E0B"
+              strokeWidth="3"
+            />
+            {/* Cincin & Obor Juara */}
+            <circle cx="25" cy="24" r="5" stroke="#38BDF8" strokeWidth="2.2" />
+            <circle cx="32" cy="24" r="5" stroke="#FBBF24" strokeWidth="2.2" />
+            <circle cx="39" cy="24" r="5" stroke="#EF4444" strokeWidth="2.2" />
+            {/* Piala / Obor Prestasi */}
+            <path d="M27 34H37L34 45H30L27 34Z" fill="#F59E0B" />
+            <path d="M24 47H40" stroke="#FCD34D" strokeWidth="2.5" strokeLinecap="round" />
+          </svg>
+        </div>
+      );
+  }
+}
+
 function KesiswaanContent() {
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get("tab")?.toUpperCase() as KesiswaanTab) || "TATA_TERTIB";
@@ -958,7 +1158,7 @@ function KesiswaanContent() {
                 </h2>
                 <p className="text-xs text-gray-500">
                   {selectedEkskul
-                    ? `${selectedEkskul.nama} • Pilih ekstrakurikuler lain atau kembali ke daftar`
+                    ? `Susunan kepengurusan resmi ${selectedEkskul.nama} periode 2026/2027`
                     : "Klik pada kartu ekstrakurikuler untuk melihat bagan struktur kepengurusannya"}
                 </p>
               </div>
@@ -980,7 +1180,6 @@ function KesiswaanContent() {
           {!selectedEkskul && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {ekskulList.map((ekskul) => {
-                const Icon = ekskul.icon;
                 return (
                   <button
                     key={ekskul.id}
@@ -989,11 +1188,9 @@ function KesiswaanContent() {
                     className="group text-left bg-white p-6 rounded-xl border border-gray-200 hover:border-[#2A2C5E] shadow-2xs hover:shadow-md transition-all flex flex-col justify-between space-y-4 cursor-pointer"
                   >
                     <div className="space-y-4 w-full">
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="w-10 h-10 rounded-lg bg-blue-50 text-[#2A2C5E] group-hover:bg-[#2A2C5E] group-hover:text-white transition-colors flex items-center justify-center shrink-0">
-                          <Icon className="w-5 h-5" />
-                        </div>
-                        <span className="text-[11px] font-semibold text-[#2A2C5E] bg-blue-50/80 px-2.5 py-1 rounded-md border border-blue-100">
+                      <div className="flex items-start justify-between gap-3">
+                        <EkskulLogo id={ekskul.id} size="md" />
+                        <span className="text-[11px] font-semibold text-[#2A2C5E] bg-blue-50/80 px-2.5 py-1 rounded-md border border-blue-100 text-right">
                           {ekskul.kategori}
                         </span>
                       </div>
@@ -1052,46 +1249,26 @@ function KesiswaanContent() {
             </div>
           )}
 
-          {/* TAMPILAN BAGAN STRUKTUR ORGANISASI EKSKUL SAAT DIKLIK */}
+          {/* TAMPILAN BAGAN STRUKTUR ORGANISASI EKSKUL SAAT DIKLIK (TANPA FILTER EKSTRAKURIKULER LAIN) */}
           {selectedEkskul && (
             <div className="space-y-5">
-              {/* Pilihan Cepat Pindah Antar-Ekskul */}
-              <div className="flex flex-wrap items-center gap-1.5 p-1.5 bg-white rounded-xl border border-gray-200 shadow-2xs">
-                {ekskulList.map((item) => {
-                  const ItemIcon = item.icon;
-                  const isCurrent = item.id === selectedEkskul.id;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setSelectedEkskulId(item.id)}
-                      className={`flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                        isCurrent
-                          ? "bg-[#2A2C5E] text-white shadow-xs"
-                          : "bg-gray-100/80 text-gray-700 hover:bg-gray-200/70 hover:text-gray-900"
-                      }`}
-                    >
-                      <ItemIcon className="w-3.5 h-3.5 shrink-0" />
-                      <span>{item.namaSingkat}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Kartu Ringkasan Info Ekskul (Nama, Pembina, Jam, Lokasi) */}
+              {/* Kartu Ringkasan Info Ekskul (Logo, Nama, Pembina, Jam, Lokasi) */}
               <div className="bg-[#2A2C5E] text-white rounded-xl p-5 sm:p-6 shadow-xs">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-center">
-                  <div className="sm:col-span-2 space-y-1">
-                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider bg-white/15 text-blue-100 px-2.5 py-0.5 rounded">
-                      {selectedEkskul.kategori}
-                    </span>
-                    <h3 className="text-lg sm:text-xl font-extrabold tracking-tight">
-                      {selectedEkskul.nama}
-                    </h3>
-                    <p className="text-xs text-blue-100/90 flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 shrink-0" />
-                      <span>Lokasi: {selectedEkskul.lokasi}</span>
-                    </p>
+                  <div className="sm:col-span-2 flex items-center gap-4">
+                    <EkskulLogo id={selectedEkskul.id} size="lg" />
+                    <div className="space-y-1">
+                      <span className="inline-block text-[10px] font-bold uppercase tracking-wider bg-white/15 text-blue-100 px-2.5 py-0.5 rounded">
+                        {selectedEkskul.kategori}
+                      </span>
+                      <h3 className="text-base sm:text-xl font-extrabold tracking-tight leading-snug">
+                        {selectedEkskul.nama}
+                      </h3>
+                      <p className="text-xs text-blue-100/90 flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 shrink-0" />
+                        <span>Lokasi: {selectedEkskul.lokasi}</span>
+                      </p>
+                    </div>
                   </div>
 
                   <div className="bg-white/10 rounded-lg p-3.5 border border-white/15 space-y-0.5">

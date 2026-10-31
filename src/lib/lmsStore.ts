@@ -372,9 +372,72 @@ const SEED_PERTEMUAN_BIOLOGI: PertemuanItem[] = [
   },
 ];
 
-// Inisialisasi awal 5 kelas resmi
-const INITIAL_CLASSES: MapelLMS[] = MOCK_MAPEL.map((m) => {
-  return {
+// Inisialisasi awal kelas resmi (Kelas Wajib & Kelas Pilihan)
+const ADDITIONAL_ELECTIVE_CLASSES: MapelLMS[] = [
+  {
+    id: "mapel-6",
+    kode: "KIM-XII-MIPA",
+    nama: "Kimia Terapan & Reaksi Organik",
+    tingkat: "XII",
+    jurusan: "MIPA",
+    guruNama: "Dra. Siti Masitoh",
+    guruNuptk: "197508102003122002",
+    jadwal: "Kamis, 10:00 - 12:00 WIB",
+    ruang: "Lab Kimia",
+    pertemuanList: generateGenericMeetings("Kimia Terapan & Reaksi Organik", "Dra. Siti Masitoh"),
+  },
+  {
+    id: "mapel-7",
+    kode: "SOS-XII-IPS",
+    nama: "Sosiologi & Riset Kemasyarakatan",
+    tingkat: "XII",
+    jurusan: "IPS",
+    guruNama: "Ahmad Fauzi, S.Sos.",
+    guruNuptk: "198304152009011008",
+    jadwal: "Jumat, 09:30 - 11:30 WIB",
+    ruang: "Ruang XII-IPS 2",
+    pertemuanList: generateGenericMeetings("Sosiologi & Riset Kemasyarakatan", "Ahmad Fauzi, S.Sos."),
+  },
+  {
+    id: "mapel-8",
+    kode: "INF-XII-ALL",
+    nama: "Informatika & Pemrograman Web",
+    tingkat: "XII",
+    jurusan: "Umum",
+    guruNama: "Rian Hidayat, S.Kom.",
+    guruNuptk: "199201202020121014",
+    jadwal: "Rabu, 13:00 - 15:00 WIB",
+    ruang: "Lab Komputer 1",
+    pertemuanList: generateGenericMeetings("Informatika & Pemrograman Web", "Rian Hidayat, S.Kom."),
+  },
+  {
+    id: "mapel-9",
+    kode: "ING-XII-ALL",
+    nama: "Bahasa Inggris Komunikasi Global",
+    tingkat: "XII",
+    jurusan: "Umum",
+    guruNama: "Nurul Aini, S.Pd.",
+    guruNuptk: "199003182016022006",
+    jadwal: "Selasa, 13:00 - 14:30 WIB",
+    ruang: "Ruang XII-MIPA 2",
+    pertemuanList: generateGenericMeetings("Bahasa Inggris Komunikasi Global", "Nurul Aini, S.Pd."),
+  },
+  {
+    id: "mapel-10",
+    kode: "SNB-XII-ALL",
+    nama: "Seni Budaya & Kriya Tradisional",
+    tingkat: "XII",
+    jurusan: "Umum",
+    guruNama: "Dewi Lestari, S.Sn.",
+    guruNuptk: "198711242014032009",
+    jadwal: "Kamis, 13:00 - 14:30 WIB",
+    ruang: "Sanggar Seni Sekolah",
+    pertemuanList: generateGenericMeetings("Seni Budaya & Kriya Tradisional", "Dewi Lestari, S.Sn."),
+  },
+];
+
+const INITIAL_CLASSES: MapelLMS[] = [
+  ...MOCK_MAPEL.map((m) => ({
     id: m.id,
     kode: m.kode,
     nama: m.nama,
@@ -385,8 +448,9 @@ const INITIAL_CLASSES: MapelLMS[] = MOCK_MAPEL.map((m) => {
     jadwal: m.jadwal,
     ruang: m.ruang,
     pertemuanList: m.id === "mapel-1" ? SEED_PERTEMUAN_BIOLOGI : generateGenericMeetings(m.nama, m.guruNama),
-  };
-});
+  })),
+  ...ADDITIONAL_ELECTIVE_CLASSES,
+];
 
 function generateGenericMeetings(mapelNama: string, guru: string): PertemuanItem[] {
   return [
@@ -529,6 +593,7 @@ interface LMSState {
   submitPresensiPertemuan: (mapelId: string, pertemuanId: string) => void;
   submitUjianCBT: (mapelId: string, pertemuanId: string, skor: number) => void;
   joinClassByCode: (code: string) => { success: boolean; message: string };
+  enrollClass: (classId: string) => void;
 }
 
 export const useLMSStore = create<LMSState>()(
@@ -536,9 +601,15 @@ export const useLMSStore = create<LMSState>()(
     (set, get) => ({
       classes: INITIAL_CLASSES,
       selectedClassId: null,
-      enrolledMapelIds: ["mapel-1", "mapel-2", "mapel-3", "mapel-4", "mapel-5"],
+      enrolledMapelIds: ["mapel-1", "mapel-2", "mapel-3"],
 
       selectClass: (id) => set({ selectedClassId: id }),
+
+      enrollClass: (classId) => {
+        if (!get().enrolledMapelIds.includes(classId)) {
+          set((state) => ({ enrolledMapelIds: [...state.enrolledMapelIds, classId] }));
+        }
+      },
 
       markMateriSelesai: (mapelId, pertemuanId) => {
         set((state) => ({
@@ -714,3 +785,4 @@ export const useLMSStore = create<LMSState>()(
     }
   )
 );
+

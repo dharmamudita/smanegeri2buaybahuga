@@ -46,7 +46,7 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { href: "/siswa/dashboard", label: "Beranda Siswa", icon: LayoutDashboard },
     { href: "/siswa/mapel", label: "Kelas & Materi", icon: BookOpen },
     { href: "/siswa/presensi", label: "Presensi Harian", icon: Clock },
-    { href: "/siswa/tugas", label: "Tugas & Ujian Siswa", icon: ClipboardList },
+    { href: "/siswa/tugas", label: "Ujian Kelulusan Sekolah", icon: Award },
   ],
 };
 

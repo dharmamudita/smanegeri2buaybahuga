@@ -149,14 +149,14 @@ export default function SiswaTugasPage() {
       {/* Page Header */}
       <div className="border-b border-gray-200 pb-5">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
-          <BookOpen className="w-3.5 h-3.5 text-[#2A2C5E]" />
-          <span>Ruang Asesmen & Evaluasi Siswa</span>
+          <Award className="w-3.5 h-3.5 text-[#2A2C5E]" />
+          <span>Ruang Asesmen Sumatif Kelulusan</span>
         </div>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-          Evaluasi Pembelajaran & Ujian Siswa
+          Ujian Kelulusan Sekolah (PSAJ)
         </h1>
         <p className="text-xs text-gray-500 mt-1">
-          Kerjakan evaluasi dan tugas pembelajaran secara mandiri, jujur, dan tertib sesuai jadwal yang telah ditentukan.
+          Asesmen Sumatif Akhir Jenjang berbasis Computer Based Test (CBT) sebagai syarat kelulusan resmi SMAN 2 Buay Bahuga.
         </p>
       </div>
 

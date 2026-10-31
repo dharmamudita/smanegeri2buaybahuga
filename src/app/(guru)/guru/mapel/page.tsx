@@ -746,7 +746,7 @@ function GuruMapelContent() {
             </button>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {activeClass.pertemuanList.map((pt) => {
               const isUts = pt.tipe === "UTS";
               const isUas = pt.tipe === "UAS";
@@ -777,16 +777,16 @@ function GuruMapelContent() {
               return (
                 <div
                   key={pt.id}
-                  className={`bg-white rounded-xl border overflow-hidden ${
-                    isSpecial ? "border-[#2A2C5E]/40" : "border-gray-200"
-                  }`}
+                  className="bg-white rounded-xl border border-gray-200 border-t-4 border-t-[#2A2C5E] shadow-xs overflow-hidden"
                 >
                   {/* Header Pertemuan */}
-                  <div className="px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100">
+                  <div className="px-5 py-3.5 bg-gray-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200/80">
                     <div className="flex items-center gap-3 min-w-0">
                       <span
-                        className={`text-[11px] font-semibold px-2 py-0.5 rounded shrink-0 ${
-                          isSpecial ? "bg-[#2A2C5E] text-white" : "bg-gray-100 text-gray-700"
+                        className={`text-[11px] font-bold px-2.5 py-0.5 rounded shrink-0 ${
+                          isSpecial
+                            ? "bg-[#2A2C5E] text-white"
+                            : "bg-[#2A2C5E]/10 text-[#2A2C5E]"
                         }`}
                       >
                         {labelSesi}

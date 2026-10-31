@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, Suspense } from "react";
+import { useState, useMemo, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -56,7 +56,7 @@ function TambahPertemuanContent() {
 
   // Dropdown States (Hanya terbuka ketika tombol filter diklik)
   const [openDropdown, setOpenDropdown] = useState<
-    "KATEGORI" | "FORMAT_MATERI" | "JENIS_TUGAS" | "DEADLINE" | null
+    "KATEGORI" | "FORMAT_MATERI" | "JENIS_TUGAS" | null
   >(null);
 
   // Kategori Sesi Pembelajaran (Pilihan Dropdown)
@@ -64,45 +64,60 @@ function TambahPertemuanContent() {
 
   // Format Bahan Ajar (Pilihan Dropdown)
   const [formatMateri, setFormatMateri] = useState<"DOKUMEN" | "VIDEO" | "RINGKASAN" | "NONE">("DOKUMEN");
-  const [materiJudul, setMateriJudul] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string>("Modul_Ajar_SMAN2_BahanAjar.pdf");
   const [materiFileUrl, setMateriFileUrl] = useState<string>("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-  const [materiRingkasan, setMateriRingkasan] = useState<string>("");
+  const [materiRingkasan, setMateriRingkasan] = useState<string>(
+    "Pelajari materi ini dengan cermat sebelum melanjutkan ke sesi evaluasi."
+  );
   const [materiKontenLengkap, setMateriKontenLengkap] = useState<string>("");
 
-  // Jenis Asesmen / Tugas (Pilihan Dropdown)
+  // Jenis Asesmen / Tugas (Pilihan Dropdown - Tanpa input judul lembar terpisah)
   const [jenisAsesmen, setJenisAsesmen] = useState<"PILIHAN_GANDA" | "ESSAY" | "NONE">("PILIHAN_GANDA");
-  const [tugasJudul, setTugasJudul] = useState<string>("");
   const [durasiMenit, setDurasiMenit] = useState<number>(60);
   const [pertanyaanEssay, setPertanyaanEssay] = useState<string>(
     "Jelaskan kesimpulan dan analisis kritis Anda terhadap materi yang telah dipelajari pada pertemuan ini."
   );
 
-  // Tenggat Pengumpulan (Deadline) berbasis Dropdown Filter
-  const [presetDeadline, setPresetDeadline] = useState<"3_HARI" | "7_HARI" | "14_HARI" | "CUSTOM">("7_HARI");
-  const [deadlineTugas, setDeadlineTugas] = useState<string>("");
-
-  // Helper untuk hitung teks tanggal deadline otomatis
-  const calculateDeadlineString = (days: number) => {
+  // Tenggat Pengumpulan (Deadline) Profesional: Pemilih Tanggal & Waktu (Tanpa Mengetik Teks Manual)
+  const getFutureDateISO = (days: number) => {
     const d = new Date();
     d.setDate(d.getDate() + days);
-    const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-    const monthNames = [
-      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-      "Juli", "Agustus", "September", "Oktober", "November", "Desember",
-    ];
-    return `${dayNames[d.getDay()]}, ${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}, 23:59 WIB`;
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
   };
 
-  useEffect(() => {
-    if (presetDeadline === "3_HARI") {
-      setDeadlineTugas(calculateDeadlineString(3));
-    } else if (presetDeadline === "7_HARI") {
-      setDeadlineTugas(calculateDeadlineString(7));
-    } else if (presetDeadline === "14_HARI") {
-      setDeadlineTugas(calculateDeadlineString(14));
+  const [deadlineDate, setDeadlineDate] = useState<string>(getFutureDateISO(7));
+  const [deadlineTime, setDeadlineTime] = useState<string>("23:59");
+  const [presetActive, setPresetActive] = useState<"3_HARI" | "7_HARI" | "14_HARI" | "CUSTOM">("7_HARI");
+
+  // Helper konversi tanggal & waktu ISO ke format resmi Indonesia
+  const formattedIndonesianDeadline = useMemo(() => {
+    if (!deadlineDate) return "Sesuai Jadwal";
+    try {
+      const [year, month, day] = deadlineDate.split("-").map(Number);
+      const d = new Date(year, month - 1, day);
+      const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+      const monthNames = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember",
+      ];
+      const dayName = dayNames[d.getDay()] || "Senin";
+      const monthName = monthNames[d.getMonth()] || "Januari";
+      return `${dayName}, ${day} ${monthName} ${year}, ${deadlineTime || "23:59"} WIB`;
+    } catch {
+      return `${deadlineDate}, ${deadlineTime} WIB`;
     }
-  }, [presetDeadline]);
+  }, [deadlineDate, deadlineTime]);
+
+  // Handler Pilih Berkas PDF Riil
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setUploadedFileName(e.target.files[0].name);
+    }
+  };
 
   // Daftar Butir Soal Pilihan Ganda (CBT)
   const [soalPilganList, setSoalPilganList] = useState<SoalPilgan[]>([
@@ -186,25 +201,23 @@ function TambahPertemuanContent() {
     const storeTipe: "REGULER" | "UTS" | "UAS" =
       kategoriSesi === "UTS" ? "UTS" : kategoriSesi === "UAS" ? "UAS" : "REGULER";
 
-    // Modul Materi (jika bukan NONE)
+    // Modul Materi
     const materiData =
       formatMateri !== "NONE"
         ? {
-            judul:
-              materiJudul.trim() ||
-              `Bahan Ajar Pertemuan ${nomorPertemuan}: ${finalJudul}`,
+            judul: `Bahan Ajar Pertemuan ${nomorPertemuan}: ${finalJudul}`,
             tipe: formatMateri as "DOKUMEN" | "VIDEO" | "RINGKASAN",
             ringkasan:
               materiRingkasan.trim() ||
               (formatMateri === "DOKUMEN"
-                ? `Berkas modul bacaan digital: ${uploadedFileName}`
+                ? `Berkas modul: ${uploadedFileName}`
                 : formatMateri === "VIDEO"
-                ? "Simak tayangan video pembelajaran ini dengan cermat."
+                ? "Simak video penjelasan materi."
                 : "Rangkuman materi kurikulum merdeka."),
             kontenLengkap:
               materiKontenLengkap.trim() ||
               materiRingkasan.trim() ||
-              "Materi bahan ajar resmi Kurikulum Merdeka SMAN 2 Buay Bahuga untuk dipelajari mandiri.",
+              "Materi bahan ajar resmi Kurikulum Merdeka SMAN 2 Buay Bahuga.",
             fileUrl:
               formatMateri === "VIDEO"
                 ? materiFileUrl
@@ -215,7 +228,7 @@ function TambahPertemuanContent() {
           }
         : undefined;
 
-    // Asesmen / Tugas (jika bukan NONE)
+    // Asesmen / Tugas (Judul otomatis mengikuti judul pertemuan)
     let finalTugasTipe: "PILIHAN_GANDA" | "ESSAY" | "UJIAN_UTS" | "UJIAN_UAS" = "PILIHAN_GANDA";
     if (kategoriSesi === "UTS") {
       finalTugasTipe = "UJIAN_UTS";
@@ -229,12 +242,10 @@ function TambahPertemuanContent() {
       jenisAsesmen !== "NONE"
         ? {
             id: `tugas-${meetingId}`,
-            judul:
-              tugasJudul.trim() ||
-              `Lembar Evaluasi Pertemuan ${nomorPertemuan}: ${finalJudul}`,
+            judul: `Evaluasi ${finalJudul}`,
             tipe: finalTugasTipe,
             deskripsi: "Jawablah butir pertanyaan evaluasi berikut secara mandiri dan teliti.",
-            deadline: deadlineTugas,
+            deadline: formattedIndonesianDeadline,
             soalPilgan:
               finalTugasTipe === "PILIHAN_GANDA" || finalTugasTipe === "UJIAN_UTS" || finalTugasTipe === "UJIAN_UAS"
                 ? soalPilganList
@@ -305,13 +316,6 @@ function TambahPertemuanContent() {
     PILIHAN_GANDA: "Pilihan Ganda (CBT)",
     ESSAY: "Tugas Essay / Uraian",
     NONE: "Tanpa Tugas Evaluasi",
-  };
-
-  const presetDeadlineLabelMap = {
-    "3_HARI": "+3 Hari",
-    "7_HARI": "+7 Hari (1 Minggu)",
-    "14_HARI": "+14 Hari (2 Minggu)",
-    CUSTOM: "Kustom Tanggal & Waktu",
   };
 
   return (
@@ -501,7 +505,7 @@ function TambahPertemuanContent() {
           </div>
 
           {/* =============================================================== */}
-          {/* BAGIAN 3: BAHAN AJAR SISWA (FILTER FORMAT DULU -> FORM MUNCUL) */}
+          {/* BAGIAN 3: BAHAN AJAR SISWA (UPLOAD & INSTRUKSI LANGSUNG) */}
           {/* =============================================================== */}
           <div className="p-5 sm:p-6 bg-white space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-3">
@@ -514,7 +518,7 @@ function TambahPertemuanContent() {
                     Bahan Ajar Pembelajaran
                   </h3>
                   <p className="text-[11px] text-gray-500">
-                    Materi dapat dibaca atau disimak oleh siswa secara mandiri.
+                    Unggah modul atau bagikan materi pembelajaran untuk dipelajari siswa.
                   </p>
                 </div>
               </div>
@@ -623,141 +627,119 @@ function TambahPertemuanContent() {
               </div>
             </div>
 
-            {/* Form Dinamis: Muncul Sesuai Format yang Dipilih */}
+            {/* FORM FORMAT: DOKUMEN PDF (UPLOAD BERKAS + PERINTAH INSTRUKSI DI BAWAHNYA) */}
             {formatMateri === "DOKUMEN" && (
               <div className="space-y-3 pt-1 text-xs animate-in fade-in">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                      Judul Modul PDF:
-                    </label>
-                    <input
-                      type="text"
-                      value={materiJudul}
-                      onChange={(e) => setMateriJudul(e.target.value)}
-                      placeholder={`Contoh: Modul Ajar Bab ${nomorPertemuan}: Materi Inti`}
-                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:border-[#2A2C5E]"
-                    />
-                  </div>
+                {/* Input Berkas Tersembunyi */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept=".pdf,.doc,.docx"
+                  className="hidden"
+                />
 
-                  <div>
-                    <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                      Petunjuk Membaca:
-                    </label>
-                    <input
-                      type="text"
-                      value={materiRingkasan}
-                      onChange={(e) => setMateriRingkasan(e.target.value)}
-                      placeholder="Contoh: Pelajari modul bab ini sebelum mengerjakan soal latihan."
-                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:border-[#2A2C5E]"
-                    />
-                  </div>
-                </div>
-
-                <div className="p-3.5 rounded-xl border border-dashed border-gray-300 bg-gray-50/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                <div className="p-4 rounded-xl border border-dashed border-gray-300 bg-gray-50/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
                   <div className="flex items-center gap-3">
-                    <Upload className="w-6 h-6 text-gray-500 shrink-0" />
+                    <div className="p-2.5 rounded-lg bg-white border border-gray-200 text-[#2A2C5E] shadow-2xs">
+                      <FileText className="w-6 h-6" />
+                    </div>
                     <div>
-                      <div className="text-xs font-semibold text-gray-900">
-                        {uploadedFileName}
+                      <div className="text-xs font-semibold text-gray-900 flex items-center gap-2">
+                        <span>{uploadedFileName}</span>
+                        <span className="text-[10px] text-gray-500 font-normal">(Dokumen PDF)</span>
                       </div>
-                      <p className="text-[10px] text-gray-500">
-                        Berkas modul bacaan digital yang akan diakses peserta didik.
+                      <p className="text-[11px] text-gray-500 mt-0.5">
+                        Berkas modul bacaan digital yang akan otomatis terdistribusi ke akun belajar siswa.
                       </p>
                     </div>
                   </div>
                   <button
                     type="button"
-                    onClick={() => {
-                      const sampleFiles = [
-                        "Modul_Ajar_SMAN2_BabLengkap.pdf",
-                        "Bahan_Ajar_Sains_Kurikulum_Merdeka.pdf",
-                        "Lembar_Bacaan_Konseptual.pdf",
-                      ];
-                      const nextIndex = (sampleFiles.indexOf(uploadedFileName) + 1) % sampleFiles.length;
-                      setUploadedFileName(sampleFiles[nextIndex]);
-                    }}
-                    className="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-[11px] font-semibold rounded-lg shadow-2xs hover:bg-gray-100 cursor-pointer shrink-0"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white border border-gray-300 text-gray-800 hover:bg-gray-100 rounded-lg text-xs font-semibold shadow-2xs cursor-pointer shrink-0 transition-colors"
                   >
-                    Ganti Berkas Contoh
+                    <Upload className="w-3.5 h-3.5 text-gray-600" />
+                    <span>Unggah / Ganti Berkas PDF</span>
                   </button>
                 </div>
-              </div>
-            )}
 
-            {formatMateri === "VIDEO" && (
-              <div className="space-y-3 pt-1 text-xs animate-in fade-in">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                      Judul Video Pembelajaran:
-                    </label>
-                    <input
-                      type="text"
-                      value={materiJudul}
-                      onChange={(e) => setMateriJudul(e.target.value)}
-                      placeholder={`Contoh: Video Penjelasan Konsep Pertemuan ${nomorPertemuan}`}
-                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:border-[#2A2C5E]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                      Tautan Video (YouTube):
-                    </label>
-                    <div className="relative">
-                      <Link2 className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="text"
-                        value={materiFileUrl}
-                        onChange={(e) => setMateriFileUrl(e.target.value)}
-                        placeholder="https://www.youtube.com/watch?v=..."
-                        className="w-full pl-9 pr-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 font-mono text-xs focus:outline-none focus:border-[#2A2C5E]"
-                      />
-                    </div>
-                  </div>
-                </div>
-
+                {/* Perintah / Instruksi Belajar di Bawahnya */}
                 <div>
                   <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                    Catatan Poin Kunci Video:
+                    Perintah / Petunjuk Membaca Modul:
                   </label>
-                  <textarea
-                    rows={3}
-                    value={materiKontenLengkap}
-                    onChange={(e) => setMateriKontenLengkap(e.target.value)}
-                    placeholder="Tuliskan poin penting yang harus dicermati siswa dari tayangan video..."
-                    className="w-full p-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:border-[#2A2C5E]"
+                  <input
+                    type="text"
+                    value={materiRingkasan}
+                    onChange={(e) => setMateriRingkasan(e.target.value)}
+                    placeholder="Contoh: Bacalah modul bab ini sebelum mengerjakan lembar evaluasi pemahaman."
+                    className="w-full px-3.5 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:border-[#2A2C5E]"
                   />
                 </div>
               </div>
             )}
 
+            {/* FORM FORMAT: VIDEO (LINK YOUTUBE + PERINTAH INSTRUKSI DI BAWAHNYA) */}
+            {formatMateri === "VIDEO" && (
+              <div className="space-y-3 pt-1 text-xs animate-in fade-in">
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Tautan Video Pembelajaran (YouTube / Video Edukasi):
+                  </label>
+                  <div className="relative">
+                    <Link2 className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={materiFileUrl}
+                      onChange={(e) => setMateriFileUrl(e.target.value)}
+                      placeholder="https://www.youtube.com/watch?v=..."
+                      className="w-full pl-9 pr-3.5 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 font-mono text-xs focus:outline-none focus:border-[#2A2C5E]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Perintah / Petunjuk Menyimak Video:
+                  </label>
+                  <input
+                    type="text"
+                    value={materiRingkasan}
+                    onChange={(e) => setMateriRingkasan(e.target.value)}
+                    placeholder="Contoh: Simak video sampai selesai dan catat poin-poin penjelasan penting."
+                    className="w-full px-3.5 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:border-[#2A2C5E]"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* FORM FORMAT: RINGKASAN TEKS (CATATAN MATERI + PERINTAH DI BAWAHNYA) */}
             {formatMateri === "RINGKASAN" && (
               <div className="space-y-3 pt-1 text-xs animate-in fade-in">
                 <div>
                   <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                    Judul Catatan Rangkuman:
-                  </label>
-                  <input
-                    type="text"
-                    value={materiJudul}
-                    onChange={(e) => setMateriJudul(e.target.value)}
-                    placeholder={`Contoh: Ringkasan Materi Pertemuan ${nomorPertemuan}`}
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:border-[#2A2C5E]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                    Uraian Catatan Penjelasan:
+                    Catatan Materi Pembelajaran (Teks Ringkasan):
                   </label>
                   <textarea
                     rows={4}
                     value={materiKontenLengkap}
                     onChange={(e) => setMateriKontenLengkap(e.target.value)}
-                    placeholder="Ketikkan teks materi penjelasan di sini. Teks ini akan langsung tampil di alur belajar siswa..."
+                    placeholder="Tuliskan materi penjelasan konsep di sini. Teks ini akan langsung tampil di alur belajar siswa..."
                     className="w-full p-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:border-[#2A2C5E] leading-relaxed"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Perintah / Petunjuk Siswa:
+                  </label>
+                  <input
+                    type="text"
+                    value={materiRingkasan}
+                    onChange={(e) => setMateriRingkasan(e.target.value)}
+                    placeholder="Contoh: Pahami konsep dasar ini dan buat catatan ringkas di buku tulis."
+                    className="w-full px-3.5 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:border-[#2A2C5E]"
                   />
                 </div>
               </div>
@@ -765,16 +747,16 @@ function TambahPertemuanContent() {
 
             {formatMateri === "NONE" && (
               <div className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 text-center text-xs text-gray-600 animate-in fade-in">
-                <div className="font-semibold text-gray-800">Sesi Tanpa Bahan Ajar</div>
+                <div className="font-semibold text-gray-800">Sesi Belajar Tanpa Bahan Ajar</div>
                 <p className="text-[10px] text-gray-500 mt-0.5">
-                  Sesi ini difokuskan untuk evaluasi atau kuis mandiri tanpa modul bacaan.
+                  Sesi ini dikhususkan untuk latihan evaluasi atau ujian mandiri tanpa modul bacaan.
                 </p>
               </div>
             )}
           </div>
 
           {/* =============================================================== */}
-          {/* BAGIAN 4: ASESMEN & TUGAS SISWA (DI BAWAH BAHAN AJAR) */}
+          {/* BAGIAN 4: ASESMEN & TUGAS SISWA (LANGSUNG PILIH JENIS & DEADLINE RESMI) */}
           {/* =============================================================== */}
           <div className="p-5 sm:p-6 bg-white space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-3">
@@ -787,7 +769,7 @@ function TambahPertemuanContent() {
                     Asesmen &amp; Tugas Siswa
                   </h3>
                   <p className="text-[11px] text-gray-500">
-                    Pilih jenis evaluasi dan tentukan batas waktu pengumpulan.
+                    Langsung pilih format evaluasi dan tentukan batas waktu pengumpulan.
                   </p>
                 </div>
               </div>
@@ -882,178 +864,146 @@ function TambahPertemuanContent() {
             {/* Form Asesmen & Tenggat Waktu (Hanya muncul bila bukan TANPA TUGAS) */}
             {jenisAsesmen !== "NONE" ? (
               <div className="space-y-4 pt-1 text-xs animate-in fade-in">
-                {/* Baris Filter Tenggat Waktu (Deadline) */}
-                <div className="p-3.5 rounded-xl bg-gray-50/70 border border-gray-200 space-y-2.5">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <span className="text-xs font-semibold text-gray-800 flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-gray-600" />
-                      <span>Batas Waktu Pengumpulan (Deadline):</span>
+                {/* TENGGAT WAKTU PROFESIONAL (PEMILIH TANGGAL & JAM RESMI, TANPA MENGETIK TEKS) */}
+                <div className="p-4 rounded-xl bg-gray-50/70 border border-gray-200 space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200/80 pb-2.5">
+                    <span className="text-xs font-semibold text-gray-900 flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-[#2A2C5E]" />
+                      <span>Batas Waktu Pengumpulan (Deadline Tugas):</span>
                     </span>
 
-                    {/* Filter Dropdown Deadline */}
-                    <div className="relative z-15">
+                    {/* Tombol Preset Cepat */}
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[11px] text-gray-500">Pilihan Cepat:</span>
                       <button
                         type="button"
-                        onClick={() =>
-                          setOpenDropdown(openDropdown === "DEADLINE" ? null : "DEADLINE")
-                        }
-                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-300 text-gray-800 hover:bg-gray-50 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-2xs"
+                        onClick={() => {
+                          setDeadlineDate(getFutureDateISO(3));
+                          setPresetActive("3_HARI");
+                        }}
+                        className={`px-2.5 py-1 rounded-md text-[11px] font-semibold border transition-colors cursor-pointer ${
+                          presetActive === "3_HARI"
+                            ? "bg-[#2A2C5E] text-white border-[#2A2C5E]"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                        }`}
                       >
-                        <span>Preset: <strong>{presetDeadlineLabelMap[presetDeadline]}</strong></span>
-                        <ChevronDown
-                          className={`w-3.5 h-3.5 text-gray-500 transition-transform ${
-                            openDropdown === "DEADLINE" ? "rotate-180" : ""
-                          }`}
-                        />
+                        +3 Hari
                       </button>
-
-                      {openDropdown === "DEADLINE" && (
-                        <div className="absolute right-0 top-full mt-1.5 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-1.5 z-40 animate-in fade-in slide-in-from-top-1">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setPresetDeadline("3_HARI");
-                              setOpenDropdown(null);
-                            }}
-                            className={`w-full px-3.5 py-1.5 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
-                              presetDeadline === "3_HARI"
-                                ? "bg-gray-100 text-[#2A2C5E] font-bold"
-                                : "text-gray-700 hover:bg-gray-50"
-                            }`}
-                          >
-                            <span>+3 Hari</span>
-                            {presetDeadline === "3_HARI" && (
-                              <Check className="w-3.5 h-3.5 text-[#2A2C5E]" />
-                            )}
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setPresetDeadline("7_HARI");
-                              setOpenDropdown(null);
-                            }}
-                            className={`w-full px-3.5 py-1.5 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
-                              presetDeadline === "7_HARI"
-                                ? "bg-gray-100 text-[#2A2C5E] font-bold"
-                                : "text-gray-700 hover:bg-gray-50"
-                            }`}
-                          >
-                            <span>+7 Hari (1 Minggu)</span>
-                            {presetDeadline === "7_HARI" && (
-                              <Check className="w-3.5 h-3.5 text-[#2A2C5E]" />
-                            )}
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setPresetDeadline("14_HARI");
-                              setOpenDropdown(null);
-                            }}
-                            className={`w-full px-3.5 py-1.5 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
-                              presetDeadline === "14_HARI"
-                                ? "bg-gray-100 text-[#2A2C5E] font-bold"
-                                : "text-gray-700 hover:bg-gray-50"
-                            }`}
-                          >
-                            <span>+14 Hari (2 Minggu)</span>
-                            {presetDeadline === "14_HARI" && (
-                              <Check className="w-3.5 h-3.5 text-[#2A2C5E]" />
-                            )}
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setPresetDeadline("CUSTOM");
-                              setOpenDropdown(null);
-                            }}
-                            className={`w-full px-3.5 py-1.5 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
-                              presetDeadline === "CUSTOM"
-                                ? "bg-gray-100 text-[#2A2C5E] font-bold"
-                                : "text-gray-700 hover:bg-gray-50"
-                            }`}
-                          >
-                            <span>Kustom Tanggal &amp; Waktu</span>
-                            {presetDeadline === "CUSTOM" && (
-                              <Check className="w-3.5 h-3.5 text-[#2A2C5E]" />
-                            )}
-                          </button>
-                        </div>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDeadlineDate(getFutureDateISO(7));
+                          setPresetActive("7_HARI");
+                        }}
+                        className={`px-2.5 py-1 rounded-md text-[11px] font-semibold border transition-colors cursor-pointer ${
+                          presetActive === "7_HARI"
+                            ? "bg-[#2A2C5E] text-white border-[#2A2C5E]"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                        }`}
+                      >
+                        +7 Hari
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDeadlineDate(getFutureDateISO(14));
+                          setPresetActive("14_HARI");
+                        }}
+                        className={`px-2.5 py-1 rounded-md text-[11px] font-semibold border transition-colors cursor-pointer ${
+                          presetActive === "14_HARI"
+                            ? "bg-[#2A2C5E] text-white border-[#2A2C5E]"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                        }`}
+                      >
+                        +14 Hari
+                      </button>
                     </div>
                   </div>
 
-                  <input
-                    type="text"
-                    value={deadlineTugas}
-                    onChange={(e) => setDeadlineTugas(e.target.value)}
-                    placeholder="Senin, 15 Desember 2026, 23:59 WIB"
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-xs font-medium text-gray-900 focus:outline-none focus:border-[#2A2C5E]"
-                  />
+                  {/* Kalender & Jam Picker Profesional (Native Date & Time Inputs) */}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center gap-2 bg-white border border-gray-300 rounded-xl px-3 py-2 shadow-2xs">
+                      <Calendar className="w-4 h-4 text-gray-500" />
+                      <input
+                        type="date"
+                        value={deadlineDate}
+                        onChange={(e) => {
+                          setDeadlineDate(e.target.value);
+                          setPresetActive("CUSTOM");
+                        }}
+                        className="text-xs font-semibold text-gray-900 bg-transparent focus:outline-none cursor-pointer"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2 bg-white border border-gray-300 rounded-xl px-3 py-2 shadow-2xs">
+                      <Clock className="w-4 h-4 text-gray-500" />
+                      <input
+                        type="time"
+                        value={deadlineTime}
+                        onChange={(e) => setDeadlineTime(e.target.value)}
+                        className="text-xs font-semibold text-gray-900 bg-transparent focus:outline-none cursor-pointer"
+                      />
+                      <span className="text-[10px] font-bold text-gray-500">WIB</span>
+                    </div>
+
+                    <div className="text-xs text-gray-600 bg-white border border-gray-200 px-3 py-2 rounded-xl flex items-center gap-1.5 shadow-2xs">
+                      <span className="text-gray-400">Tenggat Resmi:</span>
+                      <strong className="text-gray-900">{formattedIndonesianDeadline}</strong>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Judul & Durasi Asesmen */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="sm:col-span-2">
-                    <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                      Judul Lembar Soal / Evaluasi:
+                {/* Durasi Pengerjaan Ujian / Kuis */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl bg-gray-50/50 border border-gray-200">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-800">
+                      Durasi Pengerjaan Asesmen Siswa:
                     </label>
-                    <input
-                      type="text"
-                      value={tugasJudul}
-                      onChange={(e) => setTugasJudul(e.target.value)}
-                      placeholder={`Contoh: Evaluasi Formatif Pertemuan ${nomorPertemuan}`}
-                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:border-[#2A2C5E]"
-                    />
+                    <p className="text-[11px] text-gray-500">
+                      Waktu pengerjaan saat siswa memulai ujian/kuis digital.
+                    </p>
                   </div>
 
-                  <div>
-                    <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                      Durasi Pengerjaan:
-                    </label>
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => setDurasiMenit(45)}
-                        className={`flex-1 py-2 text-xs font-semibold rounded-lg border text-center transition-all cursor-pointer ${
-                          durasiMenit === 45
-                            ? "bg-[#2A2C5E] text-white border-[#2A2C5E]"
-                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                        }`}
-                      >
-                        45 Mnt
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setDurasiMenit(60)}
-                        className={`flex-1 py-2 text-xs font-semibold rounded-lg border text-center transition-all cursor-pointer ${
-                          durasiMenit === 60
-                            ? "bg-[#2A2C5E] text-white border-[#2A2C5E]"
-                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                        }`}
-                      >
-                        60 Mnt
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setDurasiMenit(90)}
-                        className={`flex-1 py-2 text-xs font-semibold rounded-lg border text-center transition-all cursor-pointer ${
-                          durasiMenit === 90
-                            ? "bg-[#2A2C5E] text-white border-[#2A2C5E]"
-                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                        }`}
-                      >
-                        90 Mnt
-                      </button>
-                    </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setDurasiMenit(45)}
+                      className={`px-3 py-1.5 text-xs font-semibold rounded-lg border text-center transition-all cursor-pointer ${
+                        durasiMenit === 45
+                          ? "bg-[#2A2C5E] text-white border-[#2A2C5E]"
+                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      45 Menit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDurasiMenit(60)}
+                      className={`px-3 py-1.5 text-xs font-semibold rounded-lg border text-center transition-all cursor-pointer ${
+                        durasiMenit === 60
+                          ? "bg-[#2A2C5E] text-white border-[#2A2C5E]"
+                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      60 Menit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDurasiMenit(90)}
+                      className={`px-3 py-1.5 text-xs font-semibold rounded-lg border text-center transition-all cursor-pointer ${
+                        durasiMenit === 90
+                          ? "bg-[#2A2C5E] text-white border-[#2A2C5E]"
+                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      90 Menit
+                    </button>
                   </div>
                 </div>
 
                 {/* Form Builder Pilihan Ganda (CBT) */}
                 {jenisAsesmen === "PILIHAN_GANDA" && (
-                  <div className="space-y-3 pt-3 border-t border-gray-100">
+                  <div className="space-y-3 pt-2">
                     <div className="flex items-center justify-between">
                       <div className="text-xs font-bold text-gray-900">
                         Butir Soal ({soalPilganList.length} Soal &bull; Bobot:{" "}
@@ -1173,7 +1123,7 @@ function TambahPertemuanContent() {
               </div>
             ) : (
               <div className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 text-center text-xs text-gray-600 animate-in fade-in">
-                <div className="font-semibold text-gray-800">Sesi Belajar Bebas Tugas</div>
+                <div className="font-semibold text-gray-800">Sesi Belajar Tanpa Tugas Evaluasi</div>
                 <p className="text-[10px] text-gray-500 mt-0.5">
                   Peserta didik hanya menyimak bahan ajar tanpa kewajiban mengerjakan evaluasi kuis.
                 </p>
@@ -1201,7 +1151,7 @@ function TambahPertemuanContent() {
               </span>
               {jenisAsesmen !== "NONE" && (
                 <span className="px-2.5 py-1 rounded bg-white border border-gray-200 text-[11px] font-semibold text-gray-800">
-                  Deadline: {presetDeadlineLabelMap[presetDeadline]}
+                  Batas: {formattedIndonesianDeadline}
                 </span>
               )}
             </div>

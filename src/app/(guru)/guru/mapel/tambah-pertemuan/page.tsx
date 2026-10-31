@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, Suspense } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -12,15 +12,15 @@ import {
   FileText,
   HelpCircle,
   Plus,
-  PlusCircle,
   Save,
   Trash2,
   Video,
-  X,
-  FileQuestion,
-  GraduationCap,
+  Upload,
+  Link2,
+  FileCheck,
+  Check,
   Sparkles,
-  ChevronRight,
+  Layers,
 } from "lucide-react";
 import { useLMSStore, PertemuanItem, SoalPilgan } from "@/lib/lmsStore";
 
@@ -40,21 +40,18 @@ function TambahPertemuanContent() {
     return classes.find((c) => c.id === selectedClassId) || classes[0];
   }, [classes, selectedClassId]);
 
-  // Nomor pertemuan otomatis berikutnya
-  const defaultMeetingNumber = useMemo(() => {
-    return (activeClass?.pertemuanList.length || 0) + 1;
+  // Nomor pertemuan otomatis berikutnya (selalu dihitung dari alur kelas saat ini)
+  const [nomorPertemuan, setNomorPertemuan] = useState<number>(1);
+
+  useEffect(() => {
+    if (activeClass?.pertemuanList) {
+      setNomorPertemuan(activeClass.pertemuanList.length + 1);
+    }
   }, [activeClass]);
 
-  // Form State: 1. Informasi Pertemuan
-  const [nomorPertemuan, setNomorPertemuan] = useState<number>(defaultMeetingNumber);
+  // Form State: 1. Informasi Pertemuan (Otomatis Jadwal Rombel)
   const [judulPertemuan, setJudulPertemuan] = useState<string>("");
   const [tipePertemuan, setTipePertemuan] = useState<"REGULER" | "UTS" | "UAS">("REGULER");
-  const [tanggalPertemuan, setTanggalPertemuan] = useState<string>("Senin, 08 Desember 2026");
-  const [jamPelaksanaan, setJamPelaksanaan] = useState<string>("07:30 - 09:30 WIB");
-  const [durasiMenit, setDurasiMenit] = useState<number>(60);
-  const [petunjukUjian, setPetunjukUjian] = useState<string>(
-    "Pelajari materi yang disajikan dengan seksama, kemudian kerjakan soal evaluasi pemahaman mandiri."
-  );
 
   // Form State: 2. Modul Bahan Ajar (Materi Siswa)
   const [materiTipe, setMateriTipe] = useState<"DOKUMEN" | "VIDEO" | "RINGKASAN">("DOKUMEN");
@@ -62,25 +59,28 @@ function TambahPertemuanContent() {
   const [materiRingkasan, setMateriRingkasan] = useState<string>("");
   const [materiKontenLengkap, setMateriKontenLengkap] = useState<string>("");
   const [materiFileUrl, setMateriFileUrl] = useState<string>("");
+  const [uploadedFileName, setUploadedFileName] = useState<string>("Modul_Ajar_SMAN2_BahanAjar.pdf");
 
-  // Form State: 3. Evaluasi & Soal CBT (Opsional dengan Sakelar Ramah)
+  // Form State: 3. Latihan Soal & Asesmen Siswa (Tugas)
   const [sertakanSoal, setSertakanSoal] = useState<boolean>(true);
   const [tugasTipe, setTugasTipe] = useState<"PILIHAN_GANDA" | "ESSAY" | "UJIAN_UTS" | "UJIAN_UAS">(
     "PILIHAN_GANDA"
   );
   const [tugasJudul, setTugasJudul] = useState<string>("");
   const [tugasDeskripsi, setTugasDeskripsi] = useState<string>("");
+  const [deadlineTugas, setDeadlineTugas] = useState<string>("Senin, 15 Desember 2026, 23:59 WIB");
+  const [durasiMenit, setDurasiMenit] = useState<number>(60);
   const [pertanyaanEssay, setPertanyaanEssay] = useState<string>("");
 
   // Daftar Butir Soal Pilihan Ganda
   const [soalPilganList, setSoalPilganList] = useState<SoalPilgan[]>([
     {
       id: 1,
-      pertanyaan: "Berdasarkan materi yang dipelajari pada sesi ini, konsep utama yang menjadi fokus adalah...",
+      pertanyaan: "Berdasarkan materi yang dipelajari pada sesi ini, konsep utama yang menjadi fokus pembahasan adalah...",
       pilihan: [
         "Pemahaman dasar teori dan implementasi praktis",
         "Pengamatan tanpa analisis data ilmiah",
-        "Pencatatan data tanpa kesimpulan",
+        "Pencatatan data tanpa penarikan kesimpulan",
         "Metode coba-coba tanpa kajian pustaka",
       ],
       kunci: 0,
@@ -90,8 +90,8 @@ function TambahPertemuanContent() {
       pertanyaan: "Faktor terpenting dalam memastikan keberhasilan penerapan materi pembelajaran ini adalah...",
       pilihan: [
         "Integritas ilmiah, penalaran kritis, dan ketelitian kerja",
-        "Kecepatan menyelesaikan tanpa verifikasi",
-        "Menghafal rumus tanpa memahami konsep",
+        "Kecepatan menyelesaikan tanpa proses verifikasi",
+        "Menghafal rumus tanpa memahami konsep dasar",
         "Mengabaikan prosedur keselamatan kerja laboratorium",
       ],
       kunci: 0,
@@ -105,7 +105,7 @@ function TambahPertemuanContent() {
       ...soalPilganList,
       {
         id: nextId,
-        pertanyaan: `Pertanyaan nomor ${nextId}: Tuliskan butir soal Anda di sini...`,
+        pertanyaan: `Tuliskan butir pertanyaan nomor ${nextId} di sini...`,
         pilihan: ["Pilihan Jawaban A", "Pilihan Jawaban B", "Pilihan Jawaban C", "Pilihan Jawaban D"],
         kunci: 0,
       },
@@ -138,6 +138,21 @@ function TambahPertemuanContent() {
     setSoalPilganList(soalPilganList.filter((_, i) => i !== index));
   };
 
+  // Preset Cepat Tenggat Waktu (Deadline)
+  const setQuickDeadline = (days: number) => {
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + days);
+    const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    const monthNames = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember",
+    ];
+    const formatted = `${dayNames[targetDate.getDay()]}, ${targetDate.getDate()} ${
+      monthNames[targetDate.getMonth()]
+    } ${targetDate.getFullYear()}, 23:59 WIB`;
+    setDeadlineTugas(formatted);
+  };
+
   // Submission
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -158,14 +173,16 @@ function TambahPertemuanContent() {
           : "Pendalaman Materi dan Penugasan"
       }`;
 
+    // Otomatisasi Jadwal Pelaksanaan dari Rombel
+    const automatedSchedule = activeClass.jadwal || "Senin, 07:30 - 09:30 WIB";
+
     const newMeeting: PertemuanItem = {
       id: meetingId,
       nomor: Number(nomorPertemuan),
       judul: finalJudul,
       tipe: tipePertemuan,
-      tanggal: `${tanggalPertemuan}, ${jamPelaksanaan}`,
+      tanggal: automatedSchedule,
       durasiMenit: tipePertemuan === "REGULER" ? undefined : durasiMenit,
-      petunjukUjian: petunjukUjian,
       materi: {
         judul:
           materiJudul.trim() ||
@@ -173,12 +190,21 @@ function TambahPertemuanContent() {
         tipe: materiTipe,
         ringkasan:
           materiRingkasan.trim() ||
-          "Ringkasan bahan ajar dan capaian pembelajaran kurikulum merdeka.",
+          (materiTipe === "DOKUMEN"
+            ? `Berkas modul pembelajaran: ${uploadedFileName}`
+            : materiTipe === "VIDEO"
+            ? "Simak video materi pembelajaran berikut dengan teliti."
+            : "Rangkuman materi konsep kurikulum merdeka."),
         kontenLengkap:
           materiKontenLengkap.trim() ||
           materiRingkasan.trim() ||
-          "Materi modul ajar resmi SMAN 2 Buay Bahuga untuk dipelajari peserta didik.",
-        fileUrl: materiFileUrl.trim() || undefined,
+          "Materi bahan ajar resmi SMAN 2 Buay Bahuga untuk dipelajari mandiri oleh peserta didik.",
+        fileUrl:
+          materiTipe === "VIDEO"
+            ? materiFileUrl || "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+            : materiTipe === "DOKUMEN"
+            ? uploadedFileName
+            : undefined,
         sudahDibaca: false,
       },
       tugas: sertakanSoal
@@ -190,7 +216,8 @@ function TambahPertemuanContent() {
             tipe: tugasTipe,
             deskripsi:
               tugasDeskripsi.trim() ||
-              "Jawablah seluruh butir soal asesmen evaluasi berikut dengan cermat dan teliti.",
+              "Jawablah seluruh butir pertanyaan evaluasi berikut secara mandiri dan jujur.",
+            deadline: deadlineTugas,
             soalPilgan:
               tugasTipe === "PILIHAN_GANDA" || tugasTipe === "UJIAN_UTS" || tugasTipe === "UJIAN_UAS"
                 ? soalPilganList
@@ -236,7 +263,7 @@ function TambahPertemuanContent() {
 
   return (
     <div className="w-full space-y-6 sm:space-y-8 pb-16">
-      {/* Tombol Kembali & Breadcrumb yang Rapi */}
+      {/* Navigasi Breadcrumb Kembali */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200 pb-4">
         <Link
           href={`/guru/mapel?id=${activeClass?.id}`}
@@ -258,28 +285,32 @@ function TambahPertemuanContent() {
         <div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
             <BookOpen className="w-3.5 h-3.5 text-[#2A2C5E]" />
-            <span>Ruang Kelas: {activeClass?.nama} ({activeClass?.kode})</span>
+            <span>Mata Pelajaran: {activeClass?.nama} ({activeClass?.kode})</span>
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
             Tambah Pertemuan Pembelajaran Baru
           </h1>
           <p className="text-xs text-gray-500 mt-1">
-            Rancang jadwal sesi, materi pembelajaran siswa, dan latihan soal secara mudah dan terstruktur.
+            Rancang bahan ajar dan instrumen asesmen siswa secara mudah, fleksibel, dan langsung terhubung ke buku nilai.
           </p>
         </div>
 
-        <div className="shrink-0 flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-xl border border-gray-200 text-xs text-gray-600">
+        {/* Informasi Jadwal Otomatis */}
+        <div className="shrink-0 flex items-center gap-2.5 px-4 py-2.5 bg-blue-50/70 rounded-xl border border-blue-100 text-xs text-[#2A2C5E]">
           <Clock className="w-4 h-4 text-[#2A2C5E]" />
-          <span>Jadwal Reguler: <strong>{activeClass?.jadwal}</strong></span>
+          <div>
+            <span className="block text-[10px] text-gray-500 font-medium">Jadwal Sesi Pembelajaran:</span>
+            <span className="font-bold text-gray-900">{activeClass?.jadwal || "Sesuai Jadwal Rombel"}</span>
+          </div>
         </div>
       </div>
 
       {/* Formulir Ramah Guru */}
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* ================================================================= */}
-        {/* KARTU 1: IDENTITAS & WAKTU PERTEMUAN */}
+        {/* KARTU 1: IDENTITAS PERTEMUAN (JADWAL OTOMATIS) */}
         {/* ================================================================= */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 shadow-2xs space-y-5">
+        <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 shadow-2xs space-y-4">
           <div className="border-b border-gray-100 pb-3 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <span className="w-7 h-7 rounded-lg bg-blue-50 text-[#2A2C5E] font-bold text-xs flex items-center justify-center">
@@ -287,19 +318,19 @@ function TambahPertemuanContent() {
               </span>
               <div>
                 <h2 className="text-sm sm:text-base font-bold text-gray-900">
-                  Informasi Sesi Pertemuan
+                  Identitas Sesi Pertemuan
                 </h2>
                 <p className="text-[11px] text-gray-500">
-                  Tentukan nomor pertemuan, topik pembahasan, dan tanggal pelaksanaan sesi.
+                  Nomor sesi dan topik pembahasan pembelajaran.
                 </p>
               </div>
             </div>
-            <span className="text-[11px] font-bold text-[#2A2C5E] bg-blue-50 px-2 py-0.5 rounded">
+            <span className="text-xs font-bold text-[#2A2C5E] bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">
               Pertemuan ke-{nomorPertemuan}
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
             {/* Nomor Pertemuan */}
             <div>
               <label className="block font-semibold text-gray-700 mb-1">
@@ -311,15 +342,15 @@ function TambahPertemuanContent() {
                 max="30"
                 value={nomorPertemuan}
                 onChange={(e) => setNomorPertemuan(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-xl font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20"
+                className="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-xl font-bold text-gray-900 text-center focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20"
                 required
               />
             </div>
 
-            {/* Kategori Sesi Pembelajaran */}
-            <div className="sm:col-span-2">
+            {/* Kategori Sesi */}
+            <div className="sm:col-span-3">
               <label className="block font-semibold text-gray-700 mb-1">
-                Kategori Pertemuan:
+                Kategori Sesi Pembelajaran:
               </label>
               <div className="grid grid-cols-3 gap-2">
                 <button
@@ -329,7 +360,7 @@ function TambahPertemuanContent() {
                     setTugasTipe("PILIHAN_GANDA");
                     setDurasiMenit(60);
                   }}
-                  className={`py-2 px-2.5 rounded-xl font-bold text-xs text-center border transition-all cursor-pointer ${
+                  className={`py-2 px-3 rounded-xl font-bold text-xs text-center border transition-all cursor-pointer ${
                     tipePertemuan === "REGULER"
                       ? "bg-[#2A2C5E] text-white border-[#2A2C5E] shadow-2xs"
                       : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
@@ -345,13 +376,13 @@ function TambahPertemuanContent() {
                     setDurasiMenit(90);
                     setSertakanSoal(true);
                   }}
-                  className={`py-2 px-2.5 rounded-xl font-bold text-xs text-center border transition-all cursor-pointer ${
+                  className={`py-2 px-3 rounded-xl font-bold text-xs text-center border transition-all cursor-pointer ${
                     tipePertemuan === "UTS"
                       ? "bg-[#2A2C5E] text-white border-[#2A2C5E] shadow-2xs"
                       : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
                   }`}
                 >
-                  Ujian Tengah Semester (UTS)
+                  Penilaian Tengah Semester (UTS)
                 </button>
                 <button
                   type="button"
@@ -361,64 +392,36 @@ function TambahPertemuanContent() {
                     setDurasiMenit(90);
                     setSertakanSoal(true);
                   }}
-                  className={`py-2 px-2.5 rounded-xl font-bold text-xs text-center border transition-all cursor-pointer ${
+                  className={`py-2 px-3 rounded-xl font-bold text-xs text-center border transition-all cursor-pointer ${
                     tipePertemuan === "UAS"
                       ? "bg-[#2A2C5E] text-white border-[#2A2C5E] shadow-2xs"
                       : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
                   }`}
                 >
-                  Ujian Akhir Semester (UAS)
+                  Penilaian Akhir Semester (UAS)
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Judul Pertemuan */}
+          {/* Judul Topik Pertemuan */}
           <div className="text-xs space-y-1">
             <label className="block font-semibold text-gray-700">
-              Judul / Topik Pertemuan:
+              Judul / Topik Pembahasan:
             </label>
             <input
               type="text"
               value={judulPertemuan}
               onChange={(e) => setJudulPertemuan(e.target.value)}
-              placeholder="Contoh: Pertemuan 9: Struktur Membran Plasma dan Transpor Zat"
+              placeholder="Contoh: Pertemuan 9: Struktur Membran Plasma dan Mekanisme Transpor Zat"
               className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 font-semibold focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20"
               required
             />
           </div>
-
-          {/* Tanggal & Waktu */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-            <div>
-              <label className="block font-semibold text-gray-700 mb-1">
-                Hari &amp; Tanggal Sesi:
-              </label>
-              <input
-                type="text"
-                value={tanggalPertemuan}
-                onChange={(e) => setTanggalPertemuan(e.target.value)}
-                placeholder="Senin, 08 Desember 2026"
-                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20"
-              />
-            </div>
-            <div>
-              <label className="block font-semibold text-gray-700 mb-1">
-                Waktu Pembelajaran:
-              </label>
-              <input
-                type="text"
-                value={jamPelaksanaan}
-                onChange={(e) => setJamPelaksanaan(e.target.value)}
-                placeholder="07:30 - 09:30 WIB"
-                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20"
-              />
-            </div>
-          </div>
         </div>
 
         {/* ================================================================= */}
-        {/* KARTU 2: MODUL BAHAN AJAR (MATERI SISWA) */}
+        {/* KARTU 2: BAHAN AJAR & MODUL PEMBELAJARAN (TANPA DEADLINE) */}
         {/* ================================================================= */}
         <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 shadow-2xs space-y-5">
           <div className="border-b border-gray-100 pb-3 flex items-center justify-between">
@@ -431,53 +434,70 @@ function TambahPertemuanContent() {
                   Bahan Ajar &amp; Modul Pembelajaran Siswa
                 </h2>
                 <p className="text-[11px] text-gray-500">
-                  Materi yang akan dibaca atau dipelajari siswa di ruang kelas digital mereka.
+                  Materi dapat diakses siswa kapan saja tanpa batas tenggat waktu.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Pilihan Format Materi */}
+          {/* 3 Pilihan Format Bahan Ajar Interaktif */}
           <div className="space-y-1.5 text-xs">
             <label className="block font-semibold text-gray-700">
-              Format Bahan Ajar:
+              Pilih Format Bahan Ajar:
             </label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <button
                 type="button"
                 onClick={() => setMateriTipe("DOKUMEN")}
-                className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
                   materiTipe === "DOKUMEN"
-                    ? "bg-emerald-50 text-emerald-900 border-emerald-300 shadow-2xs"
-                    : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
+                    ? "bg-emerald-50/70 border-emerald-400 text-emerald-950 shadow-2xs ring-1 ring-emerald-400"
+                    : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100"
                 }`}
               >
-                <FileText className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Dokumen / Modul PDF</span>
+                <div className={`p-2 rounded-lg shrink-0 ${materiTipe === "DOKUMEN" ? "bg-emerald-600 text-white" : "bg-white text-gray-500 border border-gray-200"}`}>
+                  <FileText className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="font-bold text-xs">Dokumen / Modul PDF</div>
+                  <div className="text-[11px] text-gray-500 mt-0.5">Bahan bacaan digital atau modul cetak sekolah.</div>
+                </div>
               </button>
+
               <button
                 type="button"
                 onClick={() => setMateriTipe("VIDEO")}
-                className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
                   materiTipe === "VIDEO"
-                    ? "bg-emerald-50 text-emerald-900 border-emerald-300 shadow-2xs"
-                    : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
+                    ? "bg-emerald-50/70 border-emerald-400 text-emerald-950 shadow-2xs ring-1 ring-emerald-400"
+                    : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100"
                 }`}
               >
-                <Video className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Video Pembelajaran</span>
+                <div className={`p-2 rounded-lg shrink-0 ${materiTipe === "VIDEO" ? "bg-emerald-600 text-white" : "bg-white text-gray-500 border border-gray-200"}`}>
+                  <Video className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="font-bold text-xs">Video Pembelajaran</div>
+                  <div className="text-[11px] text-gray-500 mt-0.5">Tautan video penjelasan YouTube atau rekaman.</div>
+                </div>
               </button>
+
               <button
                 type="button"
                 onClick={() => setMateriTipe("RINGKASAN")}
-                className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
                   materiTipe === "RINGKASAN"
-                    ? "bg-emerald-50 text-emerald-900 border-emerald-300 shadow-2xs"
-                    : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
+                    ? "bg-emerald-50/70 border-emerald-400 text-emerald-950 shadow-2xs ring-1 ring-emerald-400"
+                    : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100"
                 }`}
               >
-                <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Ringkasan Bacaan Teks</span>
+                <div className={`p-2 rounded-lg shrink-0 ${materiTipe === "RINGKASAN" ? "bg-emerald-600 text-white" : "bg-white text-gray-500 border border-gray-200"}`}>
+                  <BookOpen className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="font-bold text-xs">Ringkasan Teks Digital</div>
+                  <div className="text-[11px] text-gray-500 mt-0.5">Catatan rangkuman konsep langsung di halaman.</div>
+                </div>
               </button>
             </div>
           </div>
@@ -485,7 +505,7 @@ function TambahPertemuanContent() {
           {/* Judul Bahan Ajar */}
           <div className="text-xs space-y-1">
             <label className="block font-semibold text-gray-700">
-              Judul Modul Bahan Ajar:
+              Judul Bahan Ajar:
             </label>
             <input
               type="text"
@@ -497,51 +517,117 @@ function TambahPertemuanContent() {
             />
           </div>
 
-          {/* Ringkasan Singkat */}
-          <div className="text-xs space-y-1">
-            <label className="block font-semibold text-gray-700">
-              Ringkasan Singkat Capaian Pembelajaran:
-            </label>
-            <input
-              type="text"
-              value={materiRingkasan}
-              onChange={(e) => setMateriRingkasan(e.target.value)}
-              placeholder="Contoh: Memahami fungsi membran sel, difusi terfasilitasi, dan transpor aktif."
-              className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20"
-            />
-          </div>
+          {/* Form Dinamis: Menyesuaikan Format yang Dipilih */}
+          {materiTipe === "DOKUMEN" && (
+            <div className="space-y-3 pt-2 border-t border-gray-100 text-xs">
+              <label className="block font-semibold text-gray-700">
+                Pilih Berkas Dokumen Modul (PDF / DOCX):
+              </label>
+              <div className="p-4 rounded-xl border-2 border-dashed border-emerald-300 bg-emerald-50/40 text-center space-y-2">
+                <Upload className="w-7 h-7 text-emerald-600 mx-auto" />
+                <div className="text-xs font-bold text-emerald-900">
+                  {uploadedFileName}
+                </div>
+                <p className="text-[11px] text-gray-500">
+                  Berkas bahan ajar siap diunduh dan dipelajari peserta didik secara mandiri.
+                </p>
+                <div className="flex items-center justify-center gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const names = [
+                        "Modul_Ajar_SMAN2_Bab9_Lengkap.pdf",
+                        "Bahan_Ajar_Sains_Kurikulum_Merdeka.pdf",
+                        "Lembar_Kerja_Peserta_Didik_Bab9.pdf",
+                      ];
+                      const next = names[(names.indexOf(uploadedFileName) + 1) % names.length];
+                      setUploadedFileName(next);
+                    }}
+                    className="px-3 py-1.5 bg-white border border-emerald-300 text-emerald-800 text-[11px] font-bold rounded-lg shadow-2xs hover:bg-emerald-50 cursor-pointer"
+                  >
+                    Ganti Berkas Contoh
+                  </button>
+                </div>
+              </div>
 
-          {/* Uraian Konten Lengkap */}
-          <div className="text-xs space-y-1">
-            <label className="block font-semibold text-gray-700">
-              Isi Penjelasan Lengkap Materi:
-            </label>
-            <textarea
-              rows={4}
-              value={materiKontenLengkap}
-              onChange={(e) => setMateriKontenLengkap(e.target.value)}
-              placeholder="Tuliskan uraian materi secara lengkap agar siswa dapat membaca dan belajar mandiri..."
-              className="w-full p-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20"
-            />
-          </div>
+              <div>
+                <label className="block font-semibold text-gray-700 mb-1">
+                  Deskripsi Singkat / Petunjuk Membaca Modul:
+                </label>
+                <input
+                  type="text"
+                  value={materiRingkasan}
+                  onChange={(e) => setMateriRingkasan(e.target.value)}
+                  placeholder="Contoh: Bacalah modul bab 9 halaman 12-25 sebelum melanjutkan ke sesi diskusi."
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20"
+                />
+              </div>
+            </div>
+          )}
 
-          {/* Link Referensi Opsional */}
-          <div className="text-xs space-y-1">
-            <label className="block font-semibold text-gray-700">
-              Tautan Dokumen / File Pendukung (Opsional):
-            </label>
-            <input
-              type="text"
-              value={materiFileUrl}
-              onChange={(e) => setMateriFileUrl(e.target.value)}
-              placeholder="https://drive.google.com/... (tautan materi pendukung jika ada)"
-              className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 font-mono text-[11px]"
-            />
-          </div>
+          {materiTipe === "VIDEO" && (
+            <div className="space-y-3 pt-2 border-t border-gray-100 text-xs">
+              <div>
+                <label className="block font-semibold text-gray-700 mb-1">
+                  Tautan Video Pembelajaran (YouTube / Video Edukatif):
+                </label>
+                <div className="relative">
+                  <Link2 className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={materiFileUrl}
+                    onChange={(e) => setMateriFileUrl(e.target.value)}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20"
+                  />
+                </div>
+              </div>
+
+              <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center gap-3">
+                <Video className="w-8 h-8 text-rose-600 shrink-0" />
+                <div className="text-xs">
+                  <div className="font-bold text-gray-900">Pemutar Video Terintegrasi</div>
+                  <div className="text-[11px] text-gray-500">
+                    Siswa dapat memutar video langsung di portal tanpa harus membuka aplikasi lain.
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-gray-700 mb-1">
+                  Catatan Poin Kunci Video:
+                </label>
+                <textarea
+                  rows={3}
+                  value={materiKontenLengkap}
+                  onChange={(e) => setMateriKontenLengkap(e.target.value)}
+                  placeholder="Tuliskan poin penting atau rangkuman yang harus dicermati siswa dari video..."
+                  className="w-full p-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20"
+                />
+              </div>
+            </div>
+          )}
+
+          {materiTipe === "RINGKASAN" && (
+            <div className="space-y-3 pt-2 border-t border-gray-100 text-xs">
+              <div>
+                <label className="block font-semibold text-gray-700 mb-1">
+                  Uraian Catatan / Rangkuman Pelajaran Lengkap:
+                </label>
+                <textarea
+                  rows={5}
+                  value={materiKontenLengkap}
+                  onChange={(e) => setMateriKontenLengkap(e.target.value)}
+                  placeholder="Ketikkan teks materi penjelasan lengkap di sini. Teks ini akan langsung tampil di layar siswa dengan tipografi yang nyaman dibaca..."
+                  className="w-full p-3.5 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 leading-relaxed"
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* ================================================================= */}
-        {/* KARTU 3: EVALUASI & SOAL CBT (DENGAN SAKELAR RAMAH GURU) */}
+        {/* KARTU 3: LATIHAN SOAL & ASESMEN CBT (DENGAN DEADLINE TUGAS) */}
         {/* ================================================================= */}
         <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 shadow-2xs space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-3">
@@ -551,77 +637,133 @@ function TambahPertemuanContent() {
               </span>
               <div>
                 <h2 className="text-sm sm:text-base font-bold text-gray-900">
-                  Latihan Soal &amp; Asesmen CBT Siswa (Opsional)
+                  Latihan Soal &amp; Asesmen Siswa (Tugas / CBT)
                 </h2>
                 <p className="text-[11px] text-gray-500">
-                  Tambahkan lembar kuis atau evaluasi mandiri jika pertemuan ini memerlukan penilaian.
+                  Dilengkapi batas waktu pengumpulan (deadline tugas) dan penilaian otomatis.
                 </p>
               </div>
             </div>
 
-            {/* Sakelar / Toggle Ramah Guru */}
-            <label className="inline-flex items-center gap-2 cursor-pointer bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-200 hover:bg-gray-100 transition-colors">
+            {/* Toggle Ramah: Sertakan Soal atau Hanya Materi */}
+            <label className="inline-flex items-center gap-2.5 cursor-pointer bg-gray-50 px-3.5 py-2 rounded-xl border border-gray-200 hover:bg-gray-100 transition-colors">
               <input
                 type="checkbox"
                 checked={sertakanSoal}
                 onChange={(e) => setSertakanSoal(e.target.checked)}
                 className="w-4 h-4 accent-[#2A2C5E] rounded cursor-pointer"
               />
-              <span className="text-xs font-bold text-gray-800">
-                {sertakanSoal ? "Aktif (Sertakan Soal)" : "Non-Aktif (Hanya Materi)"}
+              <span className="text-xs font-bold text-gray-900">
+                {sertakanSoal ? "Aktif: Sertakan Soal Tugas" : "Non-Aktif (Hanya Materi Saja)"}
               </span>
             </label>
           </div>
 
           {sertakanSoal ? (
-            <div className="space-y-4 pt-1">
+            <div className="space-y-5 pt-1">
+              {/* Batas Waktu Pengumpulan (Deadline Tugas) */}
+              <div className="p-4 rounded-xl bg-amber-50/50 border border-amber-200 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-amber-700" />
+                    <span className="text-xs font-bold text-gray-900">
+                      Batas Waktu Pengumpulan (Deadline Tugas):
+                    </span>
+                  </div>
+                  {/* Tombol Cepat Deadline */}
+                  <div className="flex items-center gap-1.5 text-[11px]">
+                    <span className="text-gray-500 text-[10px]">Pilihan Cepat:</span>
+                    <button
+                      type="button"
+                      onClick={() => setQuickDeadline(3)}
+                      className="px-2 py-0.5 bg-white border border-amber-300 hover:bg-amber-100 rounded-md font-semibold text-amber-900 cursor-pointer"
+                    >
+                      +3 Hari
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setQuickDeadline(7)}
+                      className="px-2 py-0.5 bg-white border border-amber-300 hover:bg-amber-100 rounded-md font-semibold text-amber-900 cursor-pointer"
+                    >
+                      +1 Minggu
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setQuickDeadline(14)}
+                      className="px-2 py-0.5 bg-white border border-amber-300 hover:bg-amber-100 rounded-md font-semibold text-amber-900 cursor-pointer"
+                    >
+                      +2 Minggu
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <input
+                      type="text"
+                      value={deadlineTugas}
+                      onChange={(e) => setDeadlineTugas(e.target.value)}
+                      placeholder="Senin, 15 Desember 2026, 23:59 WIB"
+                      className="w-full px-3 py-2 bg-white border border-amber-300 rounded-xl text-gray-900 font-bold focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 text-[11px] text-gray-600 bg-white/70 px-3 py-1.5 rounded-xl border border-amber-200/60">
+                    <Clock className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                    <span>Siswa tidak dapat mengirimkan jawaban setelah melewati batas waktu ini.</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Pilihan Format Lembar Soal */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                {/* Format Soal */}
                 <div>
                   <label className="block font-semibold text-gray-700 mb-1">
-                    Format Lembar Soal:
+                    Jenis Evaluasi:
                   </label>
                   <select
                     value={tugasTipe}
                     onChange={(e) => setTugasTipe(e.target.value as any)}
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20"
+                    className="w-full px-3 py-2.5 bg-white border border-gray-300 rounded-xl font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20"
                   >
                     <option value="PILIHAN_GANDA">Pilihan Ganda (Auto-Scoring CBT)</option>
-                    <option value="ESSAY">Soal Essay Uraian</option>
+                    <option value="ESSAY">Tugas Essay / Uraian Mandiri</option>
                     {tipePertemuan === "UTS" && (
-                      <option value="UJIAN_UTS">Asesmen Sumatif UTS</option>
+                      <option value="UJIAN_UTS">Ujian Tengah Semester (UTS)</option>
                     )}
                     {tipePertemuan === "UAS" && (
-                      <option value="UJIAN_UAS">Asesmen Sumatif UAS</option>
+                      <option value="UJIAN_UAS">Ujian Akhir Semester (UAS)</option>
                     )}
                   </select>
                 </div>
 
-                {/* Judul Lembar Soal */}
                 <div className="sm:col-span-2">
                   <label className="block font-semibold text-gray-700 mb-1">
-                    Judul Lembar Soal:
+                    Judul Lembar Soal / Asesmen:
                   </label>
                   <input
                     type="text"
                     value={tugasJudul}
                     onChange={(e) => setTugasJudul(e.target.value)}
-                    placeholder="Contoh: Kuis Pemahaman Formatif Pertemuan 9"
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 font-semibold focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20"
+                    placeholder="Contoh: Latihan Formatif Bab 9: Struktur Membran Sel"
+                    className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 font-semibold focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20"
                   />
                 </div>
               </div>
 
-              {/* Pembuat Soal Pilihan Ganda */}
+              {/* Pembuat Soal Pilihan Ganda Interaktif */}
               {(tugasTipe === "PILIHAN_GANDA" || tugasTipe === "UJIAN_UTS" || tugasTipe === "UJIAN_UAS") && (
                 <div className="space-y-4 pt-3 border-t border-gray-100">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="text-xs sm:text-sm font-bold text-gray-900">
-                        Daftar Butir Soal Pilihan Ganda ({soalPilganList.length} Soal)
+                        Butir Soal Pilihan Ganda ({soalPilganList.length} Butir &bull; Bobot:{" "}
+                        <span className="text-[#2A2C5E]">
+                          {Math.round(100 / Math.max(1, soalPilganList.length))} poin/soal
+                        </span>
+                        )
                       </h3>
                       <p className="text-[11px] text-gray-500">
-                        Klik tombol radio lingkaran untuk menentukan kunci jawaban yang benar.
+                        Tentukan teks pertanyaan dan klik tombol radio pada opsi yang menjadi kunci jawaban benar.
                       </p>
                     </div>
 
@@ -631,7 +773,7 @@ function TambahPertemuanContent() {
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2A2C5E] hover:bg-[#1F2147] text-white text-xs font-bold rounded-lg shadow-2xs cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
-                      <span>Tambah Butir Soal</span>
+                      <span>Tambah Soal Baru</span>
                     </button>
                   </div>
 
@@ -643,7 +785,7 @@ function TambahPertemuanContent() {
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-xs text-[#2A2C5E] px-2.5 py-0.5 rounded bg-blue-50 border border-blue-100">
-                            Nomor {sIdx + 1}
+                            Soal Nomor {sIdx + 1}
                           </span>
                           {soalPilganList.length > 1 && (
                             <button
@@ -659,7 +801,7 @@ function TambahPertemuanContent() {
 
                         <div>
                           <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                            Pertanyaan:
+                            Teks Pertanyaan:
                           </label>
                           <textarea
                             rows={2}
@@ -671,9 +813,9 @@ function TambahPertemuanContent() {
                         </div>
 
                         {/* Opsi Pilihan A, B, C, D */}
-                        <div className="space-y-2">
+                        <div className="space-y-1.5">
                           <label className="block text-[11px] font-semibold text-gray-700">
-                            Opsi Pilihan Jawaban (Pilih Kunci yang Benar):
+                            Pilihan Jawaban (Tandai Kunci Jawaban Benar):
                           </label>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                             {soal.pilihan.map((opsi, oIdx) => {
@@ -684,7 +826,7 @@ function TambahPertemuanContent() {
                                   key={oIdx}
                                   className={`flex items-center gap-2 p-2 rounded-xl border transition-all ${
                                     isKey
-                                      ? "bg-emerald-50 border-emerald-400 text-emerald-900 shadow-2xs"
+                                      ? "bg-emerald-50 border-emerald-400 text-emerald-950 shadow-2xs ring-1 ring-emerald-300"
                                       : "bg-white border-gray-200 text-gray-700"
                                   }`}
                                 >
@@ -708,8 +850,9 @@ function TambahPertemuanContent() {
                                     required
                                   />
                                   {isKey && (
-                                    <span className="text-[10px] font-bold text-emerald-800 bg-emerald-200/80 px-2 py-0.5 rounded-md shrink-0">
-                                      Kunci Benar
+                                    <span className="text-[10px] font-bold text-emerald-800 bg-emerald-200/90 px-2 py-0.5 rounded-md shrink-0 flex items-center gap-1">
+                                      <Check className="w-3 h-3" />
+                                      <span>Kunci Benar</span>
                                     </span>
                                   )}
                                 </div>
@@ -728,35 +871,45 @@ function TambahPertemuanContent() {
                 <div className="space-y-3 pt-3 border-t border-gray-100 text-xs">
                   <div>
                     <label className="block font-semibold text-gray-700 mb-1">
-                      Pertanyaan Uraian / Studi Kasus:
+                      Pertanyaan Tugas Uraian / Studi Kasus:
                     </label>
                     <textarea
                       rows={4}
                       value={pertanyaanEssay}
                       onChange={(e) => setPertanyaanEssay(e.target.value)}
-                      placeholder="Tuliskan butir soal essay yang harus diuraikan oleh siswa..."
+                      placeholder="Tuliskan butir soal essay atau studi kasus yang harus dikerjakan siswa..."
                       className="w-full p-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20"
                       required
                     />
                   </div>
+                  <p className="text-[11px] text-gray-500 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-[#2A2C5E] shrink-0" />
+                    <span>Siswa dapat mengetikkan jawaban secara langsung di portal atau mengunggah lembar kerja tugas sebelum batas tenggat waktu.</span>
+                  </p>
                 </div>
               )}
             </div>
           ) : (
-            <div className="p-4 bg-gray-50 rounded-xl text-center text-xs text-gray-500">
-              Sesi pertemuan ini hanya berisi modul bahan ajar tanpa lembar kuis evaluasi.
+            <div className="p-4 bg-emerald-50/60 rounded-xl border border-emerald-200 text-center text-xs text-emerald-900 space-y-1">
+              <div className="font-bold flex items-center justify-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Pertemuan Bebas Tugas (Hanya Materi Pembelajaran)</span>
+              </div>
+              <p className="text-[11px] text-emerald-700">
+                Sesi ini difokuskan untuk membaca modul atau menyimak video pembelajaran tanpa kewajiban mengerjakan lembar kuis evaluasi.
+              </p>
             </div>
           )}
         </div>
 
         {/* ================================================================= */}
-        {/* TOMBOL AKSI SIMPAN & TERBITKAN */}
+        {/* TOMBOL AKSI SIMPAN */}
         {/* ================================================================= */}
         <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-xs text-gray-500">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>
-              Pertemuan akan langsung diterbitkan ke akun siswa dan buku nilai guru kelas ini.
+              Sesi akan langsung muncul di alur belajar siswa dan kolom nilai kelas.
             </span>
           </div>
 

@@ -36,6 +36,7 @@ export interface PertemuanItem {
     nilai?: number | null;
     jawabanSiswa?: any;
     tanggalSubmit?: string;
+    deadline?: string;
   };
   presensi: {
     hadir: boolean;

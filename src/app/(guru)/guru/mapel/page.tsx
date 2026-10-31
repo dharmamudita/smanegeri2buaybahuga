@@ -428,6 +428,58 @@ function GuruMapelContent() {
           </button>
         </div>
 
+        {/* 4 Kartu Statistik Guru */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-4 sm:p-5 shadow-2xs">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-500 block">
+              TOTAL KELAS DIAMPU
+            </span>
+            <div className="text-base sm:text-lg font-bold text-gray-900 mt-1">
+              {classes.length} Rombel Kelas
+            </div>
+            <span className="text-[10px] sm:text-[11px] text-gray-500 block mt-1">
+              Kurikulum Merdeka 2026/2027
+            </span>
+          </div>
+
+          <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-4 sm:p-5 shadow-2xs">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-500 block">
+              TOTAL MODUL PERTEMUAN
+            </span>
+            <div className="text-base sm:text-lg font-bold text-gray-900 mt-1">
+              {classes.reduce((acc, c) => acc + c.pertemuanList.length, 0)} Sesi Ajar
+            </div>
+            <span className="text-[10px] sm:text-[11px] text-gray-500 block mt-1">
+              Materi &amp; Evaluasi CBT
+            </span>
+          </div>
+
+          <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-4 sm:p-5 shadow-2xs">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-500 block">
+              SISWA BINAAN AKTIF
+            </span>
+            <div className="text-base sm:text-lg font-bold text-gray-900 mt-1">
+              142 Peserta Didik
+            </div>
+            <span className="text-[10px] sm:text-[11px] text-gray-500 block mt-1">
+              Rombel Terdaftar
+            </span>
+          </div>
+
+          <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-4 sm:p-5 shadow-2xs">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-500 block">
+              STATUS DATABASE
+            </span>
+            <div className="text-base sm:text-lg font-bold text-emerald-700 mt-1 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block shrink-0"></span>
+              <span>Supabase Terhubung</span>
+            </div>
+            <span className="text-[10px] sm:text-[11px] text-gray-500 block mt-1">
+              Tersinkronisasi Real-Time
+            </span>
+          </div>
+        </div>
+
         {/* Input Cari Kelas */}
         <div className="bg-white p-3.5 rounded-xl border border-gray-200 shadow-2xs flex items-center gap-3">
           <div className="relative flex-1">

@@ -440,7 +440,7 @@ export default function GuruRekapAbsensiPage() {
             />
           </div>
           <p className="text-[11px] text-gray-500 font-medium">
-            💡 <span className="font-semibold text-gray-700">Tips:</span> Klik tombol simbol (H/I/S/A) pada kolom pertemuan untuk mengubah status kehadiran siswa secara langsung.
+            <span className="font-bold text-[#2A2C5E] uppercase tracking-wider">Petunjuk:</span> Klik tombol simbol (H/I/S/A) pada kolom pertemuan untuk mengubah status kehadiran siswa secara langsung.
           </p>
         </div>
       </div>

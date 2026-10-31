@@ -56,6 +56,99 @@ export interface MapelLMS {
   pertemuanList: PertemuanItem[];
 }
 
+export interface SiswaGradeRecord {
+  siswaId: string;
+  nama: string;
+  nisn: string;
+  kelas: string;
+  nilaiPerPertemuan: Record<string, number>;
+}
+
+export interface SiswaAbsensiRecord {
+  siswaId: string;
+  nama: string;
+  nisn: string;
+  kelas: string;
+  absensiPerPertemuan: Record<string, "H" | "I" | "S" | "A">;
+}
+
+export const SEED_CLASS_STUDENTS: { id: string; nama: string; nisn: string; kelas: string }[] = [
+  { id: "s-1", nama: "Nabila Dijayanti", nisn: "0078129341", kelas: "XII MIPA 1" },
+  { id: "s-2", nama: "Safety Octa Sushadi", nisn: "0078129342", kelas: "XII MIPA 1" },
+  { id: "s-3", nama: "M. Ziddane Alfaridz", nisn: "0081234567", kelas: "XII MIPA 1" },
+  { id: "s-4", nama: "Aji Winata Prayoga", nisn: "0081234568", kelas: "XII MIPA 1" },
+  { id: "s-5", nama: "Evista Silvy Laudrya", nisn: "0081234569", kelas: "XII MIPA 1" },
+  { id: "s-6", nama: "Bagas Saputra", nisn: "0081234570", kelas: "XII MIPA 1" },
+  { id: "s-7", nama: "Citra Dewi", nisn: "0081234571", kelas: "XII MIPA 1" },
+  { id: "s-8", nama: "Dharma Mudita Pratama", nisn: "0078129340", kelas: "XII MIPA 1" },
+];
+
+export const INITIAL_GRADE_MATRIX: Record<string, SiswaGradeRecord[]> = {
+  "mapel-1": [
+    { siswaId: "s-1", nama: "Nabila Dijayanti", nisn: "0078129341", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 95, "2": 92, "3": 90, "4": 94, "5": 92, "6": 96, "7": 90, "8": 95 } },
+    { siswaId: "s-2", nama: "Safety Octa Sushadi", nisn: "0078129342", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 90, "2": 88, "3": 92, "4": 90, "5": 89, "6": 91, "7": 88, "8": 92 } },
+    { siswaId: "s-3", nama: "M. Ziddane Alfaridz", nisn: "0081234567", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 85, "2": 82, "3": 86, "4": 84, "5": 85, "6": 88, "7": 84, "8": 86 } },
+    { siswaId: "s-4", nama: "Aji Winata Prayoga", nisn: "0081234568", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 88, "2": 85, "3": 88, "4": 87, "5": 86, "6": 89, "7": 87, "8": 90 } },
+    { siswaId: "s-5", nama: "Evista Silvy Laudrya", nisn: "0081234569", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 98, "2": 95, "3": 96, "4": 98, "5": 97, "6": 99, "7": 96, "8": 98 } },
+    { siswaId: "s-6", nama: "Bagas Saputra", nisn: "0081234570", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 74, "2": 70, "3": 72, "4": 75, "5": 72, "6": 78, "7": 74, "8": 76 } },
+    { siswaId: "s-7", nama: "Citra Dewi", nisn: "0081234571", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 92, "2": 90, "3": 94, "4": 91, "5": 93, "6": 95, "7": 92, "8": 94 } },
+    { siswaId: "s-8", nama: "Dharma Mudita Pratama", nisn: "0078129340", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 94, "2": 91, "3": 93, "4": 95, "5": 92, "6": 96, "7": 94, "8": 95 } },
+  ],
+  "mapel-2": [
+    { siswaId: "s-1", nama: "Nabila Dijayanti", nisn: "0078129341", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 92, "2": 90, "3": 88, "4": 94, "5": 90, "6": 95, "7": 92, "8": 94 } },
+    { siswaId: "s-2", nama: "Safety Octa Sushadi", nisn: "0078129342", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 88, "2": 85, "3": 87, "4": 89, "5": 88, "6": 90, "7": 86, "8": 89 } },
+    { siswaId: "s-3", nama: "M. Ziddane Alfaridz", nisn: "0081234567", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 82, "2": 80, "3": 84, "4": 82, "5": 85, "6": 86, "7": 83, "8": 85 } },
+    { siswaId: "s-4", nama: "Aji Winata Prayoga", nisn: "0081234568", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 86, "2": 84, "3": 85, "4": 86, "5": 87, "6": 88, "7": 85, "8": 87 } },
+    { siswaId: "s-5", nama: "Evista Silvy Laudrya", nisn: "0081234569", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 96, "2": 94, "3": 95, "4": 97, "5": 95, "6": 98, "7": 96, "8": 97 } },
+    { siswaId: "s-6", nama: "Bagas Saputra", nisn: "0081234570", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 72, "2": 70, "3": 74, "4": 71, "5": 73, "6": 75, "7": 72, "8": 74 } },
+    { siswaId: "s-7", nama: "Citra Dewi", nisn: "0081234571", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 90, "2": 88, "3": 92, "4": 90, "5": 91, "6": 94, "7": 90, "8": 92 } },
+    { siswaId: "s-8", nama: "Dharma Mudita Pratama", nisn: "0078129340", kelas: "XII MIPA 1", nilaiPerPertemuan: { "1": 93, "2": 90, "3": 92, "4": 94, "5": 91, "6": 95, "7": 93, "8": 94 } },
+  ],
+  "mapel-3": [
+    { siswaId: "s-1", nama: "Nabila Dijayanti", nisn: "0078129341", kelas: "XII IPS 1", nilaiPerPertemuan: { "1": 94, "2": 91, "3": 93, "4": 92, "5": 90, "6": 95, "7": 92, "8": 93 } },
+    { siswaId: "s-2", nama: "Safety Octa Sushadi", nisn: "0078129342", kelas: "XII IPS 1", nilaiPerPertemuan: { "1": 89, "2": 87, "3": 90, "4": 88, "5": 89, "6": 92, "7": 89, "8": 91 } },
+    { siswaId: "s-3", nama: "M. Ziddane Alfaridz", nisn: "0081234567", kelas: "XII IPS 1", nilaiPerPertemuan: { "1": 87, "2": 84, "3": 85, "4": 86, "5": 88, "6": 89, "7": 86, "8": 88 } },
+    { siswaId: "s-4", nama: "Aji Winata Prayoga", nisn: "0081234568", kelas: "XII IPS 1", nilaiPerPertemuan: { "1": 85, "2": 83, "3": 86, "4": 85, "5": 84, "6": 87, "7": 85, "8": 86 } },
+    { siswaId: "s-5", nama: "Evista Silvy Laudrya", nisn: "0081234569", kelas: "XII IPS 1", nilaiPerPertemuan: { "1": 97, "2": 96, "3": 95, "4": 98, "5": 96, "6": 99, "7": 97, "8": 98 } },
+    { siswaId: "s-6", nama: "Bagas Saputra", nisn: "0081234570", kelas: "XII IPS 1", nilaiPerPertemuan: { "1": 75, "2": 72, "3": 74, "4": 73, "5": 76, "6": 78, "7": 75, "8": 76 } },
+    { siswaId: "s-7", nama: "Citra Dewi", nisn: "0081234571", kelas: "XII IPS 1", nilaiPerPertemuan: { "1": 91, "2": 89, "3": 93, "4": 90, "5": 92, "6": 94, "7": 91, "8": 93 } },
+    { siswaId: "s-8", nama: "Dharma Mudita Pratama", nisn: "0078129340", kelas: "XII IPS 1", nilaiPerPertemuan: { "1": 92, "2": 90, "3": 91, "4": 93, "5": 92, "6": 95, "7": 93, "8": 94 } },
+  ],
+};
+
+export const INITIAL_ABSENSI_MATRIX: Record<string, SiswaAbsensiRecord[]> = {
+  "mapel-1": [
+    { siswaId: "s-1", nama: "Nabila Dijayanti", nisn: "0078129341", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-2", nama: "Safety Octa Sushadi", nisn: "0078129342", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-3", nama: "M. Ziddane Alfaridz", nisn: "0081234567", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "I", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-4", nama: "Aji Winata Prayoga", nisn: "0081234568", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "I", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-5", nama: "Evista Silvy Laudrya", nisn: "0081234569", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-6", nama: "Bagas Saputra", nisn: "0081234570", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "S", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-7", nama: "Citra Dewi", nisn: "0081234571", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-8", nama: "Dharma Mudita Pratama", nisn: "0078129340", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+  ],
+  "mapel-2": [
+    { siswaId: "s-1", nama: "Nabila Dijayanti", nisn: "0078129341", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-2", nama: "Safety Octa Sushadi", nisn: "0078129342", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-3", nama: "M. Ziddane Alfaridz", nisn: "0081234567", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "I", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-4", nama: "Aji Winata Prayoga", nisn: "0081234568", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-5", nama: "Evista Silvy Laudrya", nisn: "0081234569", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-6", nama: "Bagas Saputra", nisn: "0081234570", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "S", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-7", nama: "Citra Dewi", nisn: "0081234571", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-8", nama: "Dharma Mudita Pratama", nisn: "0078129340", kelas: "XII MIPA 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+  ],
+  "mapel-3": [
+    { siswaId: "s-1", nama: "Nabila Dijayanti", nisn: "0078129341", kelas: "XII IPS 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-2", nama: "Safety Octa Sushadi", nisn: "0078129342", kelas: "XII IPS 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-3", nama: "M. Ziddane Alfaridz", nisn: "0081234567", kelas: "XII IPS 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "I", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-4", nama: "Aji Winata Prayoga", nisn: "0081234568", kelas: "XII IPS 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-5", nama: "Evista Silvy Laudrya", nisn: "0081234569", kelas: "XII IPS 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-6", nama: "Bagas Saputra", nisn: "0081234570", kelas: "XII IPS 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "S", "8": "H" } },
+    { siswaId: "s-7", nama: "Citra Dewi", nisn: "0081234571", kelas: "XII IPS 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+    { siswaId: "s-8", nama: "Dharma Mudita Pratama", nisn: "0078129340", kelas: "XII IPS 1", absensiPerPertemuan: { "1": "H", "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H" } },
+  ],
+};
+
 // Data awal lengkap pertemuan per mata pelajaran
 const SEED_PERTEMUAN_BIOLOGI: PertemuanItem[] = [
   {
@@ -586,7 +679,15 @@ interface LMSState {
   classes: MapelLMS[];
   selectedClassId: string | null;
   enrolledMapelIds: string[];
+  gradeMatrix: Record<string, SiswaGradeRecord[]>;
+  absensiMatrix: Record<string, SiswaAbsensiRecord[]>;
   selectClass: (id: string | null) => void;
+  addClass: (newClass: MapelLMS) => void;
+  addPertemuan: (classId: string, pertemuan: PertemuanItem) => void;
+  updatePertemuan: (classId: string, pertemuanId: string, data: Partial<PertemuanItem>) => void;
+  deletePertemuan: (classId: string, pertemuanId: string) => void;
+  updateStudentGrade: (classId: string, siswaId: string, pertemuanKey: string, score: number) => void;
+  updateStudentAbsensi: (classId: string, siswaId: string, pertemuanKey: string, status: "H" | "I" | "S" | "A") => void;
   markMateriSelesai: (mapelId: string, pertemuanId: string) => void;
   submitTugasPilgan: (mapelId: string, pertemuanId: string, skor: number) => void;
   submitTugasEssay: (mapelId: string, pertemuanId: string, jawabanText: string) => void;
@@ -602,8 +703,128 @@ export const useLMSStore = create<LMSState>()(
       classes: INITIAL_CLASSES,
       selectedClassId: null,
       enrolledMapelIds: ["mapel-1", "mapel-2", "mapel-3"],
+      gradeMatrix: INITIAL_GRADE_MATRIX,
+      absensiMatrix: INITIAL_ABSENSI_MATRIX,
 
       selectClass: (id) => set({ selectedClassId: id }),
+
+      addClass: (newClass) => {
+        // Inisialisasi daftar nilai dan absensi untuk siswa rombel ini
+        const initialClassGrades: SiswaGradeRecord[] = SEED_CLASS_STUDENTS.map((s) => ({
+          siswaId: s.id,
+          nama: s.nama,
+          nisn: s.nisn,
+          kelas: `${newClass.tingkat} ${newClass.jurusan}`,
+          nilaiPerPertemuan: { "1": 85 },
+        }));
+
+        const initialClassAbsensi: SiswaAbsensiRecord[] = SEED_CLASS_STUDENTS.map((s) => ({
+          siswaId: s.id,
+          nama: s.nama,
+          nisn: s.nisn,
+          kelas: `${newClass.tingkat} ${newClass.jurusan}`,
+          absensiPerPertemuan: { "1": "H" },
+        }));
+
+        set((state) => ({
+          classes: [newClass, ...state.classes],
+          enrolledMapelIds: [...state.enrolledMapelIds, newClass.id],
+          gradeMatrix: {
+            ...state.gradeMatrix,
+            [newClass.id]: initialClassGrades,
+          },
+          absensiMatrix: {
+            ...state.absensiMatrix,
+            [newClass.id]: initialClassAbsensi,
+          },
+        }));
+      },
+
+      addPertemuan: (classId, pertemuan) => {
+        set((state) => ({
+          classes: state.classes.map((cls) => {
+            if (cls.id !== classId) return cls;
+            return {
+              ...cls,
+              pertemuanList: [...cls.pertemuanList, pertemuan],
+            };
+          }),
+        }));
+      },
+
+      updatePertemuan: (classId, pertemuanId, data) => {
+        set((state) => ({
+          classes: state.classes.map((cls) => {
+            if (cls.id !== classId) return cls;
+            return {
+              ...cls,
+              pertemuanList: cls.pertemuanList.map((p) => {
+                if (p.id !== pertemuanId) return p;
+                return {
+                  ...p,
+                  ...data,
+                };
+              }),
+            };
+          }),
+        }));
+      },
+
+      deletePertemuan: (classId, pertemuanId) => {
+        set((state) => ({
+          classes: state.classes.map((cls) => {
+            if (cls.id !== classId) return cls;
+            return {
+              ...cls,
+              pertemuanList: cls.pertemuanList.filter((p) => p.id !== pertemuanId),
+            };
+          }),
+        }));
+      },
+
+      updateStudentGrade: (classId, siswaId, pertemuanKey, score) => {
+        set((state) => {
+          const classGrades = state.gradeMatrix[classId] || INITIAL_GRADE_MATRIX["mapel-1"] || [];
+          const updated = classGrades.map((rec) => {
+            if (rec.siswaId !== siswaId) return rec;
+            return {
+              ...rec,
+              nilaiPerPertemuan: {
+                ...rec.nilaiPerPertemuan,
+                [pertemuanKey]: score,
+              },
+            };
+          });
+          return {
+            gradeMatrix: {
+              ...state.gradeMatrix,
+              [classId]: updated,
+            },
+          };
+        });
+      },
+
+      updateStudentAbsensi: (classId, siswaId, pertemuanKey, status) => {
+        set((state) => {
+          const classAbsensi = state.absensiMatrix[classId] || INITIAL_ABSENSI_MATRIX["mapel-1"] || [];
+          const updated = classAbsensi.map((rec) => {
+            if (rec.siswaId !== siswaId) return rec;
+            return {
+              ...rec,
+              absensiPerPertemuan: {
+                ...rec.absensiPerPertemuan,
+                [pertemuanKey]: status,
+              },
+            };
+          });
+          return {
+            absensiMatrix: {
+              ...state.absensiMatrix,
+              [classId]: updated,
+            },
+          };
+        });
+      },
 
       enrollClass: (classId) => {
         if (!get().enrolledMapelIds.includes(classId)) {

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useAuthStore } from "@/lib/store";
 import { useLMSStore } from "@/lib/lmsStore";
+import PaginationBar from "@/components/common/PaginationBar";
 
 export default function SiswaDashboardPage() {
   const { currentUser } = useAuthStore();
@@ -35,8 +36,11 @@ export default function SiswaDashboardPage() {
   // 2. Kelas yang belum diikuti siswa (tampil di bawah fitur cari kelas)
   const unenrolledClasses = classes.filter((c) => !enrolledMapelIds.includes(c.id));
 
-  // Search state
+  // Search & Pagination state
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 6;
+
   const [modalJoinOpen, setModalJoinOpen] = useState(false);
   const [inputClassCode, setInputClassCode] = useState("");
   const [joinResult, setJoinResult] = useState<{ success: boolean; message: string } | null>(null);
@@ -51,6 +55,13 @@ export default function SiswaDashboardPage() {
       c.guruNama.toLowerCase().includes(q)
     );
   });
+
+  const totalItems = displayedAvailableClasses.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const paginatedAvailableClasses = displayedAvailableClasses.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   const handleJoinClass = (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,7 +139,10 @@ export default function SiswaDashboardPage() {
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
             placeholder="Cari kelas yang ingin diikuti (contoh: Fisika, Kimia, Sosiologi, Informatika)..."
             className="w-full pl-10 pr-4 py-2 text-xs bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
           />
@@ -149,7 +163,7 @@ export default function SiswaDashboardPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900">
               Daftar Kelas Tersedia yang Belum Diikuti ({displayedAvailableClasses.length})
             </h2>
             <p className="text-xs text-gray-500 mt-0.5">
@@ -175,50 +189,66 @@ export default function SiswaDashboardPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {displayedAvailableClasses.map((cls) => (
-              <div
-                key={cls.id}
-                className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden flex flex-col justify-between hover:border-[#2A2C5E] transition-all"
-              >
-                <div className="p-5 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-50 text-[#2A2C5E] border border-blue-100">
-                      {cls.kode}
-                    </span>
-                    <span className="text-xs text-gray-500 font-medium">
-                      {cls.ruang}
-                    </span>
+          <div className="space-y-5">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4 md:gap-6">
+              {paginatedAvailableClasses.map((cls) => (
+                <div
+                  key={cls.id}
+                  className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden flex flex-col justify-between hover:border-[#2A2C5E] transition-all"
+                >
+                  <div className="p-3 sm:p-5 space-y-2 sm:space-y-3">
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-1.5 sm:px-2 py-0.5 rounded bg-blue-50 text-[#2A2C5E] border border-blue-100 shrink-0">
+                        {cls.kode}
+                      </span>
+                      <span className="text-[10px] sm:text-xs text-gray-500 font-medium truncate">
+                        {cls.ruang}
+                      </span>
+                    </div>
+
+                    <h3 className="text-xs sm:text-base font-bold text-gray-900 leading-snug line-clamp-2 min-h-[2rem] sm:min-h-0">
+                      {cls.nama}
+                    </h3>
+
+                    <p className="text-[10px] sm:text-xs text-gray-600 flex items-center gap-1 truncate">
+                      <User className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-400 shrink-0" />
+                      <span className="truncate">
+                        <strong className="text-gray-800">Guru:</strong> {cls.guruNama}
+                      </span>
+                    </p>
+
+                    <div className="text-[9px] sm:text-[11px] text-gray-500 pt-2 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-0.5">
+                      <span className="truncate">Kelas {cls.tingkat} ({cls.jurusan})</span>
+                      <span className="shrink-0">{cls.pertemuanList.length} Pertemuan</span>
+                    </div>
                   </div>
 
-                  <h3 className="text-base font-bold text-gray-900 leading-snug">
-                    {cls.nama}
-                  </h3>
-
-                  <p className="text-xs text-gray-600 flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-gray-400" />
-                    <span><strong className="text-gray-800">Guru:</strong> {cls.guruNama}</span>
-                  </p>
-
-                  <div className="text-[11px] text-gray-500 pt-2 border-t border-gray-100 flex items-center justify-between">
-                    <span>Tingkat: Kelas {cls.tingkat} ({cls.jurusan})</span>
-                    <span>{cls.pertemuanList.length} Pertemuan</span>
+                  <div className="p-2.5 sm:p-4 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-1.5 sm:gap-2">
+                    <span className="text-[9px] sm:text-[11px] text-gray-500 truncate">{cls.jadwal}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleQuickEnroll(cls.id, cls.nama)}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 py-1.5 sm:px-3.5 sm:py-1.5 text-[10px] sm:text-xs font-semibold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md transition-all shadow-2xs cursor-pointer shrink-0"
+                    >
+                      <PlusCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+                      <span>Gabung Kelas</span>
+                    </button>
                   </div>
                 </div>
+              ))}
+            </div>
 
-                <div className="p-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between gap-2">
-                  <span className="text-[11px] text-gray-500 truncate">{cls.jadwal}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleQuickEnroll(cls.id, cls.nama)}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md transition-all shadow-2xs cursor-pointer shrink-0"
-                  >
-                    <PlusCircle className="w-3.5 h-3.5" />
-                    <span>Gabung Kelas</span>
-                  </button>
-                </div>
-              </div>
-            ))}
+            {/* Navigasi Paginasi (Maksimal 6 Tampilan per Halaman) */}
+            {totalPages > 1 && (
+              <PaginationBar
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                itemsPerPage={pageSize}
+                onPageChange={(page) => setCurrentPage(page)}
+                itemLabel="kelas tersedia"
+              />
+            )}
           </div>
         )}
       </div>

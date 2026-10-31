@@ -190,32 +190,32 @@ export default function SiswaTugasPage() {
             <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wider">
               Petunjuk Pengerjaan Ujian:
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-gray-600">
-              <div className="p-3 rounded-lg bg-gray-50 border border-gray-100 flex items-start gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 text-[10px] sm:text-xs text-gray-600">
+              <div className="p-2.5 sm:p-3 rounded-lg bg-gray-50 border border-gray-100 flex items-start gap-2">
+                <CheckCircle2 className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-gray-900">Doa & Kesiapan:</strong> Berdoa sebelum memulai dan pastikan koneksi perangkat Anda stabil.
+                  <strong className="text-gray-900 block sm:inline">Doa & Kesiapan:</strong> Berdoa sebelum memulai dan pastikan koneksi perangkat Anda stabil.
                 </div>
               </div>
 
-              <div className="p-3 rounded-lg bg-gray-50 border border-gray-100 flex items-start gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
+              <div className="p-2.5 sm:p-3 rounded-lg bg-gray-50 border border-gray-100 flex items-start gap-2">
+                <CheckCircle2 className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-gray-900">Mandiri & Jujur:</strong> Kerjakan setiap butir soal secara mandiri dengan menjunjung tinggi kejujuran.
+                  <strong className="text-gray-900 block sm:inline">Mandiri & Jujur:</strong> Kerjakan setiap butir soal secara mandiri dengan jujur.
                 </div>
               </div>
 
-              <div className="p-3 rounded-lg bg-gray-50 border border-gray-100 flex items-start gap-2.5">
-                <Clock className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
+              <div className="p-2.5 sm:p-3 rounded-lg bg-gray-50 border border-gray-100 flex items-start gap-2">
+                <Clock className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-gray-900">Manajemen Waktu:</strong> Perhatikan sisa waktu ujian yang tertera di bagian atas layar pengerjaan.
+                  <strong className="text-gray-900 block sm:inline">Manajemen Waktu:</strong> Perhatikan sisa waktu ujian yang tertera di bagian atas.
                 </div>
               </div>
 
-              <div className="p-3 rounded-lg bg-gray-50 border border-gray-100 flex items-start gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
+              <div className="p-2.5 sm:p-3 rounded-lg bg-gray-50 border border-gray-100 flex items-start gap-2">
+                <CheckCircle2 className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-[#2A2C5E] shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-gray-900">Pemeriksaan Jawaban:</strong> Periksa kembali semua jawaban sebelum mengklik tombol selesai ujian.
+                  <strong className="text-gray-900 block sm:inline">Periksa Jawaban:</strong> Periksa kembali semua jawaban sebelum mengklik selesai.
                 </div>
               </div>
             </div>

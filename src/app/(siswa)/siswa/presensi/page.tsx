@@ -238,8 +238,8 @@ export default function SiswaPresensiPage() {
       </div>
 
       {/* Geofence Detection Card */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-8 space-y-5 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-gray-100 pb-4">
           <div>
             <h2 className="text-base font-bold text-gray-900">
               Pusat Verifikasi Koordinat
@@ -253,7 +253,7 @@ export default function SiswaPresensiPage() {
             <button
               onClick={detectLiveLocation}
               disabled={loadingLocation}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 rounded-md transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 rounded-md transition-colors w-full sm:w-auto cursor-pointer"
             >
               <RefreshCw
                 className={`w-3.5 h-3.5 text-[#2A2C5E] ${
@@ -265,24 +265,89 @@ export default function SiswaPresensiPage() {
           </div>
         </div>
 
-        {/* Demo Simulator Buttons */}
+        {/* 4 Kartu Status Presensi (2 Kolom di Mobile, 4 Kolom di Desktop) */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+          <div className="p-3 sm:p-4 rounded-xl border border-gray-200 bg-gray-50/60 space-y-1">
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">
+              Titik Sekolah
+            </span>
+            <p className="text-xs sm:text-sm font-bold text-gray-900 truncate">
+              SMAN 2 Buay Bahuga
+            </p>
+            <p className="text-[10px] text-gray-500 font-mono truncate">
+              {schoolLat}, {schoolLng}
+            </p>
+          </div>
+
+          <div className="p-3 sm:p-4 rounded-xl border border-gray-200 bg-gray-50/60 space-y-1">
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">
+              Radius Toleransi
+            </span>
+            <p className="text-xs sm:text-sm font-bold text-[#2A2C5E]">
+              &le; {maxRadius} Meter
+            </p>
+            <p className="text-[10px] text-gray-500 truncate">
+              Lingkungan Sekolah
+            </p>
+          </div>
+
+          <div className="p-3 sm:p-4 rounded-xl border border-gray-200 bg-gray-50/60 space-y-1">
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">
+              Status Hari Ini
+            </span>
+            <p className={`text-xs sm:text-sm font-bold truncate ${successCheckedIn ? "text-emerald-700" : "text-amber-700"}`}>
+              {successCheckedIn ? "Hadir Terverifikasi" : "Belum Absensi"}
+            </p>
+            <p className="text-[10px] text-gray-500 truncate">
+              {successCheckedIn ? "Tepat Waktu" : "Menunggu Koordinat"}
+            </p>
+          </div>
+
+          <div className="p-3 sm:p-4 rounded-xl border border-gray-200 bg-gray-50/60 space-y-1">
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">
+              Riwayat Presensi
+            </span>
+            <p className="text-xs sm:text-sm font-bold text-gray-900">
+              {records.length} Sesi Tercatat
+            </p>
+            <p className="text-[10px] text-gray-500 truncate">
+              Audit Log Haversine
+            </p>
+          </div>
+        </div>
+
+        {/* Demo Simulator Buttons (2 Kolom di Mobile) */}
         <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-2">
           <div className="text-[11px] font-bold text-gray-600 flex items-center gap-1.5">
             <Compass className="w-3.5 h-3.5 text-[#2A2C5E]" />
             <span>Simulasi Uji Coba Cepat (Testing Preset):</span>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <button
+              type="button"
               onClick={() => setSimulationLocation("INSIDE")}
-              className="px-3 py-1.5 rounded-md text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-colors"
+              className="p-2.5 sm:p-3 rounded-xl text-left border border-emerald-200 bg-emerald-50/70 hover:bg-emerald-100/70 transition-all cursor-pointer flex flex-col justify-between gap-1 shadow-2xs"
             >
-              Simulasi Berada di Sekolah (Jarak: ~28m)
+              <div className="flex items-center gap-1.5 text-emerald-800 font-bold text-[11px] sm:text-xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span className="truncate">Di Lingkungan Sekolah</span>
+              </div>
+              <span className="text-[10px] sm:text-[11px] text-emerald-700/90 font-medium">
+                Jarak: ~28m (Presensi Sah)
+              </span>
             </button>
             <button
+              type="button"
               onClick={() => setSimulationLocation("OUTSIDE")}
-              className="px-3 py-1.5 rounded-md text-xs font-semibold bg-red-50 hover:bg-red-100 text-red-800 border border-red-200 transition-colors"
+              className="p-2.5 sm:p-3 rounded-xl text-left border border-rose-200 bg-rose-50/70 hover:bg-rose-100/70 transition-all cursor-pointer flex flex-col justify-between gap-1 shadow-2xs"
             >
-              Simulasi Di Luar Sekolah (Jarak: ~380m)
+              <div className="flex items-center gap-1.5 text-rose-800 font-bold text-[11px] sm:text-xs">
+                <XCircle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                <span className="truncate">Di Luar Lingkungan</span>
+              </div>
+              <span className="text-[10px] sm:text-[11px] text-rose-700/90 font-medium">
+                Jarak: ~380m (Presensi Ditolak)
+              </span>
             </button>
           </div>
         </div>
@@ -290,31 +355,31 @@ export default function SiswaPresensiPage() {
         {/* Distance Indicator Box */}
         {distance !== null ? (
           <div
-            className={`p-5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+            className={`p-4 sm:p-5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 ${
               isWithinGeofence
                 ? "bg-emerald-50/60 border-emerald-200 text-emerald-900"
                 : "bg-red-50/60 border-red-200 text-red-900"
             }`}
           >
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-2.5 sm:gap-3">
               {isWithinGeofence ? (
-                <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 sm:w-6 h-5 sm:h-6 text-emerald-600 shrink-0 mt-0.5" />
               ) : (
-                <XCircle className="w-6 h-6 text-red-600 shrink-0 mt-0.5" />
+                <XCircle className="w-5 sm:w-6 h-5 sm:h-6 text-red-600 shrink-0 mt-0.5" />
               )}
               <div>
-                <div className="font-bold text-sm">
+                <div className="font-bold text-xs sm:text-sm">
                   {isWithinGeofence
-                    ? "Lokasi Anda Terverifikasi Di Dalam Area Sekolah"
+                    ? "Lokasi Anda Terverifikasi Di Dalam Lingkungan Sekolah"
                     : "Anda Berada di Luar Jangkauan Sekolah"}
                 </div>
-                <div className="text-xs mt-1 space-y-0.5 opacity-90">
+                <div className="text-[11px] sm:text-xs mt-1 space-y-0.5 opacity-90">
                   <p>
                     Jarak Terhitung:{" "}
-                    <strong className="text-sm font-mono">{distance} Meter</strong>{" "}
+                    <strong className="text-xs sm:text-sm font-mono">{distance} Meter</strong>{" "}
                     (Batas Maksimal: {maxRadius} Meter)
                   </p>
-                  <p className="text-[11px]">
+                  <p className="text-[10px] sm:text-[11px]">
                     Koordinat Pengguna: Lat {latitude?.toFixed(6)}, Lng{" "}
                     {longitude?.toFixed(6)}
                   </p>
@@ -322,17 +387,18 @@ export default function SiswaPresensiPage() {
               </div>
             </div>
 
-            <div>
+            <div className="w-full sm:w-auto shrink-0">
               {successCheckedIn ? (
-                <span className="inline-flex items-center gap-1 px-4 py-2 bg-emerald-600 text-white font-bold text-xs rounded-md shadow-xs">
+                <span className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-4 py-2 bg-emerald-600 text-white font-bold text-xs rounded-md shadow-xs">
                   <CheckCircle2 className="w-4 h-4" />
                   Presensi Berhasil Tercatat
                 </span>
               ) : (
                 <button
+                  type="button"
                   onClick={handleCheckIn}
                   disabled={!isWithinGeofence}
-                  className="w-full sm:w-auto px-6 py-2.5 bg-[#2A2C5E] hover:bg-[#1F2147] text-white font-bold text-xs rounded-md shadow-xs disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                  className="w-full sm:w-auto px-6 py-2.5 bg-[#2A2C5E] hover:bg-[#1F2147] text-white font-bold text-xs rounded-md shadow-xs disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
                 >
                   Kirim Absensi Kehadiran
                 </button>
@@ -340,8 +406,8 @@ export default function SiswaPresensiPage() {
             </div>
           </div>
         ) : (
-          <div className="p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300 text-gray-500 space-y-2">
-            <MapPin className="w-8 h-8 text-gray-400 mx-auto" />
+          <div className="p-6 sm:p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300 text-gray-500 space-y-2">
+            <MapPin className="w-7 sm:w-8 h-7 sm:h-8 text-gray-400 mx-auto" />
             <p className="text-xs font-semibold text-gray-700">
               Belum ada data geolokasi yang terdeteksi
             </p>

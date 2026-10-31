@@ -42,11 +42,11 @@ export default function PaginationBar({
           type="button"
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage <= 1}
-          className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:border-[#2A2C5E] disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1 h-8 px-2 sm:px-2.5 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:border-[#2A2C5E] disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
           aria-label="Halaman Sebelumnya"
         >
           <ChevronLeft className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Sebelumnya</span>
+          <span className="text-[10px] sm:text-xs">Kembali</span>
         </button>
 
         <div className="flex items-center gap-1">
@@ -57,7 +57,7 @@ export default function PaginationBar({
                 key={page}
                 type="button"
                 onClick={() => onPageChange(page)}
-                className={`w-8 h-8 rounded-lg text-xs font-bold flex items-center justify-center transition-all cursor-pointer ${
+                className={`w-7 sm:w-8 h-7 sm:h-8 rounded-lg text-xs font-bold flex items-center justify-center transition-all cursor-pointer ${
                   isActive
                     ? "bg-[#2A2C5E] text-white shadow-xs"
                     : "bg-gray-100/80 text-gray-700 hover:bg-gray-200/80 hover:text-gray-900"
@@ -73,10 +73,10 @@ export default function PaginationBar({
           type="button"
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage >= totalPages}
-          className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:border-[#2A2C5E] disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1 h-8 px-2 sm:px-2.5 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:border-[#2A2C5E] disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
           aria-label="Halaman Berikutnya"
         >
-          <span className="hidden sm:inline">Berikutnya</span>
+          <span className="text-[10px] sm:text-xs">Selanjutnya</span>
           <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>

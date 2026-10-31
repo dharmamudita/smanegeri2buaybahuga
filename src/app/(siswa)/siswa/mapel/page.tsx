@@ -21,6 +21,7 @@ import {
   User,
 } from "lucide-react";
 import { useLMSStore, MapelLMS, PertemuanItem, SoalPilgan } from "@/lib/lmsStore";
+import PaginationBar from "@/components/common/PaginationBar";
 
 function SiswaMapelContent() {
   const searchParams = useSearchParams();
@@ -52,6 +53,16 @@ function SiswaMapelContent() {
   }, [classes, urlClassId, selectedClassId]);
 
   const enrolledClasses = classes.filter((c) => enrolledMapelIds.includes(c.id));
+
+  // Paginasi kotak kelas yang diikuti (Maksimal 6 per halaman)
+  const [classPage, setClassPage] = useState(1);
+  const CLASS_PAGE_SIZE = 6;
+  const totalEnrolled = enrolledClasses.length;
+  const totalClassPages = Math.ceil(totalEnrolled / CLASS_PAGE_SIZE);
+  const paginatedEnrolledClasses = enrolledClasses.slice(
+    (classPage - 1) * CLASS_PAGE_SIZE,
+    classPage * CLASS_PAGE_SIZE
+  );
 
   // State untuk modal interaktif
   const [modalMateri, setModalMateri] = useState<{
@@ -136,78 +147,93 @@ function SiswaMapelContent() {
           </p>
         </div>
 
-        {/* Grid Kotak Kelas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {enrolledClasses.map((cls) => {
-            const total = cls.pertemuanList.length;
-            const completed = cls.pertemuanList.filter(
-              (p) => (p.materi?.sudahDibaca || p.tugas?.sudahDikerjakan) && p.presensi.hadir
-            ).length;
-            const percent = Math.round((completed / total) * 100);
+        {/* Grid Kotak Kelas (2 Kolom di Mobile, Maksimal 6 per Halaman) */}
+        <div className="space-y-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4 md:gap-6">
+            {paginatedEnrolledClasses.map((cls) => {
+              const total = cls.pertemuanList.length;
+              const completed = cls.pertemuanList.filter(
+                (p) => (p.materi?.sudahDibaca || p.tugas?.sudahDikerjakan) && p.presensi.hadir
+              ).length;
+              const percent = Math.round((completed / total) * 100);
 
-            return (
-              <div
-                key={cls.id}
-                className="bg-white rounded-2xl border border-gray-200 p-6 shadow-2xs hover:shadow-md hover:border-[#2A2C5E] transition-all flex flex-col justify-between"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-blue-50 text-[#2A2C5E] border border-blue-100">
-                      {cls.kode}
-                    </span>
-                    <span className="text-xs text-gray-500 font-medium">
-                      {cls.ruang}
-                    </span>
+              return (
+                <div
+                  key={cls.id}
+                  className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-3.5 sm:p-6 shadow-2xs hover:shadow-md hover:border-[#2A2C5E] transition-all flex flex-col justify-between"
+                >
+                  <div className="space-y-2.5 sm:space-y-4">
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded bg-blue-50 text-[#2A2C5E] border border-blue-100 shrink-0">
+                        {cls.kode}
+                      </span>
+                      <span className="text-[10px] sm:text-xs text-gray-500 font-medium truncate">
+                        {cls.ruang}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h2 className="text-xs sm:text-base font-bold text-gray-900 leading-snug line-clamp-2 min-h-[2rem] sm:min-h-0">
+                        {cls.nama}
+                      </h2>
+                      <p className="text-[10px] sm:text-xs text-gray-600 mt-1 flex items-center gap-1 truncate">
+                        <User className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-400 shrink-0" />
+                        <span className="truncate">{cls.guruNama}</span>
+                      </p>
+                    </div>
+
+                    {/* Status Baris Progres */}
+                    <div className="space-y-1 sm:space-y-1.5 pt-2 sm:pt-3 border-t border-gray-100">
+                      <div className="flex items-center justify-between text-[10px] sm:text-xs">
+                        <span className="text-gray-500">Progres Belajar</span>
+                        <span className="font-bold text-[#2A2C5E]">{percent}%</span>
+                      </div>
+                      <div className="w-full h-1.5 sm:h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#2A2C5E] rounded-full transition-all duration-300"
+                          style={{ width: `${percent}%` }}
+                        />
+                      </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between text-[9px] sm:text-[11px] text-gray-400 gap-0.5">
+                        <span>{completed} Selesai</span>
+                        <span>Total {total} Pertemuan</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div>
-                    <h2 className="text-base font-bold text-gray-900 leading-snug">
-                      {cls.nama}
-                    </h2>
-                    <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
-                      <User className="w-3.5 h-3.5 text-gray-400" />
-                      <span>{cls.guruNama}</span>
-                    </p>
-                  </div>
-
-                  {/* Status Baris Progres */}
-                  <div className="space-y-1.5 pt-3 border-t border-gray-100">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-gray-500">Progres Capaian</span>
-                      <span className="font-bold text-[#2A2C5E]">{percent}%</span>
-                    </div>
-                    <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-[#2A2C5E] rounded-full transition-all duration-300"
-                        style={{ width: `${percent}%` }}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between text-[11px] text-gray-400">
-                      <span>{completed} Selesai</span>
-                      <span>Total {total} Pertemuan</span>
-                    </div>
+                  <div className="pt-3 sm:pt-5 mt-3 sm:mt-4 border-t border-gray-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+                    <span className="text-[9px] sm:text-[11px] text-gray-500 font-medium truncate">
+                      {cls.jadwal}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        selectClass(cls.id);
+                        router.push(`/siswa/mapel?id=${cls.id}`);
+                      }}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-2.5 py-1.5 sm:px-3.5 sm:py-2 text-[10px] sm:text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-lg shadow-2xs transition-all cursor-pointer shrink-0"
+                    >
+                      <span className="sm:hidden">Buka Kelas</span>
+                      <span className="hidden sm:inline">Buka Ruang Belajar</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
+              );
+            })}
+          </div>
 
-                <div className="pt-5 mt-4 border-t border-gray-100 flex items-center justify-between">
-                  <span className="text-[11px] text-gray-500 font-medium">
-                    {cls.jadwal}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      selectClass(cls.id);
-                      router.push(`/siswa/mapel?id=${cls.id}`);
-                    }}
-                    className="inline-flex items-center gap-1 px-3.5 py-2 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-lg shadow-2xs transition-all cursor-pointer"
-                  >
-                    <span>Buka Ruang Belajar</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
+          {/* Navigasi Paginasi Kotak Kelas */}
+          {totalClassPages > 1 && (
+            <PaginationBar
+              currentPage={classPage}
+              totalPages={totalClassPages}
+              totalItems={totalEnrolled}
+              itemsPerPage={CLASS_PAGE_SIZE}
+              onPageChange={(p) => setClassPage(p)}
+              itemLabel="kelas terdaftar"
+            />
+          )}
         </div>
       </div>
     );

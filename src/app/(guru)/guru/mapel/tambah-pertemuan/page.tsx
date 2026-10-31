@@ -20,8 +20,7 @@ import {
   Sparkles,
   Award,
   Layers,
-  HelpCircle,
-  FileCheck,
+  ChevronDown,
   Filter,
 } from "lucide-react";
 import { useLMSStore, PertemuanItem, SoalPilgan } from "@/lib/lmsStore";
@@ -56,10 +55,15 @@ function TambahPertemuanContent() {
     }
   }, [activeClass]);
 
-  // Kategori Sesi Pembelajaran (Filter Tabs: Reguler / Penilaian Harian / UTS / UAS)
+  // Dropdown States (Hanya terbuka ketika tombol diklik)
+  const [openDropdown, setOpenDropdown] = useState<
+    "KATEGORI" | "FORMAT_MATERI" | "JENIS_TUGAS" | "DEADLINE" | "DURASI" | null
+  >(null);
+
+  // Kategori Sesi Pembelajaran (Pilihan Dropdown)
   const [kategoriSesi, setKategoriSesi] = useState<"REGULER" | "HARIAN" | "UTS" | "UAS">("REGULER");
 
-  // Format Bahan Ajar (Filter Tabs: DOKUMEN | VIDEO | RINGKASAN | NONE)
+  // Format Bahan Ajar (Pilihan Dropdown)
   const [formatMateri, setFormatMateri] = useState<"DOKUMEN" | "VIDEO" | "RINGKASAN" | "NONE">("DOKUMEN");
   const [materiJudul, setMateriJudul] = useState<string>("");
   const [uploadedFileName, setUploadedFileName] = useState<string>("Modul_Ajar_SMAN2_BahanAjar.pdf");
@@ -67,7 +71,7 @@ function TambahPertemuanContent() {
   const [materiRingkasan, setMateriRingkasan] = useState<string>("");
   const [materiKontenLengkap, setMateriKontenLengkap] = useState<string>("");
 
-  // Jenis Asesmen / Tugas (Filter Tabs: PILIHAN_GANDA | ESSAY | NONE)
+  // Jenis Asesmen / Tugas (Pilihan Dropdown)
   const [jenisAsesmen, setJenisAsesmen] = useState<"PILIHAN_GANDA" | "ESSAY" | "NONE">("PILIHAN_GANDA");
   const [tugasJudul, setTugasJudul] = useState<string>("");
   const [durasiMenit, setDurasiMenit] = useState<number>(60);
@@ -75,7 +79,7 @@ function TambahPertemuanContent() {
     "Jelaskan kesimpulan dan analisis kritis Anda terhadap materi yang telah dipelajari pada pertemuan ini."
   );
 
-  // Tenggat Pengumpulan (Deadline) berbasis Filter Klik
+  // Tenggat Pengumpulan (Deadline) berbasis Dropdown Filter
   const [presetDeadline, setPresetDeadline] = useState<"3_HARI" | "7_HARI" | "14_HARI" | "CUSTOM">("7_HARI");
   const [deadlineTugas, setDeadlineTugas] = useState<string>("");
 
@@ -283,8 +287,44 @@ function TambahPertemuanContent() {
     router.push(`/guru/mapel?id=${activeClass.id}&toast=added`);
   };
 
+  // Label Map untuk Tampilan Pilihan Aktif
+  const kategoriLabelMap = {
+    REGULER: "Sesi Reguler / Formatif",
+    HARIAN: "Penilaian Harian (Kuis)",
+    UTS: "Ujian Tengah Semester (UTS)",
+    UAS: "Ujian Akhir Semester (UAS)",
+  };
+
+  const formatMateriLabelMap = {
+    DOKUMEN: "Modul PDF Digital",
+    VIDEO: "Video Pembelajaran",
+    RINGKASAN: "Catatan Rangkuman Teks",
+    NONE: "Tanpa Bahan Ajar",
+  };
+
+  const jenisAsesmenLabelMap = {
+    PILIHAN_GANDA: "Pilihan Ganda (CBT)",
+    ESSAY: "Tugas Essay / Uraian",
+    NONE: "Tanpa Tugas Evaluasi",
+  };
+
+  const presetDeadlineLabelMap = {
+    "3_HARI": "+3 Hari",
+    "7_HARI": "+7 Hari (1 Minggu)",
+    "14_HARI": "+14 Hari (2 Minggu)",
+    CUSTOM: "Kustom Tanggal & Waktu",
+  };
+
   return (
     <div className="w-full space-y-5 pb-16">
+      {/* Backdrop transparan untuk menutup dropdown saat klik di luar */}
+      {openDropdown && (
+        <div
+          className="fixed inset-0 z-20"
+          onClick={() => setOpenDropdown(null)}
+        />
+      )}
+
       {/* Navigasi Breadcrumb Kembali */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200 pb-3.5">
         <Link
@@ -306,7 +346,7 @@ function TambahPertemuanContent() {
 
       {/* FORMULIR UTAMA TERPADU: 1 CONTAINER / 1 BORDER COMPACT */}
       <form onSubmit={handleSubmit}>
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-2xs divide-y divide-gray-100 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-2xs divide-y divide-gray-100 overflow-visible">
           {/* =============================================================== */}
           {/* BAGIAN 1: HEADER & IDENTITAS OTOMATIS */}
           {/* =============================================================== */}
@@ -338,78 +378,126 @@ function TambahPertemuanContent() {
           </div>
 
           {/* =============================================================== */}
-          {/* BAGIAN 2: KATEGORI SESI (BERGAYA FILTER TABS HORIZONTAL) */}
+          {/* BAGIAN 2: KATEGORI SESI (FILTER DROPDOWN ELEGAN) */}
           {/* =============================================================== */}
-          <div className="p-4 sm:p-5 bg-white space-y-2">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-gray-700">
-              <Filter className="w-3.5 h-3.5 text-[#2A2C5E]" />
-              <span>Kategori Sesi Pertemuan:</span>
+          <div className="p-4 sm:p-5 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <label className="block text-xs font-bold text-gray-800">
+                Kategori Sesi Pertemuan:
+              </label>
+              <p className="text-[11px] text-gray-500">
+                Klik tombol filter untuk memilih jenis sesi pembelajaran.
+              </p>
             </div>
-            {/* Filter Tab Kapsul Horizontal */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1">
+
+            {/* Filter Dropdown Button */}
+            <div className="relative z-30">
               <button
                 type="button"
-                onClick={() => {
-                  setKategoriSesi("REGULER");
-                  setJenisAsesmen("PILIHAN_GANDA");
-                  setDurasiMenit(60);
-                }}
-                className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap border ${
-                  kategoriSesi === "REGULER"
-                    ? "bg-[#2A2C5E] text-white border-[#2A2C5E] shadow-xs"
-                    : "bg-gray-100 text-gray-700 border-transparent hover:bg-gray-200"
-                }`}
+                onClick={() => setOpenDropdown(openDropdown === "KATEGORI" ? null : "KATEGORI")}
+                className="inline-flex items-center gap-2.5 px-4 py-2 bg-[#2A2C5E] text-white hover:bg-[#1F2147] rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer"
               >
-                Sesi Reguler / Formatif
+                <Filter className="w-3.5 h-3.5 text-blue-200" />
+                <span>{kategoriLabelMap[kategoriSesi]}</span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 text-blue-200 transition-transform ${
+                    openDropdown === "KATEGORI" ? "rotate-180" : ""
+                  }`}
+                />
               </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setKategoriSesi("HARIAN");
-                  setJenisAsesmen("PILIHAN_GANDA");
-                  setDurasiMenit(45);
-                }}
-                className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap border ${
-                  kategoriSesi === "HARIAN"
-                    ? "bg-[#2A2C5E] text-white border-[#2A2C5E] shadow-xs"
-                    : "bg-gray-100 text-gray-700 border-transparent hover:bg-gray-200"
-                }`}
-              >
-                Penilaian Harian (Kuis)
-              </button>
+              {/* Menu Pilihan Dropdown Kategori */}
+              {openDropdown === "KATEGORI" && (
+                <div className="absolute right-0 sm:right-0 left-0 sm:left-auto top-full mt-1.5 w-72 bg-white rounded-xl shadow-xl border border-gray-200 py-1.5 z-40 animate-in fade-in slide-in-from-top-1">
+                  <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-gray-100">
+                    Pilih Kategori Sesi
+                  </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setKategoriSesi("UTS");
-                  setJenisAsesmen("PILIHAN_GANDA");
-                  setDurasiMenit(90);
-                }}
-                className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap border ${
-                  kategoriSesi === "UTS"
-                    ? "bg-[#2A2C5E] text-white border-[#2A2C5E] shadow-xs"
-                    : "bg-gray-100 text-gray-700 border-transparent hover:bg-gray-200"
-                }`}
-              >
-                Ujian Tengah Semester (UTS)
-              </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setKategoriSesi("REGULER");
+                      setJenisAsesmen("PILIHAN_GANDA");
+                      setDurasiMenit(60);
+                      setOpenDropdown(null);
+                    }}
+                    className={`w-full px-3.5 py-2 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                      kategoriSesi === "REGULER"
+                        ? "bg-blue-50 text-[#2A2C5E] font-bold"
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    <div>
+                      <div className="font-semibold">Sesi Reguler / Formatif</div>
+                      <div className="text-[10px] text-gray-500">Materi tatap muka &amp; latihan soal</div>
+                    </div>
+                    {kategoriSesi === "REGULER" && <Check className="w-4 h-4 text-[#2A2C5E]" />}
+                  </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setKategoriSesi("UAS");
-                  setJenisAsesmen("PILIHAN_GANDA");
-                  setDurasiMenit(90);
-                }}
-                className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap border ${
-                  kategoriSesi === "UAS"
-                    ? "bg-[#2A2C5E] text-white border-[#2A2C5E] shadow-xs"
-                    : "bg-gray-100 text-gray-700 border-transparent hover:bg-gray-200"
-                }`}
-              >
-                Ujian Akhir Semester (UAS)
-              </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setKategoriSesi("HARIAN");
+                      setJenisAsesmen("PILIHAN_GANDA");
+                      setDurasiMenit(45);
+                      setOpenDropdown(null);
+                    }}
+                    className={`w-full px-3.5 py-2 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                      kategoriSesi === "HARIAN"
+                        ? "bg-blue-50 text-[#2A2C5E] font-bold"
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    <div>
+                      <div className="font-semibold">Penilaian Harian (Kuis)</div>
+                      <div className="text-[10px] text-gray-500">Kuis evaluasi pencapaian materi</div>
+                    </div>
+                    {kategoriSesi === "HARIAN" && <Check className="w-4 h-4 text-[#2A2C5E]" />}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setKategoriSesi("UTS");
+                      setJenisAsesmen("PILIHAN_GANDA");
+                      setDurasiMenit(90);
+                      setOpenDropdown(null);
+                    }}
+                    className={`w-full px-3.5 py-2 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                      kategoriSesi === "UTS"
+                        ? "bg-blue-50 text-[#2A2C5E] font-bold"
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    <div>
+                      <div className="font-semibold">Ujian Tengah Semester (UTS)</div>
+                      <div className="text-[10px] text-gray-500">Evaluasi terstruktur tengah semester</div>
+                    </div>
+                    {kategoriSesi === "UTS" && <Check className="w-4 h-4 text-[#2A2C5E]" />}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setKategoriSesi("UAS");
+                      setJenisAsesmen("PILIHAN_GANDA");
+                      setDurasiMenit(90);
+                      setOpenDropdown(null);
+                    }}
+                    className={`w-full px-3.5 py-2 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                      kategoriSesi === "UAS"
+                        ? "bg-blue-50 text-[#2A2C5E] font-bold"
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    <div>
+                      <div className="font-semibold">Ujian Akhir Semester (UAS)</div>
+                      <div className="text-[10px] text-gray-500">Evaluasi terstruktur akhir semester</div>
+                    </div>
+                    {kategoriSesi === "UAS" && <Check className="w-4 h-4 text-[#2A2C5E]" />}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -417,8 +505,8 @@ function TambahPertemuanContent() {
           {/* BAGIAN 3: BAHAN AJAR SISWA (FILTER FORMAT DULU -> FORM MUNCUL) */}
           {/* =============================================================== */}
           <div className="p-5 sm:p-6 bg-white space-y-4">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-2.5">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-3">
+              <div className="flex items-center gap-2.5">
                 <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700">
                   <BookOpen className="w-4 h-4" />
                 </div>
@@ -427,75 +515,118 @@ function TambahPertemuanContent() {
                     Bahan Ajar Pembelajaran
                   </h3>
                   <p className="text-[11px] text-gray-500">
-                    Pilih format bahan ajar lewat filter, lalu lengkapi materi pembelajaran.
+                    Materi dapat dibaca atau disimak oleh siswa secara mandiri.
                   </p>
                 </div>
               </div>
-            </div>
 
-            {/* Filter Format Bahan Ajar */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-gray-700">
-                Pilih Format Materi:
-              </label>
-              <div className="flex items-center gap-2 overflow-x-auto pb-1">
+              {/* Filter Dropdown Format Materi */}
+              <div className="relative z-25">
                 <button
                   type="button"
-                  onClick={() => setFormatMateri("DOKUMEN")}
-                  className={`px-3.5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap border flex items-center gap-2 ${
-                    formatMateri === "DOKUMEN"
-                      ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
-                      : "bg-gray-100 text-gray-700 border-transparent hover:bg-gray-200"
-                  }`}
+                  onClick={() =>
+                    setOpenDropdown(openDropdown === "FORMAT_MATERI" ? null : "FORMAT_MATERI")
+                  }
+                  className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-50 text-emerald-900 border border-emerald-300 hover:bg-emerald-100 rounded-xl text-xs font-bold transition-all cursor-pointer"
                 >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>Modul PDF</span>
+                  <FileText className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>Format: {formatMateriLabelMap[formatMateri]}</span>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 text-emerald-700 transition-transform ${
+                      openDropdown === "FORMAT_MATERI" ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
 
-                <button
-                  type="button"
-                  onClick={() => setFormatMateri("VIDEO")}
-                  className={`px-3.5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap border flex items-center gap-2 ${
-                    formatMateri === "VIDEO"
-                      ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
-                      : "bg-gray-100 text-gray-700 border-transparent hover:bg-gray-200"
-                  }`}
-                >
-                  <Video className="w-3.5 h-3.5" />
-                  <span>Video Belajar</span>
-                </button>
+                {openDropdown === "FORMAT_MATERI" && (
+                  <div className="absolute right-0 top-full mt-1.5 w-64 bg-white rounded-xl shadow-xl border border-gray-200 py-1.5 z-40 animate-in fade-in slide-in-from-top-1">
+                    <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-gray-100">
+                      Pilih Format Bahan Ajar
+                    </div>
 
-                <button
-                  type="button"
-                  onClick={() => setFormatMateri("RINGKASAN")}
-                  className={`px-3.5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap border flex items-center gap-2 ${
-                    formatMateri === "RINGKASAN"
-                      ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
-                      : "bg-gray-100 text-gray-700 border-transparent hover:bg-gray-200"
-                  }`}
-                >
-                  <BookOpen className="w-3.5 h-3.5" />
-                  <span>Catatan Teks</span>
-                </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormatMateri("DOKUMEN");
+                        setOpenDropdown(null);
+                      }}
+                      className={`w-full px-3.5 py-2 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                        formatMateri === "DOKUMEN"
+                          ? "bg-emerald-50 text-emerald-900 font-bold"
+                          : "text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-emerald-600" />
+                        <span>Modul PDF Digital</span>
+                      </div>
+                      {formatMateri === "DOKUMEN" && <Check className="w-4 h-4 text-emerald-600" />}
+                    </button>
 
-                <button
-                  type="button"
-                  onClick={() => setFormatMateri("NONE")}
-                  className={`px-3.5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap border flex items-center gap-2 ${
-                    formatMateri === "NONE"
-                      ? "bg-gray-800 text-white border-gray-800 shadow-xs"
-                      : "bg-gray-100 text-gray-700 border-transparent hover:bg-gray-200"
-                  }`}
-                >
-                  <Layers className="w-3.5 h-3.5" />
-                  <span>Tanpa Materi</span>
-                </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormatMateri("VIDEO");
+                        setOpenDropdown(null);
+                      }}
+                      className={`w-full px-3.5 py-2 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                        formatMateri === "VIDEO"
+                          ? "bg-emerald-50 text-emerald-900 font-bold"
+                          : "text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Video className="w-4 h-4 text-emerald-600" />
+                        <span>Video Pembelajaran</span>
+                      </div>
+                      {formatMateri === "VIDEO" && <Check className="w-4 h-4 text-emerald-600" />}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormatMateri("RINGKASAN");
+                        setOpenDropdown(null);
+                      }}
+                      className={`w-full px-3.5 py-2 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                        formatMateri === "RINGKASAN"
+                          ? "bg-emerald-50 text-emerald-900 font-bold"
+                          : "text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <BookOpen className="w-4 h-4 text-emerald-600" />
+                        <span>Catatan Rangkuman Teks</span>
+                      </div>
+                      {formatMateri === "RINGKASAN" && <Check className="w-4 h-4 text-emerald-600" />}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormatMateri("NONE");
+                        setOpenDropdown(null);
+                      }}
+                      className={`w-full px-3.5 py-2 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                        formatMateri === "NONE"
+                          ? "bg-gray-100 text-gray-900 font-bold"
+                          : "text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-gray-500" />
+                        <span>Tanpa Bahan Ajar</span>
+                      </div>
+                      {formatMateri === "NONE" && <Check className="w-4 h-4 text-gray-700" />}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Form Dinamis: Muncul Sesuai Format yang Dipilih */}
             {formatMateri === "DOKUMEN" && (
-              <div className="space-y-3 pt-2 text-xs animate-in fade-in">
+              <div className="space-y-3 pt-1 text-xs animate-in fade-in">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] font-semibold text-gray-700 mb-1">
@@ -556,7 +687,7 @@ function TambahPertemuanContent() {
             )}
 
             {formatMateri === "VIDEO" && (
-              <div className="space-y-3 pt-2 text-xs animate-in fade-in">
+              <div className="space-y-3 pt-1 text-xs animate-in fade-in">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] font-semibold text-gray-700 mb-1">
@@ -604,7 +735,7 @@ function TambahPertemuanContent() {
             )}
 
             {formatMateri === "RINGKASAN" && (
-              <div className="space-y-3 pt-2 text-xs animate-in fade-in">
+              <div className="space-y-3 pt-1 text-xs animate-in fade-in">
                 <div>
                   <label className="block text-[11px] font-semibold text-gray-700 mb-1">
                     Judul Catatan Rangkuman:
@@ -647,8 +778,8 @@ function TambahPertemuanContent() {
           {/* BAGIAN 4: ASESMEN & TUGAS SISWA (DI BAWAH BAHAN AJAR) */}
           {/* =============================================================== */}
           <div className="p-5 sm:p-6 bg-white space-y-4">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-2.5">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-3">
+              <div className="flex items-center gap-2.5">
                 <div className="p-1.5 rounded-lg bg-amber-50 text-amber-700">
                   <Award className="w-4 h-4" />
                 </div>
@@ -661,52 +792,91 @@ function TambahPertemuanContent() {
                   </p>
                 </div>
               </div>
-            </div>
 
-            {/* Filter Jenis Asesmen / Tugas */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-gray-700">
-                Pilih Jenis Tugas:
-              </label>
-              <div className="flex items-center gap-2 overflow-x-auto pb-1">
+              {/* Filter Dropdown Jenis Tugas */}
+              <div className="relative z-20">
                 <button
                   type="button"
-                  onClick={() => setJenisAsesmen("PILIHAN_GANDA")}
-                  className={`px-3.5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap border flex items-center gap-2 ${
-                    jenisAsesmen === "PILIHAN_GANDA"
-                      ? "bg-amber-600 text-white border-amber-600 shadow-xs"
-                      : "bg-gray-100 text-gray-700 border-transparent hover:bg-gray-200"
-                  }`}
+                  onClick={() =>
+                    setOpenDropdown(openDropdown === "JENIS_TUGAS" ? null : "JENIS_TUGAS")
+                  }
+                  className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 rounded-xl text-xs font-bold transition-all cursor-pointer"
                 >
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Pilihan Ganda (CBT)</span>
+                  <Award className="w-3.5 h-3.5 text-amber-700" />
+                  <span>Jenis Tugas: {jenisAsesmenLabelMap[jenisAsesmen]}</span>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 text-amber-700 transition-transform ${
+                      openDropdown === "JENIS_TUGAS" ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
 
-                <button
-                  type="button"
-                  onClick={() => setJenisAsesmen("ESSAY")}
-                  className={`px-3.5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap border flex items-center gap-2 ${
-                    jenisAsesmen === "ESSAY"
-                      ? "bg-amber-600 text-white border-amber-600 shadow-xs"
-                      : "bg-gray-100 text-gray-700 border-transparent hover:bg-gray-200"
-                  }`}
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>Tugas Essay</span>
-                </button>
+                {openDropdown === "JENIS_TUGAS" && (
+                  <div className="absolute right-0 top-full mt-1.5 w-64 bg-white rounded-xl shadow-xl border border-gray-200 py-1.5 z-40 animate-in fade-in slide-in-from-top-1">
+                    <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-gray-100">
+                      Pilih Jenis Tugas
+                    </div>
 
-                <button
-                  type="button"
-                  onClick={() => setJenisAsesmen("NONE")}
-                  className={`px-3.5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap border flex items-center gap-2 ${
-                    jenisAsesmen === "NONE"
-                      ? "bg-gray-800 text-white border-gray-800 shadow-xs"
-                      : "bg-gray-100 text-gray-700 border-transparent hover:bg-gray-200"
-                  }`}
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Tanpa Tugas</span>
-                </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setJenisAsesmen("PILIHAN_GANDA");
+                        setOpenDropdown(null);
+                      }}
+                      className={`w-full px-3.5 py-2 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                        jenisAsesmen === "PILIHAN_GANDA"
+                          ? "bg-amber-50 text-amber-900 font-bold"
+                          : "text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-amber-600" />
+                        <span>Pilihan Ganda (CBT)</span>
+                      </div>
+                      {jenisAsesmen === "PILIHAN_GANDA" && (
+                        <Check className="w-4 h-4 text-amber-600" />
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setJenisAsesmen("ESSAY");
+                        setOpenDropdown(null);
+                      }}
+                      className={`w-full px-3.5 py-2 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                        jenisAsesmen === "ESSAY"
+                          ? "bg-amber-50 text-amber-900 font-bold"
+                          : "text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-amber-600" />
+                        <span>Tugas Essay / Uraian</span>
+                      </div>
+                      {jenisAsesmen === "ESSAY" && <Check className="w-4 h-4 text-amber-600" />}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setJenisAsesmen("NONE");
+                        setOpenDropdown(null);
+                      }}
+                      className={`w-full px-3.5 py-2 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                        jenisAsesmen === "NONE"
+                          ? "bg-gray-100 text-gray-900 font-bold"
+                          : "text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-gray-500" />
+                        <span>Tanpa Tugas</span>
+                      </div>
+                      {jenisAsesmen === "NONE" && <Check className="w-4 h-4 text-gray-700" />}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -721,55 +891,98 @@ function TambahPertemuanContent() {
                       <span>Tenggat Waktu Pengumpulan (Deadline):</span>
                     </span>
 
-                    {/* Filter Tombol Klik Tenggat */}
-                    <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5">
+                    {/* Filter Dropdown Deadline */}
+                    <div className="relative z-15">
                       <button
                         type="button"
-                        onClick={() => setPresetDeadline("3_HARI")}
-                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap border ${
-                          presetDeadline === "3_HARI"
-                            ? "bg-amber-600 text-white border-amber-600 shadow-2xs"
-                            : "bg-white text-gray-700 border-amber-200 hover:bg-amber-100"
-                        }`}
+                        onClick={() =>
+                          setOpenDropdown(openDropdown === "DEADLINE" ? null : "DEADLINE")
+                        }
+                        className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-amber-300 text-amber-950 hover:bg-amber-100 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-2xs"
                       >
-                        +3 Hari
+                        <span>Pilihan: {presetDeadlineLabelMap[presetDeadline]}</span>
+                        <ChevronDown
+                          className={`w-3.5 h-3.5 text-amber-700 transition-transform ${
+                            openDropdown === "DEADLINE" ? "rotate-180" : ""
+                          }`}
+                        />
                       </button>
 
-                      <button
-                        type="button"
-                        onClick={() => setPresetDeadline("7_HARI")}
-                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap border ${
-                          presetDeadline === "7_HARI"
-                            ? "bg-amber-600 text-white border-amber-600 shadow-2xs"
-                            : "bg-white text-gray-700 border-amber-200 hover:bg-amber-100"
-                        }`}
-                      >
-                        +7 Hari (1 Minggu)
-                      </button>
+                      {openDropdown === "DEADLINE" && (
+                        <div className="absolute right-0 top-full mt-1.5 w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-1.5 z-40 animate-in fade-in slide-in-from-top-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPresetDeadline("3_HARI");
+                              setOpenDropdown(null);
+                            }}
+                            className={`w-full px-3 py-1.5 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                              presetDeadline === "3_HARI"
+                                ? "bg-amber-50 text-amber-950 font-bold"
+                                : "text-gray-700 hover:bg-gray-50"
+                            }`}
+                          >
+                            <span>+3 Hari</span>
+                            {presetDeadline === "3_HARI" && (
+                              <Check className="w-3.5 h-3.5 text-amber-700" />
+                            )}
+                          </button>
 
-                      <button
-                        type="button"
-                        onClick={() => setPresetDeadline("14_HARI")}
-                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap border ${
-                          presetDeadline === "14_HARI"
-                            ? "bg-amber-600 text-white border-amber-600 shadow-2xs"
-                            : "bg-white text-gray-700 border-amber-200 hover:bg-amber-100"
-                        }`}
-                      >
-                        +14 Hari (2 Minggu)
-                      </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPresetDeadline("7_HARI");
+                              setOpenDropdown(null);
+                            }}
+                            className={`w-full px-3 py-1.5 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                              presetDeadline === "7_HARI"
+                                ? "bg-amber-50 text-amber-950 font-bold"
+                                : "text-gray-700 hover:bg-gray-50"
+                            }`}
+                          >
+                            <span>+7 Hari (1 Minggu)</span>
+                            {presetDeadline === "7_HARI" && (
+                              <Check className="w-3.5 h-3.5 text-amber-700" />
+                            )}
+                          </button>
 
-                      <button
-                        type="button"
-                        onClick={() => setPresetDeadline("CUSTOM")}
-                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap border ${
-                          presetDeadline === "CUSTOM"
-                            ? "bg-amber-600 text-white border-amber-600 shadow-2xs"
-                            : "bg-white text-gray-700 border-amber-200 hover:bg-amber-100"
-                        }`}
-                      >
-                        Kustom
-                      </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPresetDeadline("14_HARI");
+                              setOpenDropdown(null);
+                            }}
+                            className={`w-full px-3 py-1.5 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                              presetDeadline === "14_HARI"
+                                ? "bg-amber-50 text-amber-950 font-bold"
+                                : "text-gray-700 hover:bg-gray-50"
+                            }`}
+                          >
+                            <span>+14 Hari (2 Minggu)</span>
+                            {presetDeadline === "14_HARI" && (
+                              <Check className="w-3.5 h-3.5 text-amber-700" />
+                            )}
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPresetDeadline("CUSTOM");
+                              setOpenDropdown(null);
+                            }}
+                            className={`w-full px-3 py-1.5 text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                              presetDeadline === "CUSTOM"
+                                ? "bg-amber-50 text-amber-950 font-bold"
+                                : "text-gray-700 hover:bg-gray-50"
+                            }`}
+                          >
+                            <span>Kustom Tanggal &amp; Waktu</span>
+                            {presetDeadline === "CUSTOM" && (
+                              <Check className="w-3.5 h-3.5 text-amber-700" />
+                            )}
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -982,17 +1195,17 @@ function TambahPertemuanContent() {
                 Pertemuan ke-{nomorPertemuan}
               </span>
               <span className="px-2.5 py-1 rounded bg-white border border-gray-200 text-[11px] font-semibold">
-                {kategoriSesi === "UTS" ? "UTS" : kategoriSesi === "UAS" ? "UAS" : kategoriSesi === "HARIAN" ? "Penilaian Harian" : "Sesi Reguler"}
+                {kategoriLabelMap[kategoriSesi]}
               </span>
               <span className="px-2.5 py-1 rounded bg-white border border-gray-200 text-[11px] font-semibold">
-                {formatMateri === "DOKUMEN" ? "Modul PDF" : formatMateri === "VIDEO" ? "Video Belajar" : formatMateri === "RINGKASAN" ? "Catatan Teks" : "Tanpa Materi"}
+                {formatMateriLabelMap[formatMateri]}
               </span>
               <span className="px-2.5 py-1 rounded bg-white border border-gray-200 text-[11px] font-semibold">
                 {jenisAsesmen === "PILIHAN_GANDA" ? `CBT (${soalPilganList.length} Soal)` : jenisAsesmen === "ESSAY" ? "Essay" : "Tanpa Tugas"}
               </span>
               {jenisAsesmen !== "NONE" && (
                 <span className="px-2.5 py-1 rounded bg-amber-100 text-amber-900 text-[11px] font-semibold">
-                  Deadline: {presetDeadline === "3_HARI" ? "+3 Hari" : presetDeadline === "7_HARI" ? "+7 Hari" : presetDeadline === "14_HARI" ? "+14 Hari" : "Kustom"}
+                  Deadline: {presetDeadlineLabelMap[presetDeadline]}
                 </span>
               )}
             </div>

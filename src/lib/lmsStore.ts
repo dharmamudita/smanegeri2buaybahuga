@@ -693,8 +693,8 @@ interface LMSState {
   submitTugasEssay: (mapelId: string, pertemuanId: string, jawabanText: string) => void;
   submitPresensiPertemuan: (mapelId: string, pertemuanId: string) => void;
   submitUjianCBT: (mapelId: string, pertemuanId: string, skor: number) => void;
-  joinClassByCode: (code: string) => { success: boolean; message: string };
-  enrollClass: (classId: string) => void;
+  joinClassByCode: (code: string, studentInfo?: { id: string; nama: string; nisn: string; kelas: string }) => { success: boolean; message: string };
+  enrollClass: (classId: string, studentInfo?: { id: string; nama: string; nisn: string; kelas: string }) => void;
 }
 
 export const useLMSStore = create<LMSState>()(
@@ -741,15 +741,54 @@ export const useLMSStore = create<LMSState>()(
       },
 
       addPertemuan: (classId, pertemuan) => {
-        set((state) => ({
-          classes: state.classes.map((cls) => {
+        set((state) => {
+          const targetClass = state.classes.find((cls) => cls.id === classId);
+          if (!targetClass) return state;
+
+          const updatedClasses = state.classes.map((cls) => {
             if (cls.id !== classId) return cls;
             return {
               ...cls,
               pertemuanList: [...cls.pertemuanList, pertemuan],
             };
-          }),
-        }));
+          });
+
+          // Otomatis tambahkan kolom pertemuan ke matriks nilai siswa
+          const classGrades = state.gradeMatrix[classId] || INITIAL_GRADE_MATRIX[classId] || INITIAL_GRADE_MATRIX["mapel-1"] || [];
+          const updatedGrades = classGrades.map((rec) => {
+            return {
+              ...rec,
+              nilaiPerPertemuan: {
+                ...rec.nilaiPerPertemuan,
+                [String(pertemuan.nomor)]: 85,
+              },
+            };
+          });
+
+          // Otomatis tambahkan kolom pertemuan ke matriks absensi siswa
+          const classAbsensi = state.absensiMatrix[classId] || INITIAL_ABSENSI_MATRIX[classId] || INITIAL_ABSENSI_MATRIX["mapel-1"] || [];
+          const updatedAbsensi: SiswaAbsensiRecord[] = classAbsensi.map((rec) => {
+            return {
+              ...rec,
+              absensiPerPertemuan: {
+                ...rec.absensiPerPertemuan,
+                [String(pertemuan.nomor)]: "H" as const,
+              },
+            };
+          });
+
+          return {
+            classes: updatedClasses,
+            gradeMatrix: {
+              ...state.gradeMatrix,
+              [classId]: updatedGrades,
+            },
+            absensiMatrix: {
+              ...state.absensiMatrix,
+              [classId]: updatedAbsensi,
+            },
+          };
+        });
       },
 
       updatePertemuan: (classId, pertemuanId, data) => {
@@ -826,10 +865,75 @@ export const useLMSStore = create<LMSState>()(
         });
       },
 
-      enrollClass: (classId) => {
-        if (!get().enrolledMapelIds.includes(classId)) {
-          set((state) => ({ enrolledMapelIds: [...state.enrolledMapelIds, classId] }));
-        }
+      enrollClass: (classId, studentInfo) => {
+        const student = studentInfo || {
+          id: "s-1",
+          nama: "Nabila Dijayanti",
+          nisn: "0078129341",
+          kelas: "XII MIPA 1",
+        };
+
+        set((state) => {
+          const isEnrolled = state.enrolledMapelIds.includes(classId);
+          const newEnrolled = isEnrolled ? state.enrolledMapelIds : [...state.enrolledMapelIds, classId];
+
+          const targetClass = state.classes.find((c) => c.id === classId);
+          const meetings = targetClass?.pertemuanList || [];
+
+          // Sinkronkan ke gradeMatrix
+          const currentGrades = state.gradeMatrix[classId] || INITIAL_GRADE_MATRIX[classId] || INITIAL_GRADE_MATRIX["mapel-1"] || [];
+          const alreadyInGrades = currentGrades.some((s) => s.siswaId === student.id || s.nisn === student.nisn);
+          let updatedGrades = currentGrades;
+          if (!alreadyInGrades) {
+            const initialScores: Record<string, number> = {};
+            meetings.forEach((m) => {
+              initialScores[String(m.nomor)] = 88;
+            });
+            updatedGrades = [
+              ...currentGrades,
+              {
+                siswaId: student.id,
+                nama: student.nama,
+                nisn: student.nisn,
+                kelas: student.kelas,
+                nilaiPerPertemuan: initialScores,
+              },
+            ];
+          }
+
+          // Sinkronkan ke absensiMatrix
+          const currentAbsensi = state.absensiMatrix[classId] || INITIAL_ABSENSI_MATRIX[classId] || INITIAL_ABSENSI_MATRIX["mapel-1"] || [];
+          const alreadyInAbsensi = currentAbsensi.some((s) => s.siswaId === student.id || s.nisn === student.nisn);
+          let updatedAbsensi = currentAbsensi;
+          if (!alreadyInAbsensi) {
+            const initialAttendance: Record<string, "H" | "I" | "S" | "A"> = {};
+            meetings.forEach((m) => {
+              initialAttendance[String(m.nomor)] = "H";
+            });
+            updatedAbsensi = [
+              ...currentAbsensi,
+              {
+                siswaId: student.id,
+                nama: student.nama,
+                nisn: student.nisn,
+                kelas: student.kelas,
+                absensiPerPertemuan: initialAttendance,
+              },
+            ];
+          }
+
+          return {
+            enrolledMapelIds: newEnrolled,
+            gradeMatrix: {
+              ...state.gradeMatrix,
+              [classId]: updatedGrades,
+            },
+            absensiMatrix: {
+              ...state.absensiMatrix,
+              [classId]: updatedAbsensi,
+            },
+          };
+        });
       },
 
       markMateriSelesai: (mapelId, pertemuanId) => {
@@ -966,7 +1070,7 @@ export const useLMSStore = create<LMSState>()(
         }));
       },
 
-      joinClassByCode: (code) => {
+      joinClassByCode: (code, studentInfo) => {
         const trimmed = code.trim().toUpperCase();
         if (!trimmed) {
           return { success: false, message: "Kode kelas tidak boleh kosong." };
@@ -991,9 +1095,7 @@ export const useLMSStore = create<LMSState>()(
           };
         }
 
-        set((state) => ({
-          enrolledMapelIds: [...state.enrolledMapelIds, matched.id],
-        }));
+        get().enrollClass(matched.id, studentInfo);
 
         return {
           success: true,

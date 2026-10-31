@@ -39,8 +39,6 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
   GURU: [
     { href: "/guru/dashboard", label: "Jadwal & Ringkasan", icon: LayoutDashboard },
     { href: "/guru/mapel", label: "Kelas & Materi", icon: BookOpen },
-    { href: "/guru/rekap-nilai", label: "Rekapitulasi Nilai", icon: Award },
-    { href: "/guru/rekap-absensi", label: "Rekapitulasi Absensi", icon: Clock },
     { href: "/guru/tugas", label: "Bank Tugas & Ujian", icon: ClipboardList },
   ],
   SISWA: [

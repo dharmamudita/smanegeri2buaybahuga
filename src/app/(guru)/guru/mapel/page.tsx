@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, Suspense } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   BookOpen,
@@ -40,6 +40,7 @@ function GuruMapelContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const urlClassId = searchParams.get("id");
+  const urlToast = searchParams.get("toast");
 
   const {
     classes,
@@ -71,6 +72,13 @@ function GuruMapelContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (urlToast === "added") {
+      setToastMessage("Pertemuan baru beserta modul materi dan lembar soal CBT berhasil diterbitkan!");
+      setTimeout(() => setToastMessage(null), 4500);
+    }
+  }, [urlToast]);
+
   // Modal State: Tambah Kelas Baru
   const [modalTambahKelas, setModalTambahKelas] = useState(false);
   const [inputKodeKelas, setInputKodeKelas] = useState("");
@@ -79,13 +87,6 @@ function GuruMapelContent() {
   const [inputJurusanKelas, setInputJurusanKelas] = useState("MIPA 1");
   const [inputJadwalKelas, setInputJadwalKelas] = useState("Senin, 07:30 - 09:30 WIB");
   const [inputRuangKelas, setInputRuangKelas] = useState("Lab Biologi");
-
-  // Modal State: Tambah Pertemuan Baru
-  const [modalTambahPertemuan, setModalTambahPertemuan] = useState(false);
-  const [inputNomorPertemuan, setInputNomorPertemuan] = useState(1);
-  const [inputJudulPertemuan, setInputJudulPertemuan] = useState("");
-  const [inputTipePertemuan, setInputTipePertemuan] = useState<"REGULER" | "UTS" | "UAS">("REGULER");
-  const [inputTanggalPertemuan, setInputTanggalPertemuan] = useState("Senin, 04 Agustus 2026");
 
   // Modal State: Kelola / Tambah Materi pada Pertemuan
   const [modalMateri, setModalMateri] = useState<{
@@ -209,45 +210,6 @@ function GuruMapelContent() {
     setInputKodeKelas("");
     setInputNamaKelas("");
     setToastMessage(`Kelas "${newClass.nama}" berhasil dibuat dan ditambahkan ke daftar kelas Anda!`);
-    setTimeout(() => setToastMessage(null), 4000);
-  };
-
-  // Handler: Tambah Pertemuan Baru
-  const handleAddPertemuan = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!activeClass) return;
-
-    const nextNomor = activeClass.pertemuanList.length + 1;
-    const newMeetingId = `${activeClass.id}-p${Date.now().toString().slice(-4)}`;
-
-    const newMeeting: PertemuanItem = {
-      id: newMeetingId,
-      nomor: nextNomor,
-      judul: inputJudulPertemuan.trim() || `Pertemuan ${nextNomor}: Pendalaman Materi`,
-      tipe: inputTipePertemuan,
-      tanggal: inputTanggalPertemuan,
-      durasiMenit: inputTipePertemuan === "REGULER" ? undefined : 60,
-      materi: {
-        judul: `Modul Ajar Pertemuan ${nextNomor}`,
-        tipe: "DOKUMEN",
-        ringkasan: "Ringkasan bahan ajar dan modul pendalaman materi siswa.",
-        kontenLengkap: "Materi ajar resmi Kurikulum Merdeka SMAN 2 Buay Bahuga.",
-        sudahDibaca: false,
-      },
-      tugas: {
-        id: `tugas-${newMeetingId}`,
-        judul: `Latihan Evaluasi Pertemuan ${nextNomor}`,
-        tipe: inputTipePertemuan === "UTS" ? "UJIAN_UTS" : inputTipePertemuan === "UAS" ? "UJIAN_UAS" : "PILIHAN_GANDA",
-        deskripsi: "Jawablah butir soal evaluasi pemahaman berikut dengan cermat.",
-        sudahDikerjakan: false,
-      },
-      presensi: { hadir: false },
-    };
-
-    addPertemuan(activeClass.id, newMeeting);
-    setModalTambahPertemuan(false);
-    setInputJudulPertemuan("");
-    setToastMessage(`Pertemuan baru "${newMeeting.judul}" berhasil ditambahkan ke kelas ini!`);
     setTimeout(() => setToastMessage(null), 4000);
   };
 
@@ -714,7 +676,7 @@ function GuruMapelContent() {
         <div className="shrink-0 flex items-center gap-2">
           <button
             type="button"
-            onClick={() => setModalTambahPertemuan(true)}
+            onClick={() => router.push(`/guru/mapel/tambah-pertemuan?classId=${activeClass.id}`)}
             className="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-[#2A2C5E] hover:bg-gray-100 text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer"
           >
             <PlusCircle className="w-4 h-4" />
@@ -770,13 +732,24 @@ function GuruMapelContent() {
       {/* ===================================================================== */}
       {classTab === "PERTEMUAN" && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-base font-bold text-gray-900">
-              Alur Silabus Pertemuan Siswa ({activeClass.pertemuanList.length} Sesi Terjadwal)
-            </h3>
-            <span className="text-xs text-gray-500">
-              Seluruh materi dan tugas di bawah ini otomatis tampil dan dikerjakan siswa di kelas ini.
-            </span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-3">
+            <div>
+              <h3 className="text-base font-bold text-gray-900">
+                Alur Silabus Pertemuan Siswa ({activeClass.pertemuanList.length} Sesi Terjadwal)
+              </h3>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Seluruh materi dan lembar soal di bawah ini otomatis tampil dan dikerjakan siswa di kelas ini.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => router.push(`/guru/mapel/tambah-pertemuan?classId=${activeClass.id}`)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-lg shadow-2xs transition-all cursor-pointer self-start sm:self-auto shrink-0"
+            >
+              <PlusCircle className="w-3.5 h-3.5" />
+              <span>Tambah Pertemuan Baru</span>
+            </button>
           </div>
 
           <div className="space-y-4">
@@ -1148,96 +1121,6 @@ function GuruMapelContent() {
                 </tbody>
               </table>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* ===================================================================== */}
-      {/* MODAL: TAMBAH PERTEMUAN BARU */}
-      {/* ===================================================================== */}
-      {modalTambahPertemuan && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 border border-gray-200">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="p-1.5 bg-blue-50 text-[#2A2C5E] rounded-lg">
-                  <PlusCircle className="w-4 h-4" />
-                </span>
-                <h3 className="text-sm font-bold text-gray-900">
-                  Tambah Pertemuan Baru
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setModalTambahPertemuan(false)}
-                className="text-gray-400 hover:text-gray-600 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <form onSubmit={handleAddPertemuan} className="space-y-3.5 text-xs">
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">
-                  Judul Pertemuan:
-                </label>
-                <input
-                  type="text"
-                  value={inputJudulPertemuan}
-                  onChange={(e) => setInputJudulPertemuan(e.target.value)}
-                  placeholder="Contoh: Pertemuan 3: Sintesis Protein & Enzimatis"
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-gray-700 mb-1">
-                    Tipe Sesi:
-                  </label>
-                  <select
-                    value={inputTipePertemuan}
-                    onChange={(e: any) => setInputTipePertemuan(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none"
-                  >
-                    <option value="REGULER">Reguler (Materi & Latihan)</option>
-                    <option value="UTS">Ujian Tengah Semester (UTS)</option>
-                    <option value="UAS">Ujian Akhir Semester (UAS)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-gray-700 mb-1">
-                    Tanggal Pelaksanaan:
-                  </label>
-                  <input
-                    type="text"
-                    value={inputTanggalPertemuan}
-                    onChange={(e) => setInputTanggalPertemuan(e.target.value)}
-                    placeholder="Senin, 18 Agustus 2026"
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="pt-2 border-t border-gray-100 flex items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setModalTambahPertemuan(false)}
-                  className="px-3.5 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-lg shadow-2xs cursor-pointer flex items-center gap-1.5"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Simpan Pertemuan</span>
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}

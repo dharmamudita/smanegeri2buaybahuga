@@ -13,6 +13,7 @@ import {
   AlertTriangle,
   Clock,
   Eye,
+  CheckCircle2,
 } from "lucide-react";
 import { useAuthStore, useExamStore } from "@/lib/store";
 import { MOCK_TUGAS } from "@/lib/mockData";
@@ -22,9 +23,9 @@ export default function GuruDashboardPage() {
   const { violationLogs } = useExamStore();
 
   const activeTeacher = currentUser || {
-    name: "Budi Santoso, S.Pd., M.Si.",
+    name: "Tumijo, S.Pd.",
     nuptk: "197805122005011003",
-    mataPelajaran: "Biologi Umum & IPA Terapan",
+    mataPelajaran: "Biologi Umum & Praktikum IPA",
   };
 
   return (
@@ -51,34 +52,32 @@ export default function GuruDashboardPage() {
           <div className="w-9 h-9 rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-2">
             <BookOpen className="w-4 h-4" />
           </div>
-          <div className="text-2xl font-bold text-gray-900">2 Mapel</div>
-          <p className="text-xs text-gray-500">Mata Pelajaran Diampu</p>
+          <div className="text-2xl font-bold text-gray-900">4 Kelas</div>
+          <p className="text-xs text-gray-500">Rombel Binaan Diampu</p>
         </div>
 
         <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-2xs space-y-1">
           <div className="w-9 h-9 rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-2">
             <Users className="w-4 h-4" />
           </div>
-          <div className="text-2xl font-bold text-gray-900">72 Siswa</div>
-          <p className="text-xs text-gray-500">Total Binaan Kelas XII MIPA</p>
+          <div className="text-2xl font-bold text-gray-900">142 Siswa</div>
+          <p className="text-xs text-gray-500">Total Peserta Didik Binaan</p>
         </div>
 
         <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-2xs space-y-1">
           <div className="w-9 h-9 rounded-lg bg-blue-50 text-[#2A2C5E] flex items-center justify-center mb-2">
             <ClipboardList className="w-4 h-4" />
           </div>
-          <div className="text-2xl font-bold text-gray-900">3 Tugas/Ujian</div>
-          <p className="text-xs text-gray-500">Sedang Aktif Berjalan</p>
+          <div className="text-2xl font-bold text-gray-900">16 Modul</div>
+          <p className="text-xs text-gray-500">Bahan Ajar Tersinkronkan</p>
         </div>
 
         <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-2xs space-y-1">
-          <div className="w-9 h-9 rounded-lg bg-red-50 text-red-600 flex items-center justify-center mb-2">
-            <ShieldAlert className="w-4 h-4" />
+          <div className="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center mb-2">
+            <CheckCircle2 className="w-4 h-4" />
           </div>
-          <div className="text-2xl font-bold text-red-600">
-            {violationLogs.length} Kasus
-          </div>
-          <p className="text-xs text-gray-500">Pelanggaran Tab Ujian</p>
+          <div className="text-2xl font-bold text-emerald-700">97.2%</div>
+          <p className="text-xs text-gray-500">Kehadiran Presensi Harian</p>
         </div>
       </div>
 
@@ -88,16 +87,8 @@ export default function GuruDashboardPage() {
           href="/guru/mapel"
           className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-md shadow-2xs"
         >
-          <PlusCircle className="w-4 h-4" />
-          <span>Unggah Materi Baru</span>
-        </Link>
-
-        <Link
-          href="/guru/tugas"
-          className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 rounded-md shadow-2xs"
-        >
-          <ClipboardList className="w-4 h-4 text-[#2A2C5E]" />
-          <span>Buat Soal Ujian Digital</span>
+          <BookOpen className="w-4 h-4" />
+          <span>Kelas & Materi Pembelajaran</span>
         </Link>
 
         <Link
@@ -105,7 +96,23 @@ export default function GuruDashboardPage() {
           className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-md shadow-2xs"
         >
           <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
-          <span>Rekapitulasi Nilai & Ekspor</span>
+          <span>Rekapitulasi Nilai Siswa</span>
+        </Link>
+
+        <Link
+          href="/guru/rekap-absensi"
+          className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md shadow-2xs"
+        >
+          <Clock className="w-4 h-4 text-[#2A2C5E]" />
+          <span>Rekapitulasi Absensi</span>
+        </Link>
+
+        <Link
+          href="/guru/tugas"
+          className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 rounded-md shadow-2xs"
+        >
+          <ClipboardList className="w-4 h-4 text-[#2A2C5E]" />
+          <span>Bank Tugas & Ujian</span>
         </Link>
       </div>
 

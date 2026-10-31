@@ -35,6 +35,7 @@ import {
   SiswaGradeRecord,
   SiswaAbsensiRecord,
 } from "@/lib/lmsStore";
+import PaginationBar from "@/components/common/PaginationBar";
 
 function GuruMapelContent() {
   const router = useRouter();
@@ -144,6 +145,21 @@ function GuruMapelContent() {
         c.ruang.toLowerCase().includes(q)
     );
   }, [classes, searchQuery]);
+
+  // Paginasi Kotak Kelas (Maksimal 6 Kelas per Halaman)
+  const ITEMS_PER_PAGE = 6;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  const totalPages = Math.ceil(displayedClasses.length / ITEMS_PER_PAGE);
+
+  const paginatedClasses = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return displayedClasses.slice(start, start + ITEMS_PER_PAGE);
+  }, [displayedClasses, currentPage]);
 
   // Data Nilai Siswa untuk kelas aktif
   const currentClassGrades: SiswaGradeRecord[] = useMemo(() => {
@@ -438,7 +454,7 @@ function GuruMapelContent() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4 md:gap-6">
-            {displayedClasses.map((cls) => {
+            {paginatedClasses.map((cls) => {
               const totalMeetings = cls.pertemuanList.length;
               return (
                 <div
@@ -491,6 +507,18 @@ function GuruMapelContent() {
               );
             })}
           </div>
+
+          {/* Navigasi Paginasi Kotak Kelas */}
+          {totalPages > 1 && (
+            <PaginationBar
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={displayedClasses.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+              onPageChange={(p) => setCurrentPage(p)}
+              itemLabel="kelas mata pelajaran"
+            />
+          )}
         </div>
 
         {/* Modal: Tambah Kelas Baru */}

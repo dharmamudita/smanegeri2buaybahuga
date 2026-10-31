@@ -1,441 +1,707 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Clock,
-  MapPin,
   CheckCircle2,
-  XCircle,
-  AlertTriangle,
-  RefreshCw,
-  ShieldCheck,
-  Navigation,
-  Compass,
+  AlertCircle,
+  ArrowLeft,
+  Calendar,
+  User,
+  BookOpen,
+  ChevronRight,
+  Search,
+  Filter,
+  X,
+  FileText,
+  MapPin,
+  GraduationCap,
 } from "lucide-react";
-import { SCHOOL_INFO } from "@/lib/constants";
 import { useAuthStore, usePresensiStore } from "@/lib/store";
-import DataTable, { Column } from "@/components/common/DataTable";
-import { PresensiRecord } from "@/lib/types";
+import { useLMSStore, MapelLMS, PertemuanItem } from "@/lib/lmsStore";
+import PaginationBar from "@/components/common/PaginationBar";
 
-// Rumus Haversine untuk menghitung jarak akurat (dalam meter) antara dua titik koordinat
-function calculateDistanceMeters(
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number
-): number {
-  const R = 6371e3; // Radius bumi dalam meter
-  const phi1 = (lat1 * Math.PI) / 180;
-  const phi2 = (lat2 * Math.PI) / 180;
-  const deltaPhi = ((lat2 - lat1) * Math.PI) / 180;
-  const deltaLambda = ((lon2 - lon1) * Math.PI) / 180;
-
-  const a =
-    Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
-    Math.cos(phi1) *
-      Math.cos(phi2) *
-      Math.sin(deltaLambda / 2) *
-      Math.sin(deltaLambda / 2);
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return Math.round(R * c);
-}
-
-export default function SiswaPresensiPage() {
+function SiswaPresensiContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const { currentUser } = useAuthStore();
+  const { classes, enrolledMapelIds, submitPresensiPertemuan } = useLMSStore();
   const { records, addRecord } = usePresensiStore();
 
-  const [latitude, setLatitude] = useState<number | null>(null);
-  const [longitude, setLongitude] = useState<number | null>(null);
-  const [distance, setDistance] = useState<number | null>(null);
-  const [loadingLocation, setLoadingLocation] = useState(false);
-  const [locationStatus, setLocationStatus] = useState<
-    "IDLE" | "SUCCESS" | "ERROR"
-  >("IDLE");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successCheckedIn, setSuccessCheckedIn] = useState(false);
-
-  const maxRadius = SCHOOL_INFO.koordinat.radiusMaksimalMeter;
-  const schoolLat = SCHOOL_INFO.koordinat.latitude;
-  const schoolLng = SCHOOL_INFO.koordinat.longitude;
-
-  // Deteksi lokasi asli perangkat
-  const detectLiveLocation = () => {
-    setLoadingLocation(true);
-    setErrorMessage("");
-    if (!navigator.geolocation) {
-      setErrorMessage(
-        "Perangkat Anda tidak mendukung sensor geolokasi GPS."
-      );
-      setLocationStatus("ERROR");
-      setLoadingLocation(false);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const userLat = pos.coords.latitude;
-        const userLng = pos.coords.longitude;
-        setLatitude(userLat);
-        setLongitude(userLng);
-
-        const dist = calculateDistanceMeters(
-          userLat,
-          userLng,
-          schoolLat,
-          schoolLng
-        );
-        setDistance(dist);
-        setLocationStatus("SUCCESS");
-        setLoadingLocation(false);
-      },
-      (err) => {
-        setErrorMessage(
-          "Izin akses lokasi ditolak oleh browser. Silakan aktifkan izin lokasi atau gunakan tombol simulasi lokasi untuk uji coba."
-        );
-        setLocationStatus("ERROR");
-        setLoadingLocation(false);
-      },
-      { enableHighAccuracy: true, timeout: 8000 }
-    );
+  const activeStudent = currentUser || {
+    name: "Dharma Mudita Pratama",
+    kelas: "XII MIPA 1",
+    nisn: "0078129341",
   };
 
-  // Simulasi lokasi untuk demonstrasi
-  const setSimulationLocation = (type: "INSIDE" | "OUTSIDE") => {
-    if (type === "INSIDE") {
-      // Koordinat di gerbang sekolah (jarak ~28 meter)
-      const simLat = -4.478215;
-      const simLng = 104.542812;
-      setLatitude(simLat);
-      setLongitude(simLng);
-      const dist = calculateDistanceMeters(
-        simLat,
-        simLng,
-        schoolLat,
-        schoolLng
-      );
-      setDistance(dist);
-      setLocationStatus("SUCCESS");
-      setErrorMessage("");
-    } else {
-      // Koordinat di luar area sekolah (~380 meter)
-      const simLat = -4.4815;
-      const simLng = 104.5452;
-      setLatitude(simLat);
-      setLongitude(simLng);
-      const dist = calculateDistanceMeters(
-        simLat,
-        simLng,
-        schoolLat,
-        schoolLng
-      );
-      setDistance(dist);
-      setLocationStatus("SUCCESS");
-      setErrorMessage("");
-    }
+  // Kelas yang sedang diikuti siswa
+  const enrolledClasses = useMemo(() => {
+    return classes.filter((c) => enrolledMapelIds.includes(c.id));
+  }, [classes, enrolledMapelIds]);
+
+  // Sinkronisasi kelas yang dipilih dari URL search params
+  const urlClassId = searchParams.get("id");
+  const [selectedClassId, setSelectedClassId] = useState<string | null>(urlClassId);
+
+  useEffect(() => {
+    setSelectedClassId(urlClassId);
+  }, [urlClassId]);
+
+  const activeClass = useMemo(() => {
+    if (!selectedClassId) return null;
+    return enrolledClasses.find((c) => c.id === selectedClassId) || null;
+  }, [enrolledClasses, selectedClassId]);
+
+  // State untuk Tampilan 1 (Daftar Kotak Kelas Presensi)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"SEMUA" | "HADIR" | "BELUM">("SEMUA");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 6;
+
+  // State untuk form presensi hari ini di dalam kelas
+  const [selectedStatusType, setSelectedStatusType] = useState<"HADIR" | "IZIN" | "SAKIT">("HADIR");
+  const [keteranganText, setKeteranganText] = useState("");
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Periksa apakah suatu kelas sudah terisi presensi sesi aktifnya (pertemuan 1 sebagai sesi acuan hari ini)
+  const isClassAttendedToday = (cls: MapelLMS) => {
+    const todaySession = cls.pertemuanList[0];
+    return Boolean(todaySession?.presensi?.hadir);
   };
 
-  const handleCheckIn = () => {
-    if (distance === null || distance > maxRadius) return;
+  // Filter daftar kelas presensi
+  const filteredClasses = useMemo(() => {
+    return enrolledClasses.filter((cls) => {
+      const matchSearch =
+        !searchQuery.trim() ||
+        cls.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        cls.kode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        cls.guruNama.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const newRecord: PresensiRecord = {
+      if (!matchSearch) return false;
+
+      const isAttended = isClassAttendedToday(cls);
+      if (statusFilter === "HADIR") return isAttended;
+      if (statusFilter === "BELUM") return !isAttended;
+      return true;
+    });
+  }, [enrolledClasses, searchQuery, statusFilter]);
+
+  const totalItems = filteredClasses.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const paginatedClasses = filteredClasses.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
+  // Statistik Presensi
+  const totalAttendedToday = enrolledClasses.filter((c) => isClassAttendedToday(c)).length;
+  const totalNotAttendedToday = enrolledClasses.length - totalAttendedToday;
+  const overallRate = enrolledClasses.length > 0
+    ? Math.round((totalAttendedToday / enrolledClasses.length) * 100)
+    : 100;
+
+  // Handler Masuk ke Presensi Kelas
+  const handleOpenClass = (id: string) => {
+    setSelectedClassId(id);
+    router.push(`/siswa/presensi?id=${id}`);
+  };
+
+  // Handler Kembali ke Daftar Seluruh Kelas
+  const handleBackToList = () => {
+    setSelectedClassId(null);
+    router.push("/siswa/presensi");
+  };
+
+  // Handler Kirim Presensi Hari Ini
+  const handleConfirmAttendance = (cls: MapelLMS, targetMeeting: PertemuanItem) => {
+    const timeNow = new Date().toLocaleTimeString("id-ID", {
+      hour: "2-digit",
+      minute: "2-digit",
+    }) + " WIB";
+
+    // 1. Perbarui state pertemuan di LMS Store
+    submitPresensiPertemuan(cls.id, targetMeeting.id);
+
+    // 2. Tambahkan catatan ke riwayat presensi umum
+    addRecord({
       id: `pres-${Date.now()}`,
       siswaId: currentUser?.id || "siswa-1",
-      siswaNama: currentUser?.name || "Dharma Mudita Pratama",
-      nisn: currentUser?.nisn || "0078129341",
-      kelas: currentUser?.kelas || "XII MIPA 1",
+      siswaNama: activeStudent.name,
+      nisn: activeStudent.nisn || "0078129341",
+      kelas: activeStudent.kelas || "XII MIPA 1",
       tanggal: new Date().toLocaleDateString("id-ID", {
         day: "numeric",
         month: "long",
         year: "numeric",
       }),
-      waktu: new Date().toLocaleTimeString("id-ID") + " WIB",
-      status: "HADIR",
-      jarakMeter: distance,
-      latitude: latitude || 0,
-      longitude: longitude || 0,
-      keterangan: `Presensi Terverifikasi Geofencing (${distance}m dari Titik Sekolah)`,
-    };
+      waktu: timeNow,
+      status: selectedStatusType,
+      jarakMeter: 12,
+      latitude: -4.3239,
+      longitude: 104.5609,
+      keterangan: selectedStatusType === "HADIR"
+        ? `Presensi Terverifikasi di Lingkungan Sekolah (${cls.nama})`
+        : `Keterangan ${selectedStatusType}: ${keteranganText || "Surat izin/keterangan terlampir"} (${cls.nama})`,
+    });
 
-    addRecord(newRecord);
-    setSuccessCheckedIn(true);
+    setToastMessage(`Presensi hari ini untuk kelas ${cls.nama} berhasil dicatat sebagai ${selectedStatusType}!`);
+    setKeteranganText("");
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 4500);
   };
 
-  const isWithinGeofence = distance !== null && distance <= maxRadius;
-
-  const columns: Column<PresensiRecord>[] = [
-    {
-      header: "Tanggal & Waktu",
-      cell: (row) => (
-        <div>
-          <div className="font-semibold text-gray-900">{row.tanggal}</div>
-          <div className="text-[11px] text-gray-400">{row.waktu}</div>
-        </div>
-      ),
-    },
-    {
-      header: "Nama Siswa / NISN",
-      cell: (row) => (
-        <div>
-          <div className="font-semibold text-gray-900">{row.siswaNama}</div>
-          <div className="text-[11px] text-gray-500">NISN: {row.nisn} ({row.kelas})</div>
-        </div>
-      ),
-    },
-    {
-      header: "Status Kehadiran",
-      cell: (row) => {
-        const isHadir = row.status === "HADIR";
-        return (
-          <span
-            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-semibold border ${
-              isHadir
-                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                : row.status === "TERLAMBAT"
-                ? "bg-amber-50 text-amber-700 border-amber-200"
-                : "bg-blue-50 text-[#2A2C5E] border-blue-200"
-            }`}
-          >
-            {isHadir ? (
-              <CheckCircle2 className="w-3.5 h-3.5" />
-            ) : (
-              <Clock className="w-3.5 h-3.5" />
-            )}
-            {row.status}
-          </span>
-        );
-      },
-    },
-    {
-      header: "Jarak Radius",
-      cell: (row) => (
-        <span className="font-mono font-medium text-gray-800">
-          {row.jarakMeter} Meter
-        </span>
-      ),
-    },
-    {
-      header: "Keterangan Validasi",
-      accessorKey: "keterangan",
-      className: "text-gray-500 text-xs",
-    },
-  ];
-
-  return (
-    <div className="space-y-8">
-      {/* Page Header */}
-      <div className="border-b border-gray-200 pb-5">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
-          <Navigation className="w-3.5 h-3.5" />
-          <span>Sistem Validasi Kehadiran Digital</span>
-        </div>
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-          Presensi Siswa Berbasis Geofencing GPS
-        </h1>
-        <p className="text-xs text-gray-500 mt-1">
-          Validasi kehadiran fisik otomatis menggunakan formula Haversine dengan toleransi jarak maksimal {maxRadius} meter dari koordinat SMAN 2 Buay Bahuga.
-        </p>
-      </div>
-
-      {/* Geofence Detection Card */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-8 space-y-5 sm:space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-gray-100 pb-4">
-          <div>
-            <h2 className="text-base font-bold text-gray-900">
-              Pusat Verifikasi Koordinat
-            </h2>
-            <p className="text-xs text-gray-500 mt-0.5">
-              Titik Sekolah: Lat {schoolLat}, Lng {schoolLng} | Radius Aman: &le; {maxRadius}m
-            </p>
+  // --------------------------------------------------------------------------
+  // TAMPILAN 1: DAFTAR KOTAK KELAS MATA PELAJARAN (SAMA KAYA KELAS & MATERI)
+  // --------------------------------------------------------------------------
+  if (!activeClass) {
+    return (
+      <div className="space-y-6 sm:space-y-8">
+        {/* Header Halaman */}
+        <div className="border-b border-gray-200 pb-5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 text-[#2A2C5E] text-xs font-semibold mb-2">
+            <Clock className="w-3.5 h-3.5 text-[#2A2C5E]" />
+            <span>Sistem Presensi Siswa Digital SMAN 2 Buay Bahuga</span>
           </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={detectLiveLocation}
-              disabled={loadingLocation}
-              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 rounded-md transition-colors w-full sm:w-auto cursor-pointer"
-            >
-              <RefreshCw
-                className={`w-3.5 h-3.5 text-[#2A2C5E] ${
-                  loadingLocation ? "animate-spin" : ""
-                }`}
-              />
-              <span>Cek GPS Asli</span>
-            </button>
-          </div>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
+            Presensi Harian Mata Pelajaran
+          </h1>
+          <p className="text-xs text-gray-500 mt-1">
+            Pilih kotak kelas mata pelajaran di bawah ini untuk melihat jadwal kehadiran dan mengisi absensi hari ini.
+          </p>
         </div>
 
         {/* 4 Kartu Status Presensi (2 Kolom di Mobile, 4 Kolom di Desktop) */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
-          <div className="p-3 sm:p-4 rounded-xl border border-gray-200 bg-gray-50/60 space-y-1">
+          <div className="p-3 sm:p-4 rounded-xl border border-gray-200 bg-white shadow-2xs space-y-1">
             <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">
-              Titik Sekolah
+              Total Kelas Terdaftar
             </span>
-            <p className="text-xs sm:text-sm font-bold text-gray-900 truncate">
-              SMAN 2 Buay Bahuga
+            <p className="text-xs sm:text-base font-bold text-gray-900 truncate">
+              {enrolledClasses.length} Mata Pelajaran
             </p>
-            <p className="text-[10px] text-gray-500 font-mono truncate">
-              {schoolLat}, {schoolLng}
+            <p className="text-[10px] text-gray-500 truncate">
+              Fase F &bull; Kelas {activeStudent.kelas}
             </p>
           </div>
 
-          <div className="p-3 sm:p-4 rounded-xl border border-gray-200 bg-gray-50/60 space-y-1">
+          <div className="p-3 sm:p-4 rounded-xl border border-gray-200 bg-white shadow-2xs space-y-1">
             <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">
-              Radius Toleransi
+              Presensi Hari Ini
             </span>
-            <p className="text-xs sm:text-sm font-bold text-[#2A2C5E]">
-              &le; {maxRadius} Meter
+            <p className="text-xs sm:text-base font-bold text-[#2A2C5E] truncate">
+              {totalAttendedToday} Hadir &bull; {totalNotAttendedToday} Belum
             </p>
             <p className="text-[10px] text-gray-500 truncate">
-              Lingkungan Sekolah
+              Status Sesi Pembelajaran Aktif
             </p>
           </div>
 
-          <div className="p-3 sm:p-4 rounded-xl border border-gray-200 bg-gray-50/60 space-y-1">
+          <div className="p-3 sm:p-4 rounded-xl border border-gray-200 bg-white shadow-2xs space-y-1">
             <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">
-              Status Hari Ini
+              Tingkat Kehadiran
             </span>
-            <p className={`text-xs sm:text-sm font-bold truncate ${successCheckedIn ? "text-emerald-700" : "text-amber-700"}`}>
-              {successCheckedIn ? "Hadir Terverifikasi" : "Belum Absensi"}
+            <p className="text-xs sm:text-base font-bold text-emerald-700 truncate">
+              {overallRate}% Sangat Baik
             </p>
             <p className="text-[10px] text-gray-500 truncate">
-              {successCheckedIn ? "Tepat Waktu" : "Menunggu Koordinat"}
+              Rekapitulasi Kehadiran Siswa
             </p>
           </div>
 
-          <div className="p-3 sm:p-4 rounded-xl border border-gray-200 bg-gray-50/60 space-y-1">
+          <div className="p-3 sm:p-4 rounded-xl border border-gray-200 bg-white shadow-2xs space-y-1">
             <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">
-              Riwayat Presensi
+              Tahun Ajaran Aktif
             </span>
-            <p className="text-xs sm:text-sm font-bold text-gray-900">
-              {records.length} Sesi Tercatat
+            <p className="text-xs sm:text-base font-bold text-gray-900 truncate">
+              2026/2027
             </p>
             <p className="text-[10px] text-gray-500 truncate">
-              Audit Log Haversine
+              Semester Ganjil SMAN 2 Buay Bahuga
             </p>
           </div>
         </div>
 
-        {/* Demo Simulator Buttons (2 Kolom di Mobile) */}
-        <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-2">
-          <div className="text-[11px] font-bold text-gray-600 flex items-center gap-1.5">
-            <Compass className="w-3.5 h-3.5 text-[#2A2C5E]" />
-            <span>Simulasi Uji Coba Cepat (Testing Preset):</span>
+        {/* Bar Pencarian & Filter Tab Kategori */}
+        <div className="bg-white p-3.5 sm:p-4 rounded-xl border border-gray-200 shadow-2xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          {/* Input Cari Kelas */}
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="Cari kelas mata pelajaran atau nama guru pengampu..."
+              className="w-full pl-10 pr-4 py-2 text-xs bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
+            />
           </div>
-          <div className="grid grid-cols-2 gap-2 sm:gap-3">
+
+          {/* Filter Status Presensi */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
             <button
               type="button"
-              onClick={() => setSimulationLocation("INSIDE")}
-              className="p-2.5 sm:p-3 rounded-xl text-left border border-emerald-200 bg-emerald-50/70 hover:bg-emerald-100/70 transition-all cursor-pointer flex flex-col justify-between gap-1 shadow-2xs"
+              onClick={() => {
+                setStatusFilter("SEMUA");
+                setCurrentPage(1);
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
+                statusFilter === "SEMUA"
+                  ? "bg-[#2A2C5E] text-white"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
             >
-              <div className="flex items-center gap-1.5 text-emerald-800 font-bold text-[11px] sm:text-xs">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <span className="truncate">Di Lingkungan Sekolah</span>
-              </div>
-              <span className="text-[10px] sm:text-[11px] text-emerald-700/90 font-medium">
-                Jarak: ~28m (Presensi Sah)
-              </span>
+              Semua Kelas ({enrolledClasses.length})
             </button>
             <button
               type="button"
-              onClick={() => setSimulationLocation("OUTSIDE")}
-              className="p-2.5 sm:p-3 rounded-xl text-left border border-rose-200 bg-rose-50/70 hover:bg-rose-100/70 transition-all cursor-pointer flex flex-col justify-between gap-1 shadow-2xs"
+              onClick={() => {
+                setStatusFilter("HADIR");
+                setCurrentPage(1);
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
+                statusFilter === "HADIR"
+                  ? "bg-emerald-600 text-white"
+                  : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200"
+              }`}
             >
-              <div className="flex items-center gap-1.5 text-rose-800 font-bold text-[11px] sm:text-xs">
-                <XCircle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
-                <span className="truncate">Di Luar Lingkungan</span>
-              </div>
-              <span className="text-[10px] sm:text-[11px] text-rose-700/90 font-medium">
-                Jarak: ~380m (Presensi Ditolak)
-              </span>
+              Sudah Absen ({totalAttendedToday})
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setStatusFilter("BELUM");
+                setCurrentPage(1);
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
+                statusFilter === "BELUM"
+                  ? "bg-rose-600 text-white"
+                  : "bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200"
+              }`}
+            >
+              Belum Absen ({totalNotAttendedToday})
             </button>
           </div>
         </div>
 
-        {/* Distance Indicator Box */}
-        {distance !== null ? (
-          <div
-            className={`p-4 sm:p-5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 ${
-              isWithinGeofence
-                ? "bg-emerald-50/60 border-emerald-200 text-emerald-900"
-                : "bg-red-50/60 border-red-200 text-red-900"
-            }`}
-          >
-            <div className="flex items-start gap-2.5 sm:gap-3">
-              {isWithinGeofence ? (
-                <CheckCircle2 className="w-5 sm:w-6 h-5 sm:h-6 text-emerald-600 shrink-0 mt-0.5" />
-              ) : (
-                <XCircle className="w-5 sm:w-6 h-5 sm:h-6 text-red-600 shrink-0 mt-0.5" />
-              )}
-              <div>
-                <div className="font-bold text-xs sm:text-sm">
-                  {isWithinGeofence
-                    ? "Lokasi Anda Terverifikasi Di Dalam Lingkungan Sekolah"
-                    : "Anda Berada di Luar Jangkauan Sekolah"}
-                </div>
-                <div className="text-[11px] sm:text-xs mt-1 space-y-0.5 opacity-90">
-                  <p>
-                    Jarak Terhitung:{" "}
-                    <strong className="text-xs sm:text-sm font-mono">{distance} Meter</strong>{" "}
-                    (Batas Maksimal: {maxRadius} Meter)
-                  </p>
-                  <p className="text-[10px] sm:text-[11px]">
-                    Koordinat Pengguna: Lat {latitude?.toFixed(6)}, Lng{" "}
-                    {longitude?.toFixed(6)}
-                  </p>
-                </div>
-              </div>
+        {/* Grid Kotak-Kotak Kelas Presensi (2 Kolom di Mobile, Maksimal 6 per Halaman) */}
+        {filteredClasses.length === 0 ? (
+          <div className="bg-white rounded-2xl border border-dashed border-gray-200 p-10 text-center space-y-3">
+            <div className="w-12 h-12 mx-auto rounded-full bg-blue-50 text-[#2A2C5E] flex items-center justify-center">
+              <CheckCircle2 className="w-6 h-6 text-[#2A2C5E]" />
+            </div>
+            <h3 className="text-sm font-bold text-gray-800">
+              Tidak Ada Kelas yang Sesuai
+            </h3>
+            <p className="text-xs text-gray-500 max-w-sm mx-auto">
+              Tidak ditemukan data kelas mata pelajaran dengan kriteria pencarian atau filter yang dipilih.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4 md:gap-6">
+              {paginatedClasses.map((cls) => {
+                const attended = isClassAttendedToday(cls);
+                const totalMeetings = cls.pertemuanList.length;
+                const completedCount = cls.pertemuanList.filter((p) => p.presensi.hadir).length;
+                const percent = Math.round((completedCount / totalMeetings) * 100);
+
+                return (
+                  <div
+                    key={cls.id}
+                    className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-3 sm:p-5 shadow-2xs hover:shadow-md hover:border-[#2A2C5E] transition-all flex flex-col justify-between"
+                  >
+                    <div className="space-y-2 sm:space-y-3">
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-1.5 sm:px-2 py-0.5 rounded bg-blue-50 text-[#2A2C5E] border border-blue-100 shrink-0">
+                          {cls.kode}
+                        </span>
+                        <span className="text-[10px] sm:text-xs text-gray-500 font-medium truncate">
+                          {cls.ruang}
+                        </span>
+                      </div>
+
+                      <div>
+                        <h2 className="text-xs sm:text-base font-bold text-gray-900 leading-snug line-clamp-2 min-h-[2rem] sm:min-h-0">
+                          {cls.nama}
+                        </h2>
+                        <p className="text-[10px] sm:text-xs text-gray-600 mt-1 flex items-center gap-1 truncate">
+                          <User className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-400 shrink-0" />
+                          <span className="truncate">{cls.guruNama}</span>
+                        </p>
+                      </div>
+
+                      {/* Status Presensi Hari Ini */}
+                      <div className="pt-2 border-t border-gray-100">
+                        {attended ? (
+                          <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] sm:text-xs font-bold">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                            <span>Hadir Hari Ini</span>
+                          </div>
+                        ) : (
+                          <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200 text-[10px] sm:text-xs font-bold">
+                            <Clock className="w-3 h-3 text-rose-600 shrink-0" />
+                            <span>Belum Absen Hari Ini</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Ringkasan Kehadiran Seluruh Pertemuan */}
+                      <div className="text-[9px] sm:text-[11px] text-gray-500 flex items-center justify-between">
+                        <span>Kehadiran: {completedCount}/{totalMeetings} Sesi</span>
+                        <span className="font-bold text-[#2A2C5E]">{percent}%</span>
+                      </div>
+                    </div>
+
+                    {/* Footer Tombol Masuk */}
+                    <div className="pt-3 mt-3 border-t border-gray-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+                      <span className="text-[9px] sm:text-[11px] text-gray-500 font-medium truncate">
+                        {cls.jadwal}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleOpenClass(cls.id)}
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-2.5 py-1.5 sm:px-3.5 sm:py-2 text-[10px] sm:text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-lg shadow-2xs transition-all cursor-pointer shrink-0"
+                      >
+                        <span className="sm:hidden">Buka Presensi</span>
+                        <span className="hidden sm:inline">Buka Presensi Kelas</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            <div className="w-full sm:w-auto shrink-0">
-              {successCheckedIn ? (
-                <span className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-4 py-2 bg-emerald-600 text-white font-bold text-xs rounded-md shadow-xs">
-                  <CheckCircle2 className="w-4 h-4" />
-                  Presensi Berhasil Tercatat
-                </span>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleCheckIn}
-                  disabled={!isWithinGeofence}
-                  className="w-full sm:w-auto px-6 py-2.5 bg-[#2A2C5E] hover:bg-[#1F2147] text-white font-bold text-xs rounded-md shadow-xs disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
-                >
-                  Kirim Absensi Kehadiran
-                </button>
-              )}
+            {/* Navigasi Paginasi (Maksimal 6 Tampilan per Halaman) */}
+            {totalPages > 1 && (
+              <PaginationBar
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                itemsPerPage={pageSize}
+                onPageChange={(p) => setCurrentPage(p)}
+                itemLabel="kelas mata pelajaran"
+              />
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // --------------------------------------------------------------------------
+  // TAMPILAN 2: DETAIL PRESENSI KELAS (KETIKA DIKLIK: ISINYA ABSENSI HARI INI)
+  // --------------------------------------------------------------------------
+  // Sesi pertemuan aktif hari ini (pertemuan 1 atau pertemuan pertama yang belum absen)
+  const todayMeeting = activeClass.pertemuanList.find((p) => !p.presensi.hadir) || activeClass.pertemuanList[0];
+  const isAlreadyAttended = Boolean(todayMeeting.presensi.hadir);
+  const totalMeetings = activeClass.pertemuanList.length;
+  const completedCount = activeClass.pertemuanList.filter((p) => p.presensi.hadir).length;
+  const attendancePercent = Math.round((completedCount / totalMeetings) * 100);
+
+  return (
+    <div className="space-y-6 sm:space-y-8">
+      {/* Toast Notifikasi Berhasil */}
+      {toastMessage && (
+        <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl text-xs font-semibold flex items-center justify-between shadow-xs animate-in fade-in">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>{toastMessage}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setToastMessage(null)}
+            className="text-emerald-700 hover:text-emerald-900 cursor-pointer"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* Navigasi Breadcrumb & Tombol Kembali */}
+      <div className="flex items-center justify-between">
+        <button
+          type="button"
+          onClick={handleBackToList}
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#2A2C5E] hover:text-[#1F2147] hover:underline cursor-pointer"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Kembali ke Daftar Seluruh Kelas Presensi</span>
+        </button>
+        <span className="text-xs text-gray-400">
+          Tahun Ajaran 2026/2027 &bull; SMAN 2 Buay Bahuga
+        </span>
+      </div>
+
+      {/* Header Banner Kelas Aktif */}
+      <div className="bg-[#2A2C5E] text-white rounded-2xl p-6 sm:p-7 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-white/15 text-blue-100 text-[11px] font-bold">
+            <span>{activeClass.kode}</span>
+            <span>&bull;</span>
+            <span>{activeClass.ruang}</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+            {activeClass.nama}
+          </h1>
+          <p className="text-xs sm:text-sm text-blue-200">
+            Guru Pengampu: <strong className="text-white">{activeClass.guruNama}</strong> &bull; Jadwal: {activeClass.jadwal}
+          </p>
+        </div>
+
+        {/* Ringkasan Kehadiran Siswa */}
+        <div className="bg-white/10 backdrop-blur-xs rounded-xl p-4 border border-white/15 min-w-[200px] shrink-0 space-y-2">
+          <div className="flex items-center justify-between text-xs text-blue-100 font-semibold">
+            <span>Rekap Kehadiran</span>
+            <span className="font-bold text-white">{attendancePercent}%</span>
+          </div>
+          <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-emerald-400 rounded-full transition-all duration-300"
+              style={{ width: `${attendancePercent}%` }}
+            />
+          </div>
+          <div className="text-[11px] text-blue-200">
+            {completedCount} dari {totalMeetings} Sesi Terdata Hadir
+          </div>
+        </div>
+      </div>
+
+      {/* KARTU UTAMA: PRESENSI SESI HARI INI */}
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-7 space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-blue-50 text-[#2A2C5E] text-[11px] font-bold mb-1">
+              <Calendar className="w-3.5 h-3.5" />
+              <span>Sesi Pertemuan Hari Ini: {todayMeeting.tanggal}</span>
+            </div>
+            <h2 className="text-lg font-bold text-gray-900">
+              {todayMeeting.judul}
+            </h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Jadwal Kelas: {activeClass.jadwal} &bull; Lokasi Pembelajaran: {activeClass.ruang}
+            </p>
+          </div>
+
+          <div className="shrink-0">
+            {isAlreadyAttended ? (
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Terverifikasi Hadir</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold">
+                <Clock className="w-4 h-4 text-amber-600" />
+                <span>Sesi Presensi Terbuka</span>
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Konten Status: Jika Sudah Hadir vs Belum Hadir */}
+        {isAlreadyAttended ? (
+          <div className="p-5 rounded-xl bg-emerald-50/70 border border-emerald-200 space-y-3">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-emerald-100 text-emerald-700 shrink-0">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-sm font-bold text-emerald-900">
+                  Presensi Hari Ini Telah Berhasil Terverifikasi
+                </h3>
+                <p className="text-xs text-emerald-800 leading-relaxed">
+                  Kehadiran Anda atas nama <strong className="text-emerald-950">{activeStudent.name}</strong> ({activeStudent.nisn}) telah tercatat secara sah di sistem presensi digital SMAN 2 Buay Bahuga.
+                </p>
+                <div className="flex flex-wrap items-center gap-4 text-xs text-emerald-700 pt-1 font-medium">
+                  <span>Waktu Hadir: <strong>{todayMeeting.presensi.waktuHadir || "07:15 WIB"}</strong></span>
+                  <span>&bull;</span>
+                  <span>Status: <strong>Tepat Waktu</strong></span>
+                  <span>&bull;</span>
+                  <span>Lokasi: <strong>Lingkungan SMAN 2 Buay Bahuga</strong></span>
+                </div>
+              </div>
             </div>
           </div>
         ) : (
-          <div className="p-6 sm:p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300 text-gray-500 space-y-2">
-            <MapPin className="w-7 sm:w-8 h-7 sm:h-8 text-gray-400 mx-auto" />
-            <p className="text-xs font-semibold text-gray-700">
-              Belum ada data geolokasi yang terdeteksi
-            </p>
-            <p className="text-[11px] text-gray-500 max-w-sm mx-auto">
-              Klik &quot;Cek GPS Asli&quot; untuk mengizinkan browser membaca lokasi, atau pilih salah satu tombol &quot;Simulasi Uji Coba Cepat&quot; di atas.
-            </p>
-          </div>
-        )}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Pilih Status Kehadiran Hari Ini:
+              </label>
+              <div className="grid grid-cols-3 gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setSelectedStatusType("HADIR")}
+                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                    selectedStatusType === "HADIR"
+                      ? "border-[#2A2C5E] bg-[#2A2C5E]/5 ring-1 ring-[#2A2C5E]"
+                      : "border-gray-200 bg-gray-50/60 hover:bg-gray-100"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-gray-900">Hadir</span>
+                    <CheckCircle2 className={`w-4 h-4 ${selectedStatusType === "HADIR" ? "text-[#2A2C5E]" : "text-gray-400"}`} />
+                  </div>
+                  <span className="text-[10px] text-gray-500 mt-1">Mengikuti di Kelas</span>
+                </button>
 
-        {errorMessage && (
-          <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 shrink-0" />
-            <span>{errorMessage}</span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedStatusType("IZIN")}
+                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                    selectedStatusType === "IZIN"
+                      ? "border-amber-600 bg-amber-50/60 ring-1 ring-amber-600"
+                      : "border-gray-200 bg-gray-50/60 hover:bg-gray-100"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-gray-900">Izin</span>
+                    <Clock className={`w-4 h-4 ${selectedStatusType === "IZIN" ? "text-amber-600" : "text-gray-400"}`} />
+                  </div>
+                  <span className="text-[10px] text-gray-500 mt-1">Surat / Keperluan</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedStatusType("SAKIT")}
+                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                    selectedStatusType === "SAKIT"
+                      ? "border-rose-600 bg-rose-50/60 ring-1 ring-rose-600"
+                      : "border-gray-200 bg-gray-50/60 hover:bg-gray-100"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-gray-900">Sakit</span>
+                    <AlertCircle className={`w-4 h-4 ${selectedStatusType === "SAKIT" ? "text-rose-600" : "text-gray-400"}`} />
+                  </div>
+                  <span className="text-[10px] text-gray-500 mt-1">Keterangan Sakit</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Catatan Alasan (Jika Izin atau Sakit) */}
+            {selectedStatusType !== "HADIR" && (
+              <div className="space-y-1.5 animate-in fade-in">
+                <label className="block text-xs font-semibold text-gray-700">
+                  Keterangan Alasan ({selectedStatusType}):
+                </label>
+                <textarea
+                  value={keteranganText}
+                  onChange={(e) => setKeteranganText(e.target.value)}
+                  placeholder={`Tuliskan alasan ${selectedStatusType.toLowerCase()} atau lampirkan keterangan resmi dari orang tua/wali...`}
+                  rows={2}
+                  className="w-full p-3 text-xs bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
+                />
+              </div>
+            )}
+
+            {/* Tombol Konfirmasi Presensi Hari Ini */}
+            <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <p className="text-xs text-gray-500 flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-[#2A2C5E]" />
+                <span>Validasi kehadiran fisik otomatis di lingkungan SMAN 2 Buay Bahuga.</span>
+              </p>
+              <button
+                type="button"
+                onClick={() => handleConfirmAttendance(activeClass, todayMeeting)}
+                className="w-full sm:w-auto px-6 py-2.5 bg-[#2A2C5E] hover:bg-[#1F2147] text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                <span>
+                  {selectedStatusType === "HADIR"
+                    ? "Konfirmasi Hadir Hari Ini"
+                    : `Kirim Keterangan ${selectedStatusType}`}
+                </span>
+              </button>
+            </div>
           </div>
         )}
       </div>
 
-      {/* History Table */}
-      <div className="space-y-4">
-        <DataTable
-          title="Riwayat Presensi Siswa Terverifikasi"
-          subtitle="Audit log kehadiran dengan koordinat GPS dan meter radius"
-          data={records}
-          columns={columns}
-          searchPlaceholder="Cari berdasarkan nama atau NISN siswa..."
-          pageSize={10}
-        />
+      {/* REKAPITULASI KEHADIRAN SELURUH PERTEMUAN KELAS INI */}
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-7 space-y-4">
+        <div className="border-b border-gray-100 pb-3 flex items-center justify-between">
+          <div>
+            <h3 className="text-base font-bold text-gray-900">
+              Rekapitulasi Kehadiran Sesi Pembelajaran ({totalMeetings} Pertemuan)
+            </h3>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Alur rekam jejak presensi Anda untuk seluruh modul dan pertemuan tatap muka semester ini.
+            </p>
+          </div>
+        </div>
+
+        {/* Daftar Kartu Pertemuan (2 Kolom di Mobile) */}
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+          {activeClass.pertemuanList.map((pt) => {
+            const isAttended = Boolean(pt.presensi.hadir);
+            return (
+              <div
+                key={pt.id}
+                className={`p-3 sm:p-4 rounded-xl border transition-all flex flex-col justify-between ${
+                  isAttended
+                    ? "bg-emerald-50/40 border-emerald-200"
+                    : "bg-gray-50/70 border-gray-200"
+                }`}
+              >
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-blue-50 text-[#2A2C5E]">
+                      {pt.tipe === "UTS" ? "UTS" : pt.tipe === "UAS" ? "UAS" : `P-0${pt.nomor}`}
+                    </span>
+                    <span className="text-[10px] text-gray-400">
+                      {pt.tanggal.split(",")[0]}
+                    </span>
+                  </div>
+
+                  <h4 className="text-xs sm:text-sm font-bold text-gray-900 line-clamp-2 leading-snug">
+                    {pt.judul}
+                  </h4>
+                </div>
+
+                <div className="pt-2 mt-2 border-t border-gray-100 flex items-center justify-between">
+                  {isAttended ? (
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Hadir</span>
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleConfirmAttendance(activeClass, pt)}
+                      className="px-2 py-0.5 text-[10px] font-bold text-[#2A2C5E] bg-blue-50 hover:bg-[#2A2C5E] hover:text-white rounded transition-colors cursor-pointer"
+                    >
+                      Isi Hadir
+                    </button>
+                  )}
+                  <span className="text-[10px] text-gray-400 font-mono">
+                    {pt.presensi.waktuHadir || "Terjadwal"}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
+  );
+}
+
+export default function SiswaPresensiPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="p-8 text-center text-xs text-gray-500">
+          Memuat presensi siswa...
+        </div>
+      }
+    >
+      <SiswaPresensiContent />
+    </Suspense>
   );
 }

@@ -92,95 +92,31 @@ export default function SiswaDashboardPage() {
         </div>
       )}
 
-      {/* 1. Header: Sambutan Siswa (Kiri) & Daftar Kelas yang Sedang Diikuti (Kanan) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        {/* Kolom Kiri: Sambutan Siswa (Sederhana & Bersih) */}
-        <div className="lg:col-span-7 bg-[#2A2C5E] text-white rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col justify-center relative overflow-hidden">
-          <div className="space-y-3 relative z-10">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/15 text-blue-100 text-xs font-semibold backdrop-blur-xs">
-              <GraduationCap className="w-3.5 h-3.5" />
-              <span>Portal Siswa & Smart LMS SMAN 2 Buay Bahuga</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Selamat Datang, {activeStudent.name}
-            </h1>
-            <p className="text-xs sm:text-sm text-blue-100/90 leading-relaxed max-w-xl">
-              Kelas: <strong className="text-white">{activeStudent.kelas || "XII MIPA 1"}</strong> &bull; NISN: <strong className="text-white">{activeStudent.nisn || "0078129341"}</strong> &bull; Tahun Ajaran 2026/2027
-            </p>
+      {/* 1. Header: Sambutan Siswa Menyambung Penuh (Full-Width Banner Biru) */}
+      <div className="bg-[#2A2C5E] text-white rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative overflow-hidden">
+        <div className="space-y-2.5 relative z-10 max-w-2xl">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/15 text-blue-100 text-xs font-semibold backdrop-blur-xs">
+            <GraduationCap className="w-3.5 h-3.5" />
+            <span>Portal Siswa & Smart LMS SMAN 2 Buay Bahuga</span>
           </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            Selamat Datang, {activeStudent.name}
+          </h1>
+          <p className="text-xs sm:text-sm text-blue-100/90 leading-relaxed">
+            Kelas: <strong className="text-white">{activeStudent.kelas || "XII MIPA 1"}</strong> &bull; NISN: <strong className="text-white">{activeStudent.nisn || "0078129341"}</strong> &bull; Tahun Ajaran 2026/2027
+          </p>
         </div>
 
-        {/* Kolom Kanan: Daftar Kelas yang Sedang Diikuti Siswa */}
-        <div className="lg:col-span-5 bg-white rounded-2xl border border-gray-200 p-5 shadow-2xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
-              <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-lg bg-blue-50 text-[#2A2C5E]">
-                  <BookOpen className="w-4 h-4" />
-                </span>
-                <div>
-                  <h2 className="text-sm font-bold text-gray-900 leading-tight">
-                    Kelas yang Sedang Diikuti
-                  </h2>
-                  <p className="text-[11px] text-gray-500">
-                    {enrolledClasses.length} Kelas Terdaftar Aktif
-                  </p>
-                </div>
-              </div>
-              <Link
-                href="/siswa/mapel"
-                className="text-xs font-semibold text-[#2A2C5E] hover:underline"
-              >
-                Lihat Semua &rarr;
-              </Link>
-            </div>
-
-            {/* List Mini Kelas */}
-            <div className="mt-3 divide-y divide-gray-100 max-h-[190px] overflow-y-auto pr-1">
-              {enrolledClasses.length === 0 ? (
-                <div className="py-6 text-center text-xs text-gray-400">
-                  Belum ada kelas yang diikuti. Silakan pilih kelas di bawah untuk bergabung.
-                </div>
-              ) : (
-                enrolledClasses.map((cls) => (
-                  <div
-                    key={cls.id}
-                    className="py-2.5 flex items-center justify-between gap-3 hover:bg-gray-50/80 px-2 rounded-lg transition-colors"
-                  >
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
-                          {cls.kode.split("-")[0]}
-                        </span>
-                        <h3 className="text-xs font-bold text-gray-900 truncate">
-                          {cls.nama}
-                        </h3>
-                      </div>
-                      <p className="text-[11px] text-gray-500 truncate mt-0.5">
-                        {cls.guruNama} &bull; {cls.ruang}
-                      </p>
-                    </div>
-
-                    <Link
-                      href={`/siswa/mapel?id=${cls.id}`}
-                      onClick={() => selectClass(cls.id)}
-                      className="px-2.5 py-1 text-[11px] font-semibold text-[#2A2C5E] bg-gray-100 hover:bg-[#2A2C5E] hover:text-white rounded transition-colors shrink-0"
-                    >
-                      Buka
-                    </Link>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          <div className="pt-3 border-t border-gray-100 mt-2 flex items-center justify-between text-[11px] text-gray-500">
-            <span>Sinkronisasi Otomatis Dapodik</span>
-            <span className="font-semibold text-emerald-600 flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              Aktif
-            </span>
-          </div>
+        {/* Akses Cepat ke Ruang Kelas & Materi */}
+        <div className="relative z-10 shrink-0">
+          <Link
+            href="/siswa/mapel"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold rounded-xl border border-white/20 transition-all backdrop-blur-xs shadow-xs"
+          >
+            <BookOpen className="w-4 h-4 text-blue-200" />
+            <span>Buka Ruang Kelas & Materi ({enrolledClasses.length})</span>
+            <ChevronRight className="w-4 h-4" />
+          </Link>
         </div>
       </div>
 

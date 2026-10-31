@@ -7,13 +7,20 @@ export interface SoalPilgan {
   pertanyaan: string;
   pilihan: string[];
   kunci: number;
+  gambarUrl?: string;
+}
+
+export interface SoalEssay {
+  id: number;
+  pertanyaan: string;
+  gambarUrl?: string;
 }
 
 export interface PertemuanItem {
   id: string;
   nomor: number;
   judul: string;
-  tipe: "REGULER" | "UTS" | "UAS";
+  tipe: "REGULER" | "UTS" | "UAS" | "HARIAN";
   tanggal: string;
   durasiMenit?: number;
   petunjukUjian?: string;
@@ -32,6 +39,7 @@ export interface PertemuanItem {
     deskripsi: string;
     soalPilgan?: SoalPilgan[];
     pertanyaanEssay?: string;
+    soalEssayList?: SoalEssay[];
     sudahDikerjakan: boolean;
     nilai?: number | null;
     jawabanSiswa?: any;

@@ -833,6 +833,7 @@ function GuruMapelContent() {
             {activeClass.pertemuanList.map((pt) => {
               const isUts = pt.tipe === "UTS";
               const isUas = pt.tipe === "UAS";
+              const isHarian = pt.tipe === "HARIAN";
               const isSpecial = isUts || isUas;
 
               return (
@@ -857,10 +858,18 @@ function GuruMapelContent() {
                             ? "bg-amber-100 text-amber-800 border border-amber-200"
                             : isUas
                             ? "bg-rose-100 text-rose-800 border border-rose-200"
+                            : isHarian
+                            ? "bg-indigo-100 text-[#2A2C5E] border border-indigo-200"
                             : "bg-blue-100 text-[#2A2C5E] border border-blue-200"
                         }`}
                       >
-                        {isUts ? "UJIAN TENGAH SEMESTER (UTS)" : isUas ? "UJIAN AKHIR SEMESTER (UAS)" : `Pertemuan 0${pt.nomor}`}
+                        {isUts
+                          ? "UJIAN TENGAH SEMESTER (UTS)"
+                          : isUas
+                          ? "UJIAN AKHIR SEMESTER (UAS)"
+                          : isHarian
+                          ? `PENILAIAN HARIAN (P-${pt.nomor})`
+                          : `Pertemuan 0${pt.nomor}`}
                       </span>
                       <h4 className="text-sm sm:text-base font-bold text-gray-900">
                         {pt.judul}
@@ -940,7 +949,11 @@ function GuruMapelContent() {
                               {isSpecial ? "Asesmen Sumatif CBT" : pt.tugas?.tipe === "ESSAY" ? "Tugas Essay" : "Latihan Soal Pilihan Ganda"}
                             </span>
                             <span className="text-[10px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.2 rounded border border-blue-200">
-                              {pt.tugas?.soalPilgan ? `${pt.tugas.soalPilgan.length} Butir Soal` : "3 Butir Evaluasi"}
+                              {pt.tugas?.soalPilgan
+                                ? `${pt.tugas.soalPilgan.length} Butir Soal`
+                                : pt.tugas?.soalEssayList
+                                ? `${pt.tugas.soalEssayList.length} Butir Essay`
+                                : "3 Butir Evaluasi"}
                             </span>
                           </div>
                           <h5 className="text-sm font-bold text-gray-900 mt-0.5">

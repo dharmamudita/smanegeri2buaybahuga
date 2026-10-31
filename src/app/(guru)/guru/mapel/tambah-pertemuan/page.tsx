@@ -6,12 +6,15 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Plus,
   Trash2,
   Upload,
   Check,
+  ImageIcon,
 } from "lucide-react";
-import { useLMSStore, PertemuanItem, SoalPilgan } from "@/lib/lmsStore";
+import { useLMSStore, PertemuanItem, SoalPilgan, SoalEssay } from "@/lib/lmsStore";
 
 function TambahPertemuanContent() {
   const router = useRouter();
@@ -64,9 +67,11 @@ function TambahPertemuanContent() {
   // Jenis Asesmen / Tugas
   const [jenisAsesmen, setJenisAsesmen] = useState<"PILIHAN_GANDA" | "ESSAY" | "NONE">("PILIHAN_GANDA");
   const [durasiMenit, setDurasiMenit] = useState<number>(60);
-  const [pertanyaanEssay, setPertanyaanEssay] = useState<string>(
-    "Jelaskan kesimpulan dan analisis kritis Anda terhadap materi yang telah dipelajari pada pertemuan ini."
-  );
+
+  // Pagination Konfigurasi (5 Soal per Halaman)
+  const ITEMS_PER_PAGE = 5;
+  const [pagePilgan, setPagePilgan] = useState<number>(1);
+  const [pageEssay, setPageEssay] = useState<number>(1);
 
   // Tenggat Pengumpulan (Deadline)
   const getFutureDateISO = (days: number) => {
@@ -134,7 +139,7 @@ function TambahPertemuanContent() {
 
   const handleAddSoalPilgan = () => {
     const nextId = soalPilganList.length + 1;
-    setSoalPilganList([
+    const nextList = [
       ...soalPilganList,
       {
         id: nextId,
@@ -142,33 +147,134 @@ function TambahPertemuanContent() {
         pilihan: ["Pilihan A", "Pilihan B", "Pilihan C", "Pilihan D"],
         kunci: 0,
       },
-    ]);
+    ];
+    setSoalPilganList(nextList);
+    const newPage = Math.ceil(nextList.length / ITEMS_PER_PAGE);
+    setPagePilgan(newPage);
   };
 
-  const handleUpdatePertanyaan = (index: number, text: string) => {
+  const handleUpdatePertanyaan = (globalIndex: number, text: string) => {
     const updated = [...soalPilganList];
-    updated[index].pertanyaan = text;
+    updated[globalIndex].pertanyaan = text;
     setSoalPilganList(updated);
   };
 
-  const handleUpdatePilihan = (soalIndex: number, opsiIndex: number, text: string) => {
+  const handleUpdatePilihan = (globalIndex: number, opsiIndex: number, text: string) => {
     const updated = [...soalPilganList];
-    updated[soalIndex].pilihan[opsiIndex] = text;
+    updated[globalIndex].pilihan[opsiIndex] = text;
     setSoalPilganList(updated);
   };
 
-  const handleUpdateKunci = (soalIndex: number, kunciIndex: number) => {
+  const handleUpdateKunci = (globalIndex: number, kunciIndex: number) => {
     const updated = [...soalPilganList];
-    updated[soalIndex].kunci = kunciIndex;
+    updated[globalIndex].kunci = kunciIndex;
     setSoalPilganList(updated);
   };
 
-  const handleDeleteSoal = (index: number) => {
+  const handleDeleteSoal = (globalIndex: number) => {
     if (soalPilganList.length <= 1) {
       alert("Harus ada minimal 1 butir soal.");
       return;
     }
-    setSoalPilganList(soalPilganList.filter((_, i) => i !== index));
+    const updated = soalPilganList.filter((_, i) => i !== globalIndex);
+    setSoalPilganList(updated);
+    const maxPage = Math.ceil(updated.length / ITEMS_PER_PAGE) || 1;
+    if (pagePilgan > maxPage) {
+      setPagePilgan(maxPage);
+    }
+  };
+
+  const handleImageUploadPilgan = (globalIndex: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          const updated = [...soalPilganList];
+          updated[globalIndex] = {
+            ...updated[globalIndex],
+            gambarUrl: reader.result,
+          };
+          setSoalPilganList(updated);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImagePilgan = (globalIndex: number) => {
+    const updated = [...soalPilganList];
+    const item = { ...updated[globalIndex] };
+    delete item.gambarUrl;
+    updated[globalIndex] = item;
+    setSoalPilganList(updated);
+  };
+
+  // Soal Essay (Dapat Menambah Berapa Saja)
+  const [soalEssayList, setSoalEssayList] = useState<SoalEssay[]>([
+    {
+      id: 1,
+      pertanyaan: "Jelaskan kesimpulan dan analisis kritis Anda terhadap materi yang telah dipelajari pada pertemuan ini.",
+    },
+  ]);
+
+  const handleAddSoalEssay = () => {
+    const nextId = soalEssayList.length + 1;
+    const nextList = [
+      ...soalEssayList,
+      {
+        id: nextId,
+        pertanyaan: "",
+      },
+    ];
+    setSoalEssayList(nextList);
+    const newPage = Math.ceil(nextList.length / ITEMS_PER_PAGE);
+    setPageEssay(newPage);
+  };
+
+  const handleUpdatePertanyaanEssay = (globalIndex: number, text: string) => {
+    const updated = [...soalEssayList];
+    updated[globalIndex].pertanyaan = text;
+    setSoalEssayList(updated);
+  };
+
+  const handleDeleteSoalEssay = (globalIndex: number) => {
+    if (soalEssayList.length <= 1) {
+      alert("Harus ada minimal 1 butir soal essay.");
+      return;
+    }
+    const updated = soalEssayList.filter((_, i) => i !== globalIndex);
+    setSoalEssayList(updated);
+    const maxPage = Math.ceil(updated.length / ITEMS_PER_PAGE) || 1;
+    if (pageEssay > maxPage) {
+      setPageEssay(maxPage);
+    }
+  };
+
+  const handleImageUploadEssay = (globalIndex: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          const updated = [...soalEssayList];
+          updated[globalIndex] = {
+            ...updated[globalIndex],
+            gambarUrl: reader.result,
+          };
+          setSoalEssayList(updated);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImageEssay = (globalIndex: number) => {
+    const updated = [...soalEssayList];
+    const item = { ...updated[globalIndex] };
+    delete item.gambarUrl;
+    updated[globalIndex] = item;
+    setSoalEssayList(updated);
   };
 
   // Submit Handler
@@ -184,8 +290,8 @@ function TambahPertemuanContent() {
     const finalJudul = judulPertemuan.trim() || `Pertemuan ${nomorPertemuan}: Pendalaman Materi`;
     const automatedSchedule = activeClass.jadwal || "Senin, 07:30 - 09:30 WIB";
 
-    const storeTipe: "REGULER" | "UTS" | "UAS" =
-      kategoriSesi === "UTS" ? "UTS" : kategoriSesi === "UAS" ? "UAS" : "REGULER";
+    const storeTipe: "REGULER" | "UTS" | "UAS" | "HARIAN" =
+      kategoriSesi === "UTS" ? "UTS" : kategoriSesi === "UAS" ? "UAS" : kategoriSesi === "HARIAN" ? "HARIAN" : "REGULER";
 
     const materiData =
       formatMateri !== "NONE"
@@ -216,6 +322,11 @@ function TambahPertemuanContent() {
       finalTugasTipe = "ESSAY";
     }
 
+    const combinedEssayText = soalEssayList
+      .map((s, idx) => (soalEssayList.length > 1 ? `${idx + 1}. ${s.pertanyaan}` : s.pertanyaan))
+      .filter(Boolean)
+      .join("\n\n");
+
     const tugasData =
       jenisAsesmen !== "NONE"
         ? {
@@ -230,8 +341,12 @@ function TambahPertemuanContent() {
                 : undefined,
             pertanyaanEssay:
               finalTugasTipe === "ESSAY"
-                ? pertanyaanEssay.trim() ||
+                ? combinedEssayText ||
                   "Jelaskan kesimpulan dan analisis kritis Anda terhadap materi yang telah dipelajari pada pertemuan ini."
+                : undefined,
+            soalEssayList:
+              finalTugasTipe === "ESSAY"
+                ? soalEssayList
                 : undefined,
             sudahDikerjakan: false,
           }
@@ -275,7 +390,7 @@ function TambahPertemuanContent() {
 
   const kategoriLabelMap = {
     REGULER: "Sesi Reguler / Formatif",
-    HARIAN: "Penilaian Harian (Kuis)",
+    HARIAN: "Penilaian Harian (Harian)",
     UTS: "Ujian Tengah Semester (UTS)",
     UAS: "Ujian Akhir Semester (UAS)",
   };
@@ -394,7 +509,7 @@ function TambahPertemuanContent() {
                         kategoriSesi === "HARIAN" ? "bg-gray-50 text-[#2A2C5E] font-bold" : "text-gray-700 hover:bg-gray-50"
                       }`}
                     >
-                      <span>Penilaian Harian (Kuis)</span>
+                      <span>Penilaian Harian (Harian)</span>
                       {kategoriSesi === "HARIAN" && <Check className="w-3.5 h-3.5 text-[#2A2C5E]" />}
                     </button>
 
@@ -419,7 +534,7 @@ function TambahPertemuanContent() {
                       onClick={() => {
                         setKategoriSesi("UAS");
                         setJenisAsesmen("PILIHAN_GANDA");
-                        setDurasiMenit(90);
+                        setDurasiMenit(120);
                         setOpenDropdown(null);
                       }}
                       className={`w-full px-3 py-2 text-left text-xs flex items-center justify-between cursor-pointer ${
@@ -827,118 +942,339 @@ function TambahPertemuanContent() {
                     >
                       90 Menit
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => setDurasiMenit(120)}
+                      className={`px-3 py-1 text-xs font-medium rounded border transition-colors cursor-pointer ${
+                        durasiMenit === 120
+                          ? "bg-[#2A2C5E] text-white border-[#2A2C5E]"
+                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      120 Menit
+                    </button>
                   </div>
                 </div>
 
                 {/* BUILDER SOAL PILIHAN GANDA (CBT) */}
-                {jenisAsesmen === "PILIHAN_GANDA" && (
-                  <div className="space-y-3 pt-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-gray-800">
-                        Butir Soal ({soalPilganList.length} Soal &bull; {Math.round(100 / Math.max(1, soalPilganList.length))} poin/soal)
-                      </span>
-                      <button
-                        type="button"
-                        onClick={handleAddSoalPilgan}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#2A2C5E] text-white text-xs font-medium rounded-md hover:bg-[#1F2147] cursor-pointer"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>Tambah Soal</span>
-                      </button>
-                    </div>
+                {jenisAsesmen === "PILIHAN_GANDA" && (() => {
+                  const totalPilganPages = Math.ceil(soalPilganList.length / ITEMS_PER_PAGE) || 1;
+                  const startPilganIdx = (pagePilgan - 1) * ITEMS_PER_PAGE;
+                  const currentPilganList = soalPilganList.slice(startPilganIdx, startPilganIdx + ITEMS_PER_PAGE);
 
-                    <div className="space-y-3">
-                      {soalPilganList.map((soal, sIdx) => (
-                        <div
-                          key={soal.id}
-                          className="p-3 bg-gray-50/60 border border-gray-200 rounded-lg space-y-2"
+                  return (
+                    <div className="space-y-3 pt-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-gray-800">
+                          Butir Soal ({soalPilganList.length} Soal &bull; {Math.round(100 / Math.max(1, soalPilganList.length))} poin/soal)
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleAddSoalPilgan}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#2A2C5E] text-white text-xs font-medium rounded-md hover:bg-[#1F2147] cursor-pointer"
                         >
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-gray-700">
-                              Nomor {sIdx + 1}
-                            </span>
-                            {soalPilganList.length > 1 && (
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteSoal(sIdx)}
-                                className="text-xs text-red-600 hover:text-red-800 flex items-center gap-1 cursor-pointer font-medium"
-                              >
-                                <Trash2 className="w-3 h-3" />
-                                <span>Hapus</span>
-                              </button>
-                            )}
-                          </div>
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Tambah Soal</span>
+                        </button>
+                      </div>
 
-                          <input
-                            type="text"
-                            value={soal.pertanyaan}
-                            onChange={(e) => handleUpdatePertanyaan(sIdx, e.target.value)}
-                            placeholder={`Ketik teks pertanyaan nomor ${sIdx + 1}...`}
-                            className="w-full px-3 py-1.5 bg-white border border-gray-300 rounded-md text-xs text-gray-900 focus:outline-none focus:border-[#2A2C5E]"
-                            required
-                          />
+                      <div className="space-y-3">
+                        {currentPilganList.map((soal, localIdx) => {
+                          const globalIdx = startPilganIdx + localIdx;
+                          return (
+                            <div
+                              key={soal.id || globalIdx}
+                              className="p-3 bg-gray-50/60 border border-gray-200 rounded-lg space-y-2.5"
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-bold text-gray-700">
+                                  Nomor {globalIdx + 1}
+                                </span>
+                                <div className="flex items-center gap-2">
+                                  <label className="inline-flex items-center gap-1 px-2 py-0.5 bg-white border border-gray-300 hover:bg-gray-100 rounded text-[11px] font-medium text-gray-700 cursor-pointer shadow-2xs">
+                                    <ImageIcon className="w-3 h-3 text-gray-500" />
+                                    <span>{soal.gambarUrl ? "Ganti Gambar" : "Tambah Gambar"}</span>
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      className="hidden"
+                                      onChange={(e) => handleImageUploadPilgan(globalIdx, e)}
+                                    />
+                                  </label>
 
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                            {soal.pilihan.map((opsi, oIdx) => {
-                              const isKey = soal.kunci === oIdx;
-                              const abcd = ["A", "B", "C", "D"][oIdx];
-                              return (
-                                <div
-                                  key={oIdx}
-                                  className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md border text-xs transition-colors ${
-                                    isKey
-                                      ? "bg-white border-[#2A2C5E] text-gray-900 ring-1 ring-[#2A2C5E]/20"
-                                      : "bg-white border-gray-200 text-gray-700"
-                                  }`}
-                                >
-                                  <input
-                                    type="radio"
-                                    name={`kunci-soal-${sIdx}`}
-                                    checked={isKey}
-                                    onChange={() => handleUpdateKunci(sIdx, oIdx)}
-                                    className="accent-[#2A2C5E] cursor-pointer"
-                                    title="Kunci Jawaban Benar"
-                                  />
-                                  <span className="font-bold text-gray-500 w-3">{abcd}.</span>
-                                  <input
-                                    type="text"
-                                    value={opsi}
-                                    onChange={(e) => handleUpdatePilihan(sIdx, oIdx, e.target.value)}
-                                    className="w-full bg-transparent border-0 focus:outline-none text-xs text-gray-900"
-                                    placeholder={`Pilihan ${abcd}`}
-                                    required
-                                  />
-                                  {isKey && (
-                                    <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-50 px-1.5 py-0.2 rounded shrink-0">
-                                      Kunci
-                                    </span>
+                                  {soalPilganList.length > 1 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteSoal(globalIdx)}
+                                      className="text-xs text-red-600 hover:text-red-800 flex items-center gap-1 cursor-pointer font-medium"
+                                    >
+                                      <Trash2 className="w-3 h-3" />
+                                      <span>Hapus</span>
+                                    </button>
                                   )}
                                 </div>
-                              );
-                            })}
+                              </div>
+
+                              {/* Preview Gambar Soal jika ada */}
+                              {soal.gambarUrl && (
+                                <div className="p-2 bg-white rounded border border-gray-200 inline-block">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={soal.gambarUrl}
+                                    alt={`Gambar Butir Soal ${globalIdx + 1}`}
+                                    className="max-h-40 max-w-full rounded object-contain block"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveImagePilgan(globalIdx)}
+                                    className="mt-1 text-[11px] text-red-600 hover:text-red-800 font-medium flex items-center gap-1 cursor-pointer"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                    <span>Hapus Gambar</span>
+                                  </button>
+                                </div>
+                              )}
+
+                              <input
+                                type="text"
+                                value={soal.pertanyaan}
+                                onChange={(e) => handleUpdatePertanyaan(globalIdx, e.target.value)}
+                                placeholder={`Ketik teks pertanyaan nomor ${globalIdx + 1}...`}
+                                className="w-full px-3 py-1.5 bg-white border border-gray-300 rounded-md text-xs text-gray-900 focus:outline-none focus:border-[#2A2C5E]"
+                                required
+                              />
+
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                                {soal.pilihan.map((opsi, oIdx) => {
+                                  const isKey = soal.kunci === oIdx;
+                                  const abcd = ["A", "B", "C", "D"][oIdx];
+                                  return (
+                                    <div
+                                      key={oIdx}
+                                      className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md border text-xs transition-colors ${
+                                        isKey
+                                          ? "bg-white border-[#2A2C5E] text-gray-900 ring-1 ring-[#2A2C5E]/20"
+                                          : "bg-white border-gray-200 text-gray-700"
+                                      }`}
+                                    >
+                                      <input
+                                        type="radio"
+                                        name={`kunci-soal-${globalIdx}`}
+                                        checked={isKey}
+                                        onChange={() => handleUpdateKunci(globalIdx, oIdx)}
+                                        className="accent-[#2A2C5E] cursor-pointer"
+                                        title="Kunci Jawaban Benar"
+                                      />
+                                      <span className="font-bold text-gray-500 w-3">{abcd}.</span>
+                                      <input
+                                        type="text"
+                                        value={opsi}
+                                        onChange={(e) => handleUpdatePilihan(globalIdx, oIdx, e.target.value)}
+                                        className="w-full bg-transparent border-0 focus:outline-none text-xs text-gray-900"
+                                        placeholder={`Pilihan ${abcd}`}
+                                        required
+                                      />
+                                      {isKey && (
+                                        <span className="text-[10px] font-bold text-[#2A2C5E] bg-blue-50 px-1.5 py-0.2 rounded shrink-0">
+                                          Kunci
+                                        </span>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Pagination Soal Pilgan jika lebih dari 5 butir */}
+                      {totalPilganPages > 1 && (
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-3 border-t border-gray-200">
+                          <span className="text-[11px] text-gray-500">
+                            Halaman {pagePilgan} dari {totalPilganPages} &bull; Menampilkan soal {startPilganIdx + 1} - {Math.min(startPilganIdx + ITEMS_PER_PAGE, soalPilganList.length)} dari {soalPilganList.length} butir
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              disabled={pagePilgan <= 1}
+                              onClick={() => setPagePilgan((p) => Math.max(1, p - 1))}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                              <ChevronLeft className="w-3.5 h-3.5" />
+                              <span>Sebelumnya</span>
+                            </button>
+
+                            {Array.from({ length: totalPilganPages }, (_, i) => i + 1).map((num) => (
+                              <button
+                                key={num}
+                                type="button"
+                                onClick={() => setPagePilgan(num)}
+                                className={`w-7 h-7 text-xs font-semibold rounded border cursor-pointer ${
+                                  pagePilgan === num
+                                    ? "bg-[#2A2C5E] text-white border-[#2A2C5E]"
+                                    : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                                }`}
+                              >
+                                {num}
+                              </button>
+                            ))}
+
+                            <button
+                              type="button"
+                              disabled={pagePilgan >= totalPilganPages}
+                              onClick={() => setPagePilgan((p) => Math.min(totalPilganPages, p + 1))}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                              <span>Selanjutnya</span>
+                              <ChevronRight className="w-3.5 h-3.5" />
+                            </button>
                           </div>
                         </div>
-                      ))}
+                      )}
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
 
                 {/* BUILDER SOAL ESSAY */}
-                {jenisAsesmen === "ESSAY" && (
-                  <div className="space-y-1.5 pt-1">
-                    <label className="block text-xs font-medium text-gray-700">
-                      Pertanyaan Tugas Essay:
-                    </label>
-                    <textarea
-                      rows={3}
-                      value={pertanyaanEssay}
-                      onChange={(e) => setPertanyaanEssay(e.target.value)}
-                      placeholder="Tuliskan pertanyaan uraian siswa..."
-                      className="w-full p-2.5 bg-white border border-gray-300 rounded-lg text-xs text-gray-900 focus:outline-none focus:border-[#2A2C5E]"
-                      required
-                    />
-                  </div>
-                )}
+                {jenisAsesmen === "ESSAY" && (() => {
+                  const totalEssayPages = Math.ceil(soalEssayList.length / ITEMS_PER_PAGE) || 1;
+                  const startEssayIdx = (pageEssay - 1) * ITEMS_PER_PAGE;
+                  const currentEssayList = soalEssayList.slice(startEssayIdx, startEssayIdx + ITEMS_PER_PAGE);
+
+                  return (
+                    <div className="space-y-3 pt-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-gray-800">
+                          Butir Soal Essay ({soalEssayList.length} Soal)
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleAddSoalEssay}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#2A2C5E] text-white text-xs font-medium rounded-md hover:bg-[#1F2147] cursor-pointer"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Tambah Soal Essay</span>
+                        </button>
+                      </div>
+
+                      <div className="space-y-3">
+                        {currentEssayList.map((soal, localIdx) => {
+                          const globalIdx = startEssayIdx + localIdx;
+                          return (
+                            <div
+                              key={soal.id || globalIdx}
+                              className="p-3 bg-gray-50/60 border border-gray-200 rounded-lg space-y-2.5"
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-bold text-gray-700">
+                                  Nomor {globalIdx + 1}
+                                </span>
+                                <div className="flex items-center gap-2">
+                                  <label className="inline-flex items-center gap-1 px-2 py-0.5 bg-white border border-gray-300 hover:bg-gray-100 rounded text-[11px] font-medium text-gray-700 cursor-pointer shadow-2xs">
+                                    <ImageIcon className="w-3 h-3 text-gray-500" />
+                                    <span>{soal.gambarUrl ? "Ganti Gambar" : "Tambah Gambar"}</span>
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      className="hidden"
+                                      onChange={(e) => handleImageUploadEssay(globalIdx, e)}
+                                    />
+                                  </label>
+
+                                  {soalEssayList.length > 1 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteSoalEssay(globalIdx)}
+                                      className="text-xs text-red-600 hover:text-red-800 flex items-center gap-1 cursor-pointer font-medium"
+                                    >
+                                      <Trash2 className="w-3 h-3" />
+                                      <span>Hapus</span>
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Preview Gambar Soal Essay jika ada */}
+                              {soal.gambarUrl && (
+                                <div className="p-2 bg-white rounded border border-gray-200 inline-block">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={soal.gambarUrl}
+                                    alt={`Gambar Soal Essay ${globalIdx + 1}`}
+                                    className="max-h-40 max-w-full rounded object-contain block"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveImageEssay(globalIdx)}
+                                    className="mt-1 text-[11px] text-red-600 hover:text-red-800 font-medium flex items-center gap-1 cursor-pointer"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                    <span>Hapus Gambar</span>
+                                  </button>
+                                </div>
+                              )}
+
+                              <textarea
+                                rows={3}
+                                value={soal.pertanyaan}
+                                onChange={(e) => handleUpdatePertanyaanEssay(globalIdx, e.target.value)}
+                                placeholder={`Tuliskan teks pertanyaan uraian / essay nomor ${globalIdx + 1}...`}
+                                className="w-full p-2.5 bg-white border border-gray-300 rounded-lg text-xs text-gray-900 focus:outline-none focus:border-[#2A2C5E]"
+                                required
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Pagination Soal Essay jika lebih dari 5 butir */}
+                      {totalEssayPages > 1 && (
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-3 border-t border-gray-200">
+                          <span className="text-[11px] text-gray-500">
+                            Halaman {pageEssay} dari {totalEssayPages} &bull; Menampilkan essay {startEssayIdx + 1} - {Math.min(startEssayIdx + ITEMS_PER_PAGE, soalEssayList.length)} dari {soalEssayList.length} butir
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              disabled={pageEssay <= 1}
+                              onClick={() => setPageEssay((p) => Math.max(1, p - 1))}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                              <ChevronLeft className="w-3.5 h-3.5" />
+                              <span>Sebelumnya</span>
+                            </button>
+
+                            {Array.from({ length: totalEssayPages }, (_, i) => i + 1).map((num) => (
+                              <button
+                                key={num}
+                                type="button"
+                                onClick={() => setPageEssay(num)}
+                                className={`w-7 h-7 text-xs font-semibold rounded border cursor-pointer ${
+                                  pageEssay === num
+                                    ? "bg-[#2A2C5E] text-white border-[#2A2C5E]"
+                                    : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                                }`}
+                              >
+                                {num}
+                              </button>
+                            ))}
+
+                            <button
+                              type="button"
+                              disabled={pageEssay >= totalEssayPages}
+                              onClick={() => setPageEssay((p) => Math.min(totalEssayPages, p + 1))}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                              <span>Selanjutnya</span>
+                              <ChevronRight className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             ) : (
               <p className="text-xs text-gray-500 pt-1">

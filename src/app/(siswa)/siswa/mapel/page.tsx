@@ -625,6 +625,16 @@ function SiswaMapelContent() {
                     <p className="font-bold text-gray-900">
                       {idx + 1}. {s.pertanyaan}
                     </p>
+                    {s.gambarUrl && (
+                      <div className="my-2">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={s.gambarUrl}
+                          alt={`Gambar Butir Soal ${idx + 1}`}
+                          className="max-h-52 rounded-lg border border-gray-200 object-contain bg-white"
+                        />
+                      </div>
+                    )}
                     <div className="space-y-1.5">
                       {s.pilihan.map((opt, oIdx) => {
                         const isSelected = modalLatihan.selectedOptions[s.id] === oIdx;
@@ -726,10 +736,38 @@ function SiswaMapelContent() {
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="p-3.5 bg-blue-50/70 rounded-xl border border-blue-100 text-blue-950">
-                <span className="font-bold block mb-1">Pertanyaan Tugas Essay:</span>
-                <p>{modalEssay.pertemuan.tugas?.pertanyaanEssay}</p>
-              </div>
+              {modalEssay.pertemuan.tugas?.soalEssayList && modalEssay.pertemuan.tugas.soalEssayList.length > 0 ? (
+                <div className="space-y-3 max-h-[35vh] overflow-y-auto pr-1">
+                  {modalEssay.pertemuan.tugas.soalEssayList.map((essay, eIdx) => (
+                    <div
+                      key={essay.id || eIdx}
+                      className="p-3.5 bg-blue-50/70 rounded-xl border border-blue-100 text-blue-950 space-y-2"
+                    >
+                      <span className="font-bold block text-xs">
+                        {modalEssay.pertemuan!.tugas!.soalEssayList!.length > 1
+                          ? `Butir Soal Essay ${eIdx + 1}:`
+                          : "Pertanyaan Tugas Essay:"}
+                      </span>
+                      <p className="text-xs leading-relaxed">{essay.pertanyaan}</p>
+                      {essay.gambarUrl && (
+                        <div className="pt-1">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={essay.gambarUrl}
+                            alt={`Ilustrasi Soal Essay ${eIdx + 1}`}
+                            className="max-h-48 rounded border border-blue-200 object-contain bg-white"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-3.5 bg-blue-50/70 rounded-xl border border-blue-100 text-blue-950">
+                  <span className="font-bold block mb-1">Pertanyaan Tugas Essay:</span>
+                  <p>{modalEssay.pertemuan.tugas?.pertanyaanEssay}</p>
+                </div>
+              )}
 
               <div>
                 <label className="block font-semibold text-gray-700 mb-1">
@@ -872,6 +910,16 @@ function SiswaMapelContent() {
                     <p className="font-bold text-gray-900">
                       Butir Soal {idx + 1}. {s.pertanyaan}
                     </p>
+                    {s.gambarUrl && (
+                      <div className="my-2">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={s.gambarUrl}
+                          alt={`Gambar Butir Soal ${idx + 1}`}
+                          className="max-h-52 rounded-lg border border-gray-200 object-contain bg-white"
+                        />
+                      </div>
+                    )}
                     <div className="space-y-1.5">
                       {s.pilihan.map((opt, oIdx) => {
                         const isSelected = modalUjian.selectedOptions[s.id] === oIdx;

@@ -20,8 +20,9 @@ function TambahPertemuanContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const classIdParam = searchParams.get("classId");
+  const editId = searchParams.get("edit");
 
-  const { classes, addPertemuan } = useLMSStore();
+  const { classes, addPertemuan, updatePertemuan } = useLMSStore();
 
   // Kelas aktif
   const [selectedClassId, setSelectedClassId] = useState<string>(
@@ -32,11 +33,19 @@ function TambahPertemuanContent() {
     return classes.find((c) => c.id === selectedClassId) || classes[0];
   }, [classes, selectedClassId]);
 
+  // Pertemuan yang sedang diedit (mode edit)
+  const editingPertemuan = useMemo(() => {
+    if (!editId) return null;
+    return activeClass?.pertemuanList.find((p) => p.id === editId) || null;
+  }, [activeClass, editId]);
+  const isEditMode = !!editingPertemuan;
+
   // Nomor pertemuan otomatis
   const [nomorPertemuan, setNomorPertemuan] = useState<number>(1);
   const [judulPertemuan, setJudulPertemuan] = useState<string>("");
 
   useEffect(() => {
+    if (editId) return;
     if (activeClass?.pertemuanList) {
       const nextNum = activeClass.pertemuanList.length + 1;
       setNomorPertemuan(nextNum);
@@ -277,6 +286,50 @@ function TambahPertemuanContent() {
     setSoalEssayList(updated);
   };
 
+  // Isi otomatis formulir saat mode edit
+  const prefilledRef = useRef(false);
+  useEffect(() => {
+    if (!editingPertemuan || prefilledRef.current) return;
+    prefilledRef.current = true;
+    const pt = editingPertemuan;
+
+    setNomorPertemuan(pt.nomor);
+    setJudulPertemuan(pt.judul);
+    setKategoriSesi(pt.tipe);
+    if (pt.durasiMenit) setDurasiMenit(pt.durasiMenit);
+
+    if (pt.materi) {
+      setFormatMateri(pt.materi.tipe);
+      setMateriRingkasan(pt.materi.ringkasan || "");
+      setMateriKontenLengkap(pt.materi.tipe === "RINGKASAN" ? pt.materi.kontenLengkap || "" : "");
+      if (pt.materi.tipe === "VIDEO" && pt.materi.fileUrl) setMateriFileUrl(pt.materi.fileUrl);
+      if (pt.materi.tipe === "DOKUMEN" && pt.materi.fileUrl) setUploadedFileName(pt.materi.fileUrl);
+    } else {
+      setFormatMateri("NONE");
+    }
+
+    if (pt.tugas) {
+      const isEssay = pt.tugas.tipe === "ESSAY";
+      setJenisAsesmen(isEssay ? "ESSAY" : "PILIHAN_GANDA");
+      if (pt.tugas.soalPilgan?.length) {
+        setSoalPilganList(pt.tugas.soalPilgan.map((s) => ({ ...s, pilihan: [...s.pilihan] })));
+      }
+      if (pt.tugas.soalEssayList?.length) {
+        setSoalEssayList(pt.tugas.soalEssayList.map((s) => ({ ...s })));
+      } else if (pt.tugas.pertanyaanEssay) {
+        setSoalEssayList([{ id: 1, pertanyaan: pt.tugas.pertanyaanEssay }]);
+      }
+      if (pt.tugas.deadlineISO) {
+        const [d, t] = pt.tugas.deadlineISO.split("T");
+        if (d) setDeadlineDate(d);
+        if (t) setDeadlineTime(t);
+        setPresetActive("CUSTOM");
+      }
+    } else {
+      setJenisAsesmen("NONE");
+    }
+  }, [editingPertemuan]);
+
   // Submit Handler
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -286,9 +339,9 @@ function TambahPertemuanContent() {
 
     setIsSubmitting(true);
 
-    const meetingId = `${activeClass.id}-p${Date.now().toString().slice(-4)}`;
+    const meetingId = editingPertemuan?.id || `${activeClass.id}-p${Date.now().toString().slice(-4)}`;
     const finalJudul = judulPertemuan.trim() || `Pertemuan ${nomorPertemuan}: Pendalaman Materi`;
-    const automatedSchedule = activeClass.jadwal || "Senin, 07:30 - 09:30 WIB";
+    const automatedSchedule = editingPertemuan?.tanggal || activeClass.jadwal || "Senin, 07:30 - 09:30 WIB";
 
     const storeTipe: "REGULER" | "UTS" | "UAS" | "HARIAN" =
       kategoriSesi === "UTS" ? "UTS" : kategoriSesi === "UAS" ? "UAS" : kategoriSesi === "HARIAN" ? "HARIAN" : "REGULER";
@@ -296,7 +349,7 @@ function TambahPertemuanContent() {
     const materiData =
       formatMateri !== "NONE"
         ? {
-            judul: `Bahan Ajar Pertemuan ${nomorPertemuan}: ${finalJudul}`,
+            judul: editingPertemuan?.materi?.judul || `Bahan Ajar Pertemuan ${nomorPertemuan}: ${finalJudul}`,
             tipe: formatMateri as "DOKUMEN" | "VIDEO" | "RINGKASAN",
             ringkasan: materiRingkasan.trim(),
             kontenLengkap:
@@ -330,11 +383,12 @@ function TambahPertemuanContent() {
     const tugasData =
       jenisAsesmen !== "NONE"
         ? {
-            id: `tugas-${meetingId}`,
-            judul: `Evaluasi ${finalJudul}`,
+            id: editingPertemuan?.tugas?.id || `tugas-${meetingId}`,
+            judul: editingPertemuan?.tugas?.judul || `Evaluasi ${finalJudul}`,
             tipe: finalTugasTipe,
-            deskripsi: "Jawablah butir evaluasi berikut secara mandiri dan teliti.",
+            deskripsi: editingPertemuan?.tugas?.deskripsi || "Jawablah butir evaluasi berikut secara mandiri dan teliti.",
             deadline: formattedIndonesianDeadline,
+            deadlineISO: `${deadlineDate}T${deadlineTime || "23:59"}`,
             soalPilgan:
               finalTugasTipe === "PILIHAN_GANDA" || finalTugasTipe === "UJIAN_UTS" || finalTugasTipe === "UJIAN_UAS"
                 ? soalPilganList
@@ -361,19 +415,23 @@ function TambahPertemuanContent() {
       durasiMenit: jenisAsesmen !== "NONE" ? durasiMenit : undefined,
       materi: materiData,
       tugas: tugasData,
-      presensi: {
+      presensi: editingPertemuan?.presensi || {
         hadir: false,
       },
     };
 
-    addPertemuan(activeClass.id, newMeeting);
+    if (isEditMode && editingPertemuan) {
+      updatePertemuan(activeClass.id, editingPertemuan.id, newMeeting);
+    } else {
+      addPertemuan(activeClass.id, newMeeting);
+    }
 
     try {
       await fetch("/api/guru/sync", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          action: "CREATE_MATERI",
+          action: isEditMode ? "UPDATE_MATERI" : "CREATE_MATERI",
           payload: {
             classId: activeClass.id,
             pertemuan: newMeeting,
@@ -385,7 +443,7 @@ function TambahPertemuanContent() {
     }
 
     setIsSubmitting(false);
-    router.push(`/guru/mapel?id=${activeClass.id}&toast=added`);
+    router.push(`/guru/mapel?id=${activeClass.id}&toast=${isEditMode ? "updated" : "added"}`);
   };
 
   const kategoriLabelMap = {
@@ -441,7 +499,7 @@ function TambahPertemuanContent() {
           <div className="p-5 sm:p-6 space-y-4">
             <div className="flex items-center justify-between">
               <span className="px-2.5 py-1 rounded bg-[#2A2C5E] text-white text-xs font-bold">
-                Pertemuan ke-{nomorPertemuan}
+                {isEditMode ? `Edit Pertemuan ke-${nomorPertemuan}` : `Pertemuan ke-${nomorPertemuan}`}
               </span>
             </div>
 
@@ -1304,7 +1362,7 @@ function TambahPertemuanContent() {
                 disabled={isSubmitting}
                 className="px-4 py-1.5 bg-[#2A2C5E] hover:bg-[#1F2147] text-white text-xs font-semibold rounded-lg shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
               >
-                {isSubmitting ? "Menerbitkan..." : "Simpan Pertemuan"}
+                {isSubmitting ? "Menyimpan..." : isEditMode ? "Simpan Perubahan" : "Simpan Pertemuan"}
               </button>
             </div>
           </div>

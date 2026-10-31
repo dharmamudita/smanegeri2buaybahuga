@@ -36,6 +36,7 @@ import {
   SiswaAbsensiRecord,
 } from "@/lib/lmsStore";
 import PaginationBar from "@/components/common/PaginationBar";
+import RiwayatPengerjaanPanel from "@/components/guru/RiwayatPengerjaanPanel";
 
 function GuruMapelContent() {
   const router = useRouter();
@@ -75,7 +76,10 @@ function GuruMapelContent() {
 
   useEffect(() => {
     if (urlToast === "added") {
-      setToastMessage("Pertemuan baru beserta modul materi dan lembar soal CBT berhasil diterbitkan!");
+      setToastMessage("Pertemuan baru berhasil diterbitkan.");
+      setTimeout(() => setToastMessage(null), 4500);
+    } else if (urlToast === "updated") {
+      setToastMessage("Perubahan pertemuan berhasil disimpan.");
       setTimeout(() => setToastMessage(null), 4500);
     }
   }, [urlToast]);
@@ -88,38 +92,6 @@ function GuruMapelContent() {
   const [inputJurusanKelas, setInputJurusanKelas] = useState("MIPA 1");
   const [inputJadwalKelas, setInputJadwalKelas] = useState("Senin, 07:30 - 09:30 WIB");
   const [inputRuangKelas, setInputRuangKelas] = useState("Lab Biologi");
-
-  // Modal State: Kelola / Tambah Materi pada Pertemuan
-  const [modalMateri, setModalMateri] = useState<{
-    open: boolean;
-    pertemuanId: string | null;
-    judul: string;
-    tipe: "DOKUMEN" | "VIDEO" | "RINGKASAN";
-    ringkasan: string;
-    kontenLengkap: string;
-  }>({
-    open: false,
-    pertemuanId: null,
-    judul: "",
-    tipe: "DOKUMEN",
-    ringkasan: "",
-    kontenLengkap: "",
-  });
-
-  // Modal State: Kelola / Tambah Soal pada Pertemuan
-  const [modalSoal, setModalSoal] = useState<{
-    open: boolean;
-    pertemuanId: string | null;
-    judul: string;
-    tipe: "PILIHAN_GANDA" | "ESSAY" | "UJIAN_UTS" | "UJIAN_UAS";
-    deskripsi: string;
-  }>({
-    open: false,
-    pertemuanId: null,
-    judul: "",
-    tipe: "PILIHAN_GANDA",
-    deskripsi: "",
-  });
 
   // Modal State: Edit Nilai Siswa
   const [modalEditNilai, setModalEditNilai] = useState<{
@@ -227,46 +199,6 @@ function GuruMapelContent() {
     setInputNamaKelas("");
     setToastMessage(`Kelas "${newClass.nama}" berhasil dibuat dan ditambahkan ke daftar kelas Anda!`);
     setTimeout(() => setToastMessage(null), 4000);
-  };
-
-  // Handler: Simpan Materi
-  const handleSaveMateri = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!activeClass || !modalMateri.pertemuanId) return;
-
-    updatePertemuan(activeClass.id, modalMateri.pertemuanId, {
-      materi: {
-        judul: modalMateri.judul,
-        tipe: modalMateri.tipe,
-        ringkasan: modalMateri.ringkasan,
-        kontenLengkap: modalMateri.kontenLengkap || modalMateri.ringkasan,
-        sudahDibaca: false,
-      },
-    });
-
-    setModalMateri({ open: false, pertemuanId: null, judul: "", tipe: "DOKUMEN", ringkasan: "", kontenLengkap: "" });
-    setToastMessage("Modul materi berhasil diperbarui dan disinkronkan ke akun siswa!");
-    setTimeout(() => setToastMessage(null), 3500);
-  };
-
-  // Handler: Simpan Soal / Tugas
-  const handleSaveSoal = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!activeClass || !modalSoal.pertemuanId) return;
-
-    updatePertemuan(activeClass.id, modalSoal.pertemuanId, {
-      tugas: {
-        id: `tugas-${modalSoal.pertemuanId}`,
-        judul: modalSoal.judul,
-        tipe: modalSoal.tipe,
-        deskripsi: modalSoal.deskripsi,
-        sudahDikerjakan: false,
-      },
-    });
-
-    setModalSoal({ open: false, pertemuanId: null, judul: "", tipe: "PILIHAN_GANDA", deskripsi: "" });
-    setToastMessage("Lembar tugas / soal berhasil diperbarui!");
-    setTimeout(() => setToastMessage(null), 3500);
   };
 
   // Handler: Hapus Pertemuan
@@ -735,7 +667,7 @@ function GuruMapelContent() {
       </div>
 
       {/* Institutional Banner Kelas Aktif */}
-      <div className="bg-[#2A2C5E] text-white rounded-2xl p-6 sm:p-7 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-[#2A2C5E] text-white rounded-2xl p-6 sm:p-7 shadow-xs">
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-white/15 text-blue-100 text-[11px] font-bold">
             <span>{activeClass.kode}</span>
@@ -748,18 +680,6 @@ function GuruMapelContent() {
             {activeClass.nama}
           </h1>
         </div>
-
-        {/* Tombol Tambah Pertemuan Baru pada Banner */}
-        <div className="shrink-0 flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => router.push(`/guru/mapel/tambah-pertemuan?classId=${activeClass.id}`)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-[#2A2C5E] hover:bg-gray-100 text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer"
-          >
-            <PlusCircle className="w-4 h-4" />
-            <span>Tambah Pertemuan Baru</span>
-          </button>
-        </div>
       </div>
 
       {/* 3 Tab Navigasi di Dalam Kelas: ALUR PERTEMUAN | REKAP NILAI | REKAP ABSENSI */}
@@ -767,40 +687,37 @@ function GuruMapelContent() {
         <button
           type="button"
           onClick={() => setClassTab("PERTEMUAN")}
-          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+          className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer whitespace-nowrap ${
             classTab === "PERTEMUAN"
-              ? "bg-[#2A2C5E] text-white shadow-xs"
+              ? "bg-[#2A2C5E] text-white"
               : "bg-gray-100 text-gray-600 hover:bg-gray-200"
           }`}
         >
-          <BookOpen className="w-3.5 h-3.5" />
-          <span>Alur Pertemuan & Materi/Soal ({activeClass.pertemuanList.length})</span>
+          Pertemuan &amp; Materi ({activeClass.pertemuanList.length})
         </button>
 
         <button
           type="button"
           onClick={() => setClassTab("NILAI")}
-          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+          className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer whitespace-nowrap ${
             classTab === "NILAI"
-              ? "bg-[#2A2C5E] text-white shadow-xs"
+              ? "bg-[#2A2C5E] text-white"
               : "bg-gray-100 text-gray-600 hover:bg-gray-200"
           }`}
         >
-          <Award className="w-3.5 h-3.5" />
-          <span>Rekap Nilai Siswa (Matriks Nilai)</span>
+          Rekap Nilai Siswa
         </button>
 
         <button
           type="button"
           onClick={() => setClassTab("ABSENSI")}
-          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+          className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer whitespace-nowrap ${
             classTab === "ABSENSI"
-              ? "bg-[#2A2C5E] text-white shadow-xs"
+              ? "bg-[#2A2C5E] text-white"
               : "bg-gray-100 text-gray-600 hover:bg-gray-200"
           }`}
         >
-          <Clock className="w-3.5 h-3.5" />
-          <span>Rekap Absensi Siswa (Matriks Absensi)</span>
+          Rekap Absensi Siswa
         </button>
       </div>
 
@@ -812,10 +729,10 @@ function GuruMapelContent() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-3">
             <div>
               <h3 className="text-base font-bold text-gray-900">
-                Alur Silabus Pertemuan Siswa ({activeClass.pertemuanList.length} Sesi Terjadwal)
+                Alur Pertemuan ({activeClass.pertemuanList.length} Sesi)
               </h3>
               <p className="text-xs text-gray-500 mt-0.5">
-                Seluruh materi dan lembar soal di bawah ini otomatis tampil dan dikerjakan siswa di kelas ini.
+                Materi dan tugas di bawah ini tampil di ruang kelas siswa.
               </p>
             </div>
 
@@ -829,58 +746,66 @@ function GuruMapelContent() {
             </button>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {activeClass.pertemuanList.map((pt) => {
               const isUts = pt.tipe === "UTS";
               const isUas = pt.tipe === "UAS";
               const isHarian = pt.tipe === "HARIAN";
               const isSpecial = isUts || isUas;
 
+              const labelSesi = isUts
+                ? "UTS"
+                : isUas
+                ? "UAS"
+                : isHarian
+                ? `Harian ${String(pt.nomor).padStart(2, "0")}`
+                : `Pertemuan ${String(pt.nomor).padStart(2, "0")}`;
+
+              const labelMateri =
+                pt.materi?.tipe === "VIDEO" ? "Video" : pt.materi?.tipe === "RINGKASAN" ? "Catatan Teks" : "Modul PDF";
+
+              const labelTugas = isUts
+                ? "Ujian Tengah Semester"
+                : isUas
+                ? "Ujian Akhir Semester"
+                : pt.tugas?.tipe === "ESSAY"
+                ? "Essay"
+                : "Pilihan Ganda";
+
+              const jumlahSoal = pt.tugas?.soalPilgan?.length || pt.tugas?.soalEssayList?.length || 0;
+
               return (
                 <div
                   key={pt.id}
-                  className={`bg-white rounded-2xl border transition-all shadow-2xs overflow-hidden ${
-                    isSpecial
-                      ? "border-[#2A2C5E] ring-1 ring-[#2A2C5E]/20"
-                      : "border-gray-200 hover:border-gray-300"
+                  className={`bg-white rounded-xl border overflow-hidden ${
+                    isSpecial ? "border-[#2A2C5E]/40" : "border-gray-200"
                   }`}
                 >
-                  {/* Header Bar Pertemuan */}
-                  <div
-                    className={`p-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b ${
-                      isSpecial ? "bg-[#2A2C5E]/5 border-[#2A2C5E]/20" : "bg-gray-50/80 border-gray-100"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
+                  {/* Header Pertemuan */}
+                  <div className="px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100">
+                    <div className="flex items-center gap-3 min-w-0">
                       <span
-                        className={`text-xs font-bold px-2.5 py-1 rounded-md ${
-                          isUts
-                            ? "bg-amber-100 text-amber-800 border border-amber-200"
-                            : isUas
-                            ? "bg-rose-100 text-rose-800 border border-rose-200"
-                            : isHarian
-                            ? "bg-indigo-100 text-[#2A2C5E] border border-indigo-200"
-                            : "bg-blue-100 text-[#2A2C5E] border border-blue-200"
+                        className={`text-[11px] font-semibold px-2 py-0.5 rounded shrink-0 ${
+                          isSpecial ? "bg-[#2A2C5E] text-white" : "bg-gray-100 text-gray-700"
                         }`}
                       >
-                        {isUts
-                          ? "UJIAN TENGAH SEMESTER (UTS)"
-                          : isUas
-                          ? "UJIAN AKHIR SEMESTER (UAS)"
-                          : isHarian
-                          ? `PENILAIAN HARIAN (P-${pt.nomor})`
-                          : `Pertemuan 0${pt.nomor}`}
+                        {labelSesi}
                       </span>
-                      <h4 className="text-sm sm:text-base font-bold text-gray-900">
-                        {pt.judul}
-                      </h4>
+                      <h4 className="text-sm font-bold text-gray-900 truncate">{pt.judul}</h4>
                     </div>
 
-                    <div className="flex items-center gap-3 text-xs text-gray-500">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5 text-gray-400" />
-                        <span>{pt.tanggal}</span>
-                      </div>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <span className="text-xs text-gray-500">{pt.tanggal}</span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          router.push(`/guru/mapel/tambah-pertemuan?classId=${activeClass.id}&edit=${pt.id}`)
+                        }
+                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-md cursor-pointer"
+                      >
+                        <Edit3 className="w-3 h-3" />
+                        <span>Edit</span>
+                      </button>
                       <button
                         type="button"
                         onClick={() => handleDeletePertemuan(pt.id, pt.judul)}
@@ -892,97 +817,54 @@ function GuruMapelContent() {
                     </div>
                   </div>
 
-                  {/* Isi Konten Pertemuan: Modul Materi + Lembar Tugas / Soal */}
-                  <div className="p-4 sm:p-6 space-y-4">
-                    {/* 1. Modul Materi Pembelajaran */}
-                    <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div className="flex items-start gap-3">
-                        <div className="p-2 rounded-lg bg-blue-100 text-[#2A2C5E] shrink-0 mt-0.5">
-                          <FileText className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
-                              Modul Materi Ajar ({pt.materi?.tipe || "DOKUMEN"})
-                            </span>
-                            <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.2 rounded border border-emerald-200">
-                              Tersedia untuk Siswa
-                            </span>
-                          </div>
-                          <h5 className="text-sm font-bold text-gray-900 mt-0.5">
-                            {pt.materi?.judul || "Belum ada judul materi"}
-                          </h5>
-                          <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
-                            {pt.materi?.ringkasan || "Klik tombol kelola materi untuk menambahkan isi rangkuman pembelajaran."}
-                          </p>
-                        </div>
+                  {/* Isi: Bahan Ajar & Tugas */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+                    <div className="px-5 py-3.5 min-w-0">
+                      <div className="text-[11px] text-gray-500 mb-0.5">
+                        Bahan Ajar &bull; {pt.materi ? labelMateri : "Tidak ada"}
                       </div>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setModalMateri({
-                            open: true,
-                            pertemuanId: pt.id,
-                            judul: pt.materi?.judul || `Materi Pertemuan ${pt.nomor}`,
-                            tipe: pt.materi?.tipe || "DOKUMEN",
-                            ringkasan: pt.materi?.ringkasan || "",
-                            kontenLengkap: pt.materi?.kontenLengkap || "",
-                          })
-                        }
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#2A2C5E] bg-white border border-[#2A2C5E]/30 hover:bg-[#2A2C5E] hover:text-white rounded-lg transition-colors shrink-0 cursor-pointer"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                        <span>Kelola Materi</span>
-                      </button>
+                      {pt.materi ? (
+                        <>
+                          <div className="text-xs font-semibold text-gray-900 truncate">{pt.materi.judul}</div>
+                          <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">{pt.materi.ringkasan}</p>
+                        </>
+                      ) : (
+                        <div className="text-xs text-gray-400">Belum ada bahan ajar.</div>
+                      )}
                     </div>
 
-                    {/* 2. Lembar Tugas / Soal Ujian CBT */}
-                    <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div className="flex items-start gap-3">
-                        <div className="p-2 rounded-lg bg-amber-100 text-amber-800 shrink-0 mt-0.5">
-                          <Award className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
-                              {isSpecial ? "Asesmen Sumatif CBT" : pt.tugas?.tipe === "ESSAY" ? "Tugas Essay" : "Latihan Soal Pilihan Ganda"}
-                            </span>
-                            <span className="text-[10px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.2 rounded border border-blue-200">
-                              {pt.tugas?.soalPilgan
-                                ? `${pt.tugas.soalPilgan.length} Butir Soal`
-                                : pt.tugas?.soalEssayList
-                                ? `${pt.tugas.soalEssayList.length} Butir Essay`
-                                : "3 Butir Evaluasi"}
-                            </span>
-                          </div>
-                          <h5 className="text-sm font-bold text-gray-900 mt-0.5">
-                            {pt.tugas?.judul || "Belum ada tugas"}
-                          </h5>
-                          <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
-                            {pt.tugas?.deskripsi || "Klik tombol kelola soal untuk menambah pertanyaan atau petunjuk ujian."}
-                          </p>
-                        </div>
+                    <div className="px-5 py-3.5 min-w-0">
+                      <div className="text-[11px] text-gray-500 mb-0.5">
+                        Tugas &bull; {pt.tugas ? labelTugas : "Tidak ada"}
+                        {pt.tugas && jumlahSoal > 0 && <> &bull; {jumlahSoal} Soal</>}
+                        {pt.durasiMenit && pt.tugas && <> &bull; {pt.durasiMenit} Menit</>}
                       </div>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setModalSoal({
-                            open: true,
-                            pertemuanId: pt.id,
-                            judul: pt.tugas?.judul || `Latihan Evaluasi Pertemuan ${pt.nomor}`,
-                            tipe: pt.tugas?.tipe || (isSpecial ? "UJIAN_UTS" : "PILIHAN_GANDA"),
-                            deskripsi: pt.tugas?.deskripsi || "",
-                          })
-                        }
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-amber-800 bg-white border border-amber-300 hover:bg-amber-600 hover:text-white rounded-lg transition-colors shrink-0 cursor-pointer"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                        <span>Kelola Lembar Soal</span>
-                      </button>
+                      {pt.tugas ? (
+                        <>
+                          <div className="text-xs font-semibold text-gray-900 truncate">{pt.tugas.judul}</div>
+                          <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
+                            {pt.tugas.deadline ? `Batas pengumpulan: ${pt.tugas.deadline}` : pt.tugas.deskripsi}
+                          </p>
+                        </>
+                      ) : (
+                        <div className="text-xs text-gray-400">Belum ada tugas.</div>
+                      )}
                     </div>
                   </div>
+
+                  {/* Riwayat Pengerjaan Siswa */}
+                  {pt.tugas && (
+                    <RiwayatPengerjaanPanel
+                      classId={activeClass.id}
+                      pertemuan={pt}
+                      roster={currentClassGrades.map((g) => ({
+                        siswaId: g.siswaId,
+                        nama: g.nama,
+                        nisn: g.nisn,
+                        kelas: g.kelas,
+                      }))}
+                    />
+                  )}
                 </div>
               );
             })}
@@ -1211,198 +1093,6 @@ function GuruMapelContent() {
                 </tbody>
               </table>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* ===================================================================== */}
-      {/* MODAL: KELOLA / TAMBAH MATERI PEMBELAJARAN PADA PERTEMUAN */}
-      {/* ===================================================================== */}
-      {modalMateri.open && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4 border border-gray-200">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="p-1.5 bg-blue-50 text-[#2A2C5E] rounded-lg">
-                  <FileText className="w-4 h-4" />
-                </span>
-                <h3 className="text-sm font-bold text-gray-900">
-                  Kelola Modul Materi Pembelajaran
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setModalMateri({ ...modalMateri, open: false })}
-                className="text-gray-400 hover:text-gray-600 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <form onSubmit={handleSaveMateri} className="space-y-3.5 text-xs">
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">
-                  Judul Modul Materi:
-                </label>
-                <input
-                  type="text"
-                  value={modalMateri.judul}
-                  onChange={(e) => setModalMateri({ ...modalMateri, judul: e.target.value })}
-                  placeholder="Contoh: Modul Ajar Bab 2: Replikasi DNA"
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">
-                  Tipe Format Bahan Ajar:
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {(["DOKUMEN", "VIDEO", "RINGKASAN"] as const).map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => setModalMateri({ ...modalMateri, tipe: t })}
-                      className={`p-2 rounded-lg border font-semibold text-center transition-all cursor-pointer ${
-                        modalMateri.tipe === t
-                          ? "bg-[#2A2C5E] text-white border-[#2A2C5E]"
-                          : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
-                      }`}
-                    >
-                      {t === "DOKUMEN" ? "PDF / Dokumen" : t === "VIDEO" ? "Video Ajar" : "Rangkuman Teks"}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">
-                  Ringkasan Materi (Ditampilkan kepada Siswa):
-                </label>
-                <textarea
-                  value={modalMateri.ringkasan}
-                  onChange={(e) => setModalMateri({ ...modalMateri, ringkasan: e.target.value })}
-                  placeholder="Tuliskan poin-poin esensial dari modul pembelajaran ini..."
-                  rows={3}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
-                  required
-                />
-              </div>
-
-              <div className="pt-2 border-t border-gray-100 flex items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setModalMateri({ ...modalMateri, open: false })}
-                  className="px-3.5 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-lg shadow-2xs cursor-pointer flex items-center gap-1.5"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Simpan Materi ke Kelas</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ===================================================================== */}
-      {/* MODAL: KELOLA / TAMBAH SOAL TUGAS PADA PERTEMUAN */}
-      {/* ===================================================================== */}
-      {modalSoal.open && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4 border border-gray-200">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="p-1.5 bg-amber-50 text-amber-800 rounded-lg">
-                  <Award className="w-4 h-4" />
-                </span>
-                <h3 className="text-sm font-bold text-gray-900">
-                  Kelola Lembar Soal & Evaluasi
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setModalSoal({ ...modalSoal, open: false })}
-                className="text-gray-400 hover:text-gray-600 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <form onSubmit={handleSaveSoal} className="space-y-3.5 text-xs">
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">
-                  Judul Asesmen / Tugas:
-                </label>
-                <input
-                  type="text"
-                  value={modalSoal.judul}
-                  onChange={(e) => setModalSoal({ ...modalSoal, judul: e.target.value })}
-                  placeholder="Contoh: Latihan Formatif Pilihan Ganda"
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">
-                  Format Soal:
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {(["PILIHAN_GANDA", "ESSAY", "UJIAN_UTS"] as const).map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => setModalSoal({ ...modalSoal, tipe: t })}
-                      className={`p-2 rounded-lg border font-semibold text-center transition-all cursor-pointer ${
-                        modalSoal.tipe === t
-                          ? "bg-[#2A2C5E] text-white border-[#2A2C5E]"
-                          : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
-                      }`}
-                    >
-                      {t === "PILIHAN_GANDA" ? "Pilihan Ganda" : t === "ESSAY" ? "Uraian / Essay" : "Ujian CBT"}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">
-                  Petunjuk Pengerjaan & Deskripsi Soal:
-                </label>
-                <textarea
-                  value={modalSoal.deskripsi}
-                  onChange={(e) => setModalSoal({ ...modalSoal, deskripsi: e.target.value })}
-                  placeholder="Jelaskan petunjuk pengerjaan bagi siswa..."
-                  rows={3}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A2C5E]/20 focus:border-[#2A2C5E]"
-                  required
-                />
-              </div>
-
-              <div className="pt-2 border-t border-gray-100 flex items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setModalSoal({ ...modalSoal, open: false })}
-                  className="px-3.5 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-xs font-bold text-white bg-[#2A2C5E] hover:bg-[#1F2147] rounded-lg shadow-2xs cursor-pointer flex items-center gap-1.5"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Simpan Lembar Soal</span>
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}

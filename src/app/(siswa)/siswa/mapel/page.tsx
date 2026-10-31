@@ -20,12 +20,23 @@ import {
   ChevronRight,
   User,
 } from "lucide-react";
-import { useLMSStore, MapelLMS, PertemuanItem, SoalPilgan } from "@/lib/lmsStore";
+import { useLMSStore, MapelLMS, PertemuanItem, SoalPilgan, SiswaInfo } from "@/lib/lmsStore";
+import { useAuthStore } from "@/lib/store";
 import PaginationBar from "@/components/common/PaginationBar";
 
 function SiswaMapelContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const currentUser = useAuthStore((s) => s.currentUser);
+  const siswaInfo: SiswaInfo | undefined =
+    currentUser && currentUser.role === "SISWA"
+      ? {
+          id: currentUser.id,
+          nama: currentUser.name,
+          nisn: currentUser.nisn || currentUser.username,
+          kelas: currentUser.kelas || "-",
+        }
+      : undefined;
   const {
     classes,
     enrolledMapelIds,
@@ -696,7 +707,7 @@ function SiswaMapelContent() {
                         }
                       });
                       const score = Math.round((correct / questions.length) * 100);
-                      submitTugasPilgan(activeClass.id, modalLatihan.pertemuan.id, score);
+                      submitTugasPilgan(activeClass.id, modalLatihan.pertemuan.id, score, siswaInfo);
                       setModalLatihan({ open: false, pertemuan: null, selectedOptions: {} });
                     }
                   }}
@@ -800,7 +811,8 @@ function SiswaMapelContent() {
                     submitTugasEssay(
                       activeClass.id,
                       modalEssay.pertemuan.id,
-                      modalEssay.jawabanText.trim()
+                      modalEssay.jawabanText.trim(),
+                      siswaInfo
                     );
                     setModalEssay({ open: false, pertemuan: null, jawabanText: "" });
                   }
@@ -1011,7 +1023,7 @@ function SiswaMapelContent() {
                           }
                         });
                         const score = Math.round((correct / questions.length) * 100);
-                        submitUjianCBT(activeClass.id, modalUjian.pertemuan.id, score);
+                        submitUjianCBT(activeClass.id, modalUjian.pertemuan.id, score, siswaInfo);
                         setModalUjian({
                           open: false,
                           pertemuan: null,

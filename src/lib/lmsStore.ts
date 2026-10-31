@@ -16,6 +16,25 @@ export interface SoalEssay {
   gambarUrl?: string;
 }
 
+export interface RiwayatPengerjaan {
+  siswaId: string;
+  nama: string;
+  nisn: string;
+  kelas: string;
+  nilai: number | null;
+  waktuSubmit: string;
+  jawabanEssay?: string;
+}
+
+export interface SiswaInfo {
+  id: string;
+  nama: string;
+  nisn: string;
+  kelas: string;
+}
+
+export const riwayatKey = (classId: string, pertemuanId: string) => `${classId}::${pertemuanId}`;
+
 export interface PertemuanItem {
   id: string;
   nomor: number;
@@ -45,6 +64,7 @@ export interface PertemuanItem {
     jawabanSiswa?: any;
     tanggalSubmit?: string;
     deadline?: string;
+    deadlineISO?: string;
   };
   presensi: {
     hadir: boolean;
@@ -684,12 +704,54 @@ function generateGenericMeetings(mapelNama: string, guru: string): PertemuanItem
   ];
 }
 
+function buildSeedRiwayat(): Record<string, RiwayatPengerjaan[]> {
+  const result: Record<string, RiwayatPengerjaan[]> = {};
+  INITIAL_CLASSES.forEach((cls) => {
+    const total = cls.pertemuanList.length;
+    cls.pertemuanList.forEach((pt, pIdx) => {
+      if (!pt.tugas) return;
+      const tanggalBersih = pt.tanggal.includes(", ") ? pt.tanggal.split(", ").slice(1).join(", ") : pt.tanggal;
+      const records: RiwayatPengerjaan[] = [];
+      SEED_CLASS_STUDENTS.forEach((s, sIdx) => {
+        // Pertemuan terakhir: sebagian siswa belum mengumpulkan
+        const isRecent = pIdx >= total - 2;
+        if (isRecent && (sIdx + pIdx) % 3 === 0) return;
+        const gradeRec = INITIAL_GRADE_MATRIX[cls.id]?.find((g) => g.siswaId === s.id);
+        const nilai = gradeRec?.nilaiPerPertemuan[String(pt.nomor)] ?? 75 + ((sIdx * 7 + pIdx * 5) % 24);
+        const jam = String(8 + (sIdx % 6)).padStart(2, "0");
+        const menit = String((sIdx * 11 + pIdx * 7) % 60).padStart(2, "0");
+        records.push({
+          siswaId: s.id,
+          nama: s.nama,
+          nisn: s.nisn,
+          kelas: s.kelas,
+          nilai,
+          waktuSubmit: `${tanggalBersih}, ${jam}:${menit} WIB`,
+          jawabanEssay:
+            pt.tugas?.tipe === "ESSAY"
+              ? "Berdasarkan materi yang telah dipelajari, saya menyimpulkan bahwa konsep ini saling berkaitan dan perlu dipahami melalui contoh nyata di lingkungan sekitar."
+              : undefined,
+        });
+      });
+      result[riwayatKey(cls.id, pt.id)] = records;
+    });
+  });
+  return result;
+}
+
+const formatWaktuSekarang = () =>
+  new Date().toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric" }) +
+  ", " +
+  new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) +
+  " WIB";
+
 interface LMSState {
   classes: MapelLMS[];
   selectedClassId: string | null;
   enrolledMapelIds: string[];
   gradeMatrix: Record<string, SiswaGradeRecord[]>;
   absensiMatrix: Record<string, SiswaAbsensiRecord[]>;
+  riwayatPengerjaan: Record<string, RiwayatPengerjaan[]>;
   selectClass: (id: string | null) => void;
   addClass: (newClass: MapelLMS) => void;
   addPertemuan: (classId: string, pertemuan: PertemuanItem) => void;
@@ -698,10 +760,12 @@ interface LMSState {
   updateStudentGrade: (classId: string, siswaId: string, pertemuanKey: string, score: number) => void;
   updateStudentAbsensi: (classId: string, siswaId: string, pertemuanKey: string, status: "H" | "I" | "S" | "A") => void;
   markMateriSelesai: (mapelId: string, pertemuanId: string) => void;
-  submitTugasPilgan: (mapelId: string, pertemuanId: string, skor: number) => void;
-  submitTugasEssay: (mapelId: string, pertemuanId: string, jawabanText: string) => void;
+  submitTugasPilgan: (mapelId: string, pertemuanId: string, skor: number, siswa?: SiswaInfo) => void;
+  submitTugasEssay: (mapelId: string, pertemuanId: string, jawabanText: string, siswa?: SiswaInfo) => void;
   submitPresensiPertemuan: (mapelId: string, pertemuanId: string) => void;
-  submitUjianCBT: (mapelId: string, pertemuanId: string, skor: number) => void;
+  submitUjianCBT: (mapelId: string, pertemuanId: string, skor: number, siswa?: SiswaInfo) => void;
+  catatRiwayat: (classId: string, pertemuanId: string, siswa: SiswaInfo, nilai: number | null, jawabanEssay?: string) => void;
+  nilaiRiwayat: (classId: string, pertemuanId: string, siswaId: string, nilai: number) => void;
   joinClassByCode: (code: string, studentInfo?: { id: string; nama: string; nisn: string; kelas: string }) => { success: boolean; message: string };
   enrollClass: (classId: string, studentInfo?: { id: string; nama: string; nisn: string; kelas: string }) => void;
 }
@@ -714,6 +778,57 @@ export const useLMSStore = create<LMSState>()(
       enrolledMapelIds: ["mapel-1", "mapel-2", "mapel-3"],
       gradeMatrix: INITIAL_GRADE_MATRIX,
       absensiMatrix: INITIAL_ABSENSI_MATRIX,
+      riwayatPengerjaan: buildSeedRiwayat(),
+
+      catatRiwayat: (classId, pertemuanId, siswa, nilai, jawabanEssay) => {
+        set((state) => {
+          const key = riwayatKey(classId, pertemuanId);
+          const existing = (state.riwayatPengerjaan[key] || []).filter((r) => r.siswaId !== siswa.id);
+          const record: RiwayatPengerjaan = {
+            siswaId: siswa.id,
+            nama: siswa.nama,
+            nisn: siswa.nisn,
+            kelas: siswa.kelas,
+            nilai,
+            waktuSubmit: formatWaktuSekarang(),
+            jawabanEssay,
+          };
+
+          // Sinkronkan nilai ke matriks nilai kelas
+          const pertemuan = state.classes.find((c) => c.id === classId)?.pertemuanList.find((p) => p.id === pertemuanId);
+          let gradeMatrix = state.gradeMatrix;
+          if (pertemuan && nilai !== null) {
+            const classGrades = state.gradeMatrix[classId] || [];
+            gradeMatrix = {
+              ...state.gradeMatrix,
+              [classId]: classGrades.map((rec) =>
+                rec.siswaId === siswa.id
+                  ? { ...rec, nilaiPerPertemuan: { ...rec.nilaiPerPertemuan, [String(pertemuan.nomor)]: nilai } }
+                  : rec
+              ),
+            };
+          }
+
+          return {
+            riwayatPengerjaan: { ...state.riwayatPengerjaan, [key]: [...existing, record] },
+            gradeMatrix,
+          };
+        });
+      },
+
+      nilaiRiwayat: (classId, pertemuanId, siswaId, nilai) => {
+        const key = riwayatKey(classId, pertemuanId);
+        set((state) => ({
+          riwayatPengerjaan: {
+            ...state.riwayatPengerjaan,
+            [key]: (state.riwayatPengerjaan[key] || []).map((r) => (r.siswaId === siswaId ? { ...r, nilai } : r)),
+          },
+        }));
+        const pertemuan = get().classes.find((c) => c.id === classId)?.pertemuanList.find((p) => p.id === pertemuanId);
+        if (pertemuan) {
+          get().updateStudentGrade(classId, siswaId, String(pertemuan.nomor), nilai);
+        }
+      },
 
       selectClass: (id) => set({ selectedClassId: id }),
 
@@ -966,7 +1081,8 @@ export const useLMSStore = create<LMSState>()(
         }));
       },
 
-      submitTugasPilgan: (mapelId, pertemuanId, skor) => {
+      submitTugasPilgan: (mapelId, pertemuanId, skor, siswa) => {
+        get().catatRiwayat(mapelId, pertemuanId, siswa || SEED_CLASS_STUDENTS[0], skor);
         set((state) => ({
           classes: state.classes.map((cls) => {
             if (cls.id !== mapelId) return cls;
@@ -992,7 +1108,9 @@ export const useLMSStore = create<LMSState>()(
         }));
       },
 
-      submitTugasEssay: (mapelId, pertemuanId, jawabanText) => {
+      submitTugasEssay: (mapelId, pertemuanId, jawabanText, siswa) => {
+        // Nilai essay menunggu penilaian guru
+        get().catatRiwayat(mapelId, pertemuanId, siswa || SEED_CLASS_STUDENTS[0], null, jawabanText);
         set((state) => ({
           classes: state.classes.map((cls) => {
             if (cls.id !== mapelId) return cls;
@@ -1053,7 +1171,8 @@ export const useLMSStore = create<LMSState>()(
         }));
       },
 
-      submitUjianCBT: (mapelId, pertemuanId, skor) => {
+      submitUjianCBT: (mapelId, pertemuanId, skor, siswa) => {
+        get().catatRiwayat(mapelId, pertemuanId, siswa || SEED_CLASS_STUDENTS[0], skor);
         set((state) => ({
           classes: state.classes.map((cls) => {
             if (cls.id !== mapelId) return cls;

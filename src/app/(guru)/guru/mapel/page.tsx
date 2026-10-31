@@ -667,9 +667,6 @@ function GuruMapelContent() {
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
             {activeClass.nama}
           </h1>
-          <p className="text-xs sm:text-sm text-blue-200">
-            Guru Pengampu: <strong className="text-white">{activeClass.guruNama}</strong> &bull; Jadwal: {activeClass.jadwal}
-          </p>
         </div>
 
         {/* Tombol Tambah Pertemuan Baru pada Banner */}

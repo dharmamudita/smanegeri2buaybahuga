@@ -34,7 +34,6 @@ function SiswaMapelContent() {
     markMateriSelesai,
     submitTugasPilgan,
     submitTugasEssay,
-    submitPresensiPertemuan,
     submitUjianCBT,
   } = useLMSStore();
 
@@ -81,11 +80,6 @@ function SiswaMapelContent() {
     pertemuan: PertemuanItem | null;
     jawabanText: string;
   }>({ open: false, pertemuan: null, jawabanText: "" });
-
-  const [modalPresensi, setModalPresensi] = useState<{
-    open: boolean;
-    pertemuan: PertemuanItem | null;
-  }>({ open: false, pertemuan: null });
 
   const [modalUjian, setModalUjian] = useState<{
     open: boolean;
@@ -153,7 +147,7 @@ function SiswaMapelContent() {
             {paginatedEnrolledClasses.map((cls) => {
               const total = cls.pertemuanList.length;
               const completed = cls.pertemuanList.filter(
-                (p) => (p.materi?.sudahDibaca || p.tugas?.sudahDikerjakan) && p.presensi.hadir
+                (p) => Boolean(p.materi?.sudahDibaca || p.tugas?.sudahDikerjakan)
               ).length;
               const percent = Math.round((completed / total) * 100);
 
@@ -244,7 +238,7 @@ function SiswaMapelContent() {
   // -------------------------------------------------------------
   const totalMeetings = activeClass.pertemuanList.length;
   const completedMeetings = activeClass.pertemuanList.filter(
-    (p) => (p.materi?.sudahDibaca || p.tugas?.sudahDikerjakan) && p.presensi.hadir
+    (p) => Boolean(p.materi?.sudahDibaca || p.tugas?.sudahDikerjakan)
   ).length;
   const progressPercent = Math.round((completedMeetings / totalMeetings) * 100);
 
@@ -301,15 +295,15 @@ function SiswaMapelContent() {
 
       {/* Petunjuk Indikator Simbol */}
       <div className="bg-white p-3.5 rounded-xl border border-gray-200 shadow-2xs flex flex-wrap items-center justify-between gap-3 text-xs">
-        <span className="font-bold text-gray-700">Keterangan Status Simbol:</span>
+        <span className="font-bold text-gray-700">Keterangan Status Modul:</span>
         <div className="flex items-center gap-4 text-[11px] text-gray-600">
           <span className="flex items-center gap-1.5 font-semibold text-emerald-700">
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-            <span>Simbol Hijau: Tuntas / Hadir / Telah Dinilai</span>
+            <span>Simbol Hijau: Modul Dibaca / Tugas Tuntas</span>
           </span>
           <span className="flex items-center gap-1.5 font-semibold text-rose-700">
             <CircleAlert className="w-4 h-4 text-rose-600" />
-            <span>Simbol Merah: Belum Selesai / Belum Absen</span>
+            <span>Simbol Merah: Belum Dipelajari / Belum Dikerjakan</span>
           </span>
         </div>
       </div>
@@ -512,41 +506,6 @@ function SiswaMapelContent() {
                     )}
                   </div>
                 )}
-
-                {/* 3. Absensi Sesi Pertemuan */}
-                <div className="p-3.5 bg-gray-50/70 rounded-xl border border-gray-100 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    {pt.presensi.hadir ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    ) : (
-                      <CircleAlert className="w-4 h-4 text-rose-600 shrink-0" />
-                    )}
-                    <div>
-                      <span className="text-xs font-bold text-gray-800">
-                        Presensi Sesi Pertemuan:
-                      </span>{" "}
-                      <span
-                        className={`text-xs font-semibold ${
-                          pt.presensi.hadir ? "text-emerald-700" : "text-rose-700"
-                        }`}
-                      >
-                        {pt.presensi.hadir
-                          ? `Hadir (${pt.presensi.waktuHadir || "Tepat Waktu"})`
-                          : "Belum Melakukan Absensi Pertemuan Ini"}
-                      </span>
-                    </div>
-                  </div>
-
-                  {!pt.presensi.hadir && (
-                    <button
-                      type="button"
-                      onClick={() => setModalPresensi({ open: true, pertemuan: pt })}
-                      className="px-3 py-1 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-md transition-colors cursor-pointer shrink-0 shadow-2xs"
-                    >
-                      Konfirmasi Hadir
-                    </button>
-                  )}
-                </div>
               </div>
             </div>
           );
@@ -819,74 +778,7 @@ function SiswaMapelContent() {
       )}
 
       {/* ========================================================= */}
-      {/* MODAL 4: KONFIRMASI ABSENSI SESI PERTEMUAN */}
-      {/* ========================================================= */}
-      {modalPresensi.open && modalPresensi.pertemuan && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 border border-gray-200">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="p-1.5 bg-emerald-50 text-emerald-700 rounded-lg">
-                  <Clock className="w-4 h-4" />
-                </span>
-                <h3 className="text-sm font-bold text-gray-900">
-                  Presensi Kehadiran Pertemuan
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setModalPresensi({ open: false, pertemuan: null })}
-                className="text-gray-400 hover:text-gray-600 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="space-y-3 text-xs text-gray-600">
-              <p>
-                Konfirmasikan bahwa Anda hadir mengikuti sesi pembelajaran:
-              </p>
-              <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1">
-                <div className="font-bold text-gray-900">
-                  {modalPresensi.pertemuan.judul}
-                </div>
-                <div className="text-[11px] text-gray-500">
-                  Mata Pelajaran: {activeClass.nama} &bull; {activeClass.jadwal}
-                </div>
-              </div>
-              <p className="text-[11px] text-gray-400">
-                Waktu presensi akan dicatat secara otomatis ke dalam rekapitulasi kehadiran dewan guru.
-              </p>
-            </div>
-
-            <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => setModalPresensi({ open: false, pertemuan: null })}
-                className="px-3.5 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer"
-              >
-                Batal
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  if (activeClass && modalPresensi.pertemuan) {
-                    submitPresensiPertemuan(activeClass.id, modalPresensi.pertemuan.id);
-                    setModalPresensi({ open: false, pertemuan: null });
-                  }
-                }}
-                className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-2xs transition-colors cursor-pointer flex items-center gap-1.5"
-              >
-                <CheckCircle2 className="w-4 h-4" />
-                <span>Saya Hadir pada Sesi Ini</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================= */}
-      {/* MODAL 5: UJIAN SUMATIF BERKALA (UTS & UAS) DENGAN COUNTDOWN TIMER */}
+      {/* MODAL 4: UJIAN SUMATIF BERKALA (UTS & UAS) DENGAN COUNTDOWN TIMER */}
       {/* ========================================================= */}
       {modalUjian.open && modalUjian.pertemuan && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
